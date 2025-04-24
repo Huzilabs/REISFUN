@@ -1,0 +1,122 @@
+<!-- Property Listing Section -->
+<div class="flex flex-col flex-auto min-w-0 bg-card dark:bg-transparent">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between p-6 sm:pb-4">
+    <div>
+      <h2 class="text-3xl font-semibold tracking-tight">All Florida Inventory </h2>
+      <p class="mt-1 text-secondary">Manage your property listings</p>
+    </div>
+    <div class="mt-4 sm:mt-0">
+      <div class="flex items-center gap-2">
+        <!-- Status filter -->
+        <mat-form-field appearance="outline" class="w-full sm:w-48">
+          <mat-label>Filter by Status</mat-label>
+          <mat-select [formControl]="statusFilter">
+            <mat-option *ngFor="let status of statusOptions" [value]="status">
+              {{ status === 'all' ? 'All Statuses' : (status | titlecase) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Search input -->
+        <mat-form-field appearance="outline" class="w-full sm:w-64">
+          <mat-label>Search properties</mat-label>
+          <input 
+            matInput 
+            [formControl]="searchQuery" 
+            placeholder="Search by title, type or price">
+          <button 
+            *ngIf="searchQuery.value" 
+            matSuffix 
+            mat-icon-button 
+            aria-label="Clear" 
+            (click)="searchQuery.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        
+        <!-- Properties per page selector -->
+        <div class="flex items-center">
+          <!-- <span class="text-sm text-secondary">Properties per page:</span> -->
+          <mat-form-field appearance="outline" class="w-20">
+            <mat-select [value]="pageSize.toString()" (selectionChange)="onPageSizeChange($event)">
+              <mat-option *ngFor="let size of pageSizeOptions" [value]="size.toString()">
+                {{ size }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="flex justify-center items-center p-8">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- No results message -->
+  <div *ngIf="!isLoading && filteredProperties.length === 0" class="flex flex-col items-center justify-center p-8">
+    <mat-icon class="text-6xl mb-4 text-hint">search</mat-icon>
+    <h2 class="text-2xl font-semibold">No properties found</h2>
+    <p class="text-secondary mt-2">Try adjusting your search or filter criteria</p>
+  </div>
+
+  <!-- Property grid -->
+  <div *ngIf="!isLoading && paginatedProperties.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+    <div 
+  *ngFor="let property of paginatedProperties; trackBy: trackByFn" 
+  class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-200 cursor-pointer p-2 border border-gray-200"
+  (click)="onPropertyClick(property)">
+  <!-- Full title without line clamping -->
+  <h3 class="text-base font-semibold text-gray-800 break-words h-14">{{ property.title }}</h3>
+
+  <!-- Property image -->
+  <div class="h-48 overflow-hidden">
+    <img 
+      [src]="getPropertyThumbnail(property)" 
+      [alt]="property.title"
+      class="w-full h-full object-cover"
+    >
+  </div>
+  
+  <!-- Property info -->
+  <div class="flex flex-col p-2 gap-2">
+    <div class="flex justify-between items-start">
+      <div 
+        [ngClass]="getStatusColor(property.status)"
+        class="text-white text-xs font-medium px-2 py-1 rounded-full"
+      >
+        {{ property.status | titlecase }}
+      </div>
+    </div>
+    <div class="mt-2 text-sm">
+      {{ property.inspection_period_end_date ? (property.inspection_period_end_date | date: 'MM/dd/yyyy') : '8/2/2025' }}
+    </div>
+
+    
+    <div class="text-xl font-semibold  mt-1">
+      <font class="text-black-600 text-sm">Est. Price:</font> <font class="text-green-600"> {{ getFormattedPrice(property.price) }}</font>
+    </div>
+    
+   
+    
+ 
+  </div>
+</div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center p-6 border-t border-gray-200">
+    <mat-paginator
+      *ngIf="filteredProperties.length > 0"
+      [length]="totalProperties"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>

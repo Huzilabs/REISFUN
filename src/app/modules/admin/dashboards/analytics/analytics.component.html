@@ -1,0 +1,398 @@
+<div class="flex flex-col flex-auto w-full">
+
+    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
+
+        <!-- Title and action buttons -->
+        <div class="flex items-center justify-between w-full">
+            <div>
+                <div class="text-3xl font-semibold tracking-tight leading-8">Reporting dashboard</div>
+                <!-- <div class="font-medium tracking-tight text-secondary">Monitor metrics, check reports and review performance</div> -->
+            </div>
+            <!-- <div class="flex items-center ml-6">
+                <button
+                    class="hidden sm:inline-flex"
+                    mat-stroked-button>
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:cog'"></mat-icon>
+                    <span class="ml-2">Settings</span>
+                </button>
+                <button
+                    class="hidden sm:inline-flex ml-3"
+                    mat-flat-button
+                    [color]="'primary'">
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:save'"></mat-icon>
+                    <span class="ml-2">Export</span>
+                </button>
+
+                <div class="sm:hidden">
+                    <button
+                        [matMenuTriggerFor]="actionsMenu"
+                        mat-icon-button>
+                        <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
+                    </button>
+                    <mat-menu #actionsMenu="matMenu">
+                        <button mat-menu-item>Export</button>
+                        <button mat-menu-item>Settings</button>
+                    </mat-menu>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full mt-8">
+            <!-- Visitors overview -->
+            <!-- <div class="sm:col-span-2 lg:col-span-3 dark flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-center justify-between mt-10 ml-10 mr-6 sm:mr-10">
+                    <div class="flex flex-col">
+                        <div class="mr-4 text-2xl md:text-3xl font-semibold tracking-tight leading-7">Visitors Overview</div>
+                        <div class="font-medium text-secondary">Number of unique visitors</div>
+                    </div>
+                    <div class="ml-2">
+                        <mat-button-toggle-group
+                            class="hidden sm:inline-flex border-none space-x-1"
+                            value="this-year"
+                            #visitorsYearSelector="matButtonToggleGroup">
+                            <mat-button-toggle
+                                class="px-1.5 rounded-full overflow-hidden border-none font-medium"
+                                value="last-year">Last Year
+                            </mat-button-toggle>
+                            <mat-button-toggle
+                                class="px-1.5 rounded-full overflow-hidden border-none font-medium"
+                                value="this-year">This Year
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                        <div class="sm:hidden">
+                            <button
+                                mat-icon-button
+                                [matMenuTriggerFor]="visitorsMenu">
+                                <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
+                            </button>
+                            <mat-menu #visitorsMenu="matMenu">
+                                <button mat-menu-item>This Year</button>
+                                <button mat-menu-item>Last Year</button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-auto h-80">
+                    <apx-chart
+                        class="flex-auto w-full h-full"
+                        [chart]="chartVisitors.chart"
+                        [colors]="chartVisitors.colors"
+                        [dataLabels]="chartVisitors.dataLabels"
+                        [fill]="chartVisitors.fill"
+                        [grid]="chartVisitors.grid"
+                        [series]="chartVisitors.series[visitorsYearSelector.value]"
+                        [stroke]="chartVisitors.stroke"
+                        [tooltip]="chartVisitors.tooltip"
+                        [xaxis]="chartVisitors.xaxis"
+                        [yaxis]="chartVisitors.yaxis"></apx-chart>
+                </div>
+            </div> -->
+            <!-- Conversions -->
+            <div class="sm:col-span-2 lg:col-span-1 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between m-6 mb-0">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Total Profit</div>
+                      
+                </div>
+                <div class="flex flex-col lg:flex-row lg:items-center mx-6 mt-3">
+                    <div class="text-7xl font-bold tracking-tighter leading-tight">{{data.conversions.amount | number:'1.0-0'}}</div>
+                   
+                  </div>
+                <div class="flex flex-col flex-auto h-20">
+                    <apx-chart
+                        class="flex-auto w-full h-full"
+                        [chart]="chartConversions.chart"
+                        [colors]="chartConversions.colors"
+                        [series]="chartConversions.series"
+                        [stroke]="chartConversions.stroke"
+                        [tooltip]="chartConversions.tooltip"
+                        [xaxis]="chartConversions.xaxis"
+                        [yaxis]="chartConversions.yaxis"></apx-chart>
+                </div>
+            </div>
+            <div class="sm:col-span-2 lg:col-span-1 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between m-6 mb-0">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Total Closed Deals</div>
+                     
+                </div>
+                <div class="flex flex-col lg:flex-row lg:items-center mx-6 mt-3">
+                    <div class="text-7xl font-bold tracking-tighter leading-tight">{{data.conversions.amount | number:'1.0-0'}}</div>
+                    
+                </div>
+                <div class="flex flex-col flex-auto h-20">
+                    <apx-chart
+                        class="flex-auto w-full h-full"
+                        [chart]="chartConversions.chart"
+                        [colors]="chartConversions.colors"
+                        [series]="chartConversions.series"
+                        [stroke]="chartConversions.stroke"
+                        [tooltip]="chartConversions.tooltip"
+                        [xaxis]="chartConversions.xaxis"
+                        [yaxis]="chartConversions.yaxis"></apx-chart>
+                </div>
+            </div>
+            <!-- Impressions -->
+            <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between m-6 mb-0">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Average Closed Deals</div>
+                    
+                </div>
+                <div class="flex flex-col lg:flex-row lg:items-center mx-6 mt-3">
+                    <div class="text-7xl font-bold tracking-tighter leading-tight">{{data.impressions.amount | number:'1.0-0'}}</div>
+                    
+                </div>
+                <div class="flex flex-col flex-auto h-20">
+                    <apx-chart
+                        class="flex-auto w-full h-full"
+                        [chart]="chartImpressions.chart"
+                        [colors]="chartImpressions.colors"
+                        [series]="chartImpressions.series"
+                        [stroke]="chartImpressions.stroke"
+                        [tooltip]="chartImpressions.tooltip"
+                        [xaxis]="chartImpressions.xaxis"
+                        [yaxis]="chartImpressions.yaxis"></apx-chart>
+                </div>
+            </div>
+            <!-- Visits -->
+            <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between m-6 mb-0">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Average Profit</div>
+                   
+                </div>
+                <div class="flex flex-col lg:flex-row lg:items-center mx-6 mt-3">
+                    <div class="text-7xl font-bold tracking-tighter leading-tight">{{data.visits.amount | number:'1.0-0'}}</div>
+                    
+                </div>
+                <div class="flex flex-col flex-auto h-20">
+                    <apx-chart
+                        class="flex-auto w-full h-full"
+                        [chart]="chartVisits.chart"
+                        [colors]="chartVisits.colors"
+                        [series]="chartVisits.series"
+                        [stroke]="chartVisits.stroke"
+                        [tooltip]="chartVisits.tooltip"
+                        [xaxis]="chartVisits.xaxis"
+                        [yaxis]="chartVisits.yaxis"></apx-chart>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visitors vs. Page Views -->
+         
+        <div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden mt-10">
+            <div class="p-6">
+                <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">Track Profit for Closed Deals</div>
+            </div>
+            <div class="overflow-x-auto mx-6">
+                <table class="w-full bg-transparent" mat-table matSort [dataSource]="sortedData" [trackBy]="trackByFn" #recentTransactionsTable>
+                    <!-- Transaction ID (Month) -->
+                    <ng-container matColumnDef="transactionId">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Month Name</th>
+                        <td mat-cell *matCellDef="let transaction">
+                            <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
+                                {{transaction.transactionId}}
+                            </span>
+                        </td>
+                    </ng-container>
+        
+                    <!-- Date (Closed Deal) -->
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Month</th>
+                        <td mat-cell *matCellDef="let transaction">
+                            <span class="pr-6 whitespace-nowrap">
+                                {{transaction.date | date:'MMM dd, y'}}
+                            </span>
+                        </td>
+                    </ng-container>
+        
+                    <!-- Name (Profit) -->
+                    <ng-container matColumnDef="profit_count">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Total Closed Deals </th>
+                        <td mat-cell *matCellDef="let transaction">
+                            <span class="pr-6 whitespace-nowrap">
+                                {{transaction.profit_count}}
+                            </span>
+                        </td>
+                    </ng-container>
+        
+                    <!-- Amount (Total Amount) -->
+                    <ng-container matColumnDef="amount">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Total Amount</th>
+                        <td mat-cell *matCellDef="let transaction">
+                            <span class="pr-6 font-medium whitespace-nowrap">
+                                {{transaction.amount | currency:'USD'}}
+                            </span>
+                        </td>
+                    </ng-container>
+        
+                    <!-- Status -->
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Status</th>
+                        <td mat-cell *matCellDef="let transaction">
+                            <span class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                                [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': transaction.status === 'pending',
+                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': transaction.status === 'completed'}">
+                                <span class="leading-relaxed whitespace-nowrap">{{transaction.status}}</span>
+                            </span>
+                        </td>
+                    </ng-container>
+        
+                    <!-- Footer -->
+                    <ng-container matColumnDef="recentOrdersTableFooter">
+                        <td class="py-6 px-0 border-0" mat-footer-cell *matFooterCellDef colspan="6">
+                            <button mat-stroked-button (click)="toggleExpanded()">
+                                {{isExpanded ? 'Show First 6 Months' : 'See All Deals'}}
+                            </button>
+                        </td>
+                    </ng-container>
+        
+                    <tr mat-header-row *matHeaderRowDef="recentTransactionsTableColumns"></tr>
+                    <tr class="order-row h-16" mat-row *matRowDef="let row; columns: recentTransactionsTableColumns;"></tr>
+                    <tr class="h-16 border-0" mat-footer-row *matFooterRowDef="['recentOrdersTableFooter']"></tr>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Section title -->
+        <div class="w-full mt-12">
+            <div class="text-2xl font-semibold tracking-tight leading-6">Financal Goal Progress</div>
+            <div class="font-medium tracking-tight text-secondary">Progress Insights of your Deals
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full mt-6 md:mt-8">
+            <!-- New vs. Returning -->
+            <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden p-6">
+                <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Goal</div>
+                    <div class="ml-2">
+                        <button
+                            class="h-6 min-h-6 px-2 rounded-full bg-hover"
+                            mat-button
+                            [matMenuTriggerFor]="conversionMenu">
+                            <span class="font-medium text-sm text-secondary">30 days</span>
+                        </button>
+                        <mat-menu #conversionMenu="matMenu">
+                            <button mat-menu-item>30 days</button>
+                            <button mat-menu-item>3 months</button>
+                            <button mat-menu-item>9 months</button>
+                        </mat-menu>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-auto mt-6 h-44">
+                    <apx-chart
+                        class="flex flex-auto items-center justify-center w-full h-full"
+                        [chart]="chartNewVsReturning.chart"
+                        [colors]="chartNewVsReturning.colors"
+                        [labels]="chartNewVsReturning.labels"
+                        [plotOptions]="chartNewVsReturning.plotOptions"
+                        [series]="chartNewVsReturning.series"
+                        [states]="chartNewVsReturning.states"
+                        [tooltip]="chartNewVsReturning.tooltip"></apx-chart>
+                </div>
+                <div class="mt-8">
+                    <div class="-my-3 divide-y">
+                        <ng-container *ngFor="let dataset of data.newVsReturning.series; let i = index">
+                            <div class="grid grid-cols-3 py-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex-0 w-2 h-2 rounded-full"
+                                        [style.backgroundColor]="chartNewVsReturning.colors[i]"></div>
+                                    <div class="ml-3 truncate">{{data.newVsReturning.labels[i]}}</div>
+                                </div>
+                                <div class="font-medium text-right">{{data.newVsReturning.uniqueVisitors * dataset / 100 | number:'1.0-0'}}</div>
+                                <div class="text-right text-secondary">{{dataset}}%</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <!-- Gender -->
+            <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden p-6">
+                <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Current Total</div>
+                    <div class="ml-2">
+                        <button
+                            class="h-6 min-h-6 px-2 rounded-full bg-hover"
+                            mat-button
+                            [matMenuTriggerFor]="conversionMenu">
+                            <span class="font-medium text-sm text-secondary">30 days</span>
+                        </button>
+                        <mat-menu #conversionMenu="matMenu">
+                            <button mat-menu-item>30 days</button>
+                            <button mat-menu-item>3 months</button>
+                            <button mat-menu-item>9 months</button>
+                        </mat-menu>
+                    </div>  
+                </div>           
+                <div class="flex flex-col flex-auto mt-6 h-44">
+                    <apx-chart
+                        class="flex flex-auto items-center justify-center w-full h-full"
+                        [chart]="chartGender.chart"
+                        [colors]="chartGender.colors"
+                        [labels]="chartGender.labels"
+                        [plotOptions]="chartGender.plotOptions"
+                        [series]="chartGender.series"
+                        [states]="chartGender.states"
+                        [tooltip]="chartGender.tooltip"></apx-chart>
+                </div>
+                <div class="mt-8">
+                    <div class="-my-3 divide-y">
+                        <ng-container *ngFor="let dataset of data.gender.series; let i = index">
+                            <div class="grid grid-cols-3 py-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex-0 w-2 h-2 rounded-full"
+                                        [style.backgroundColor]="chartGender.colors[i]"></div>
+                                    <div class="ml-3 truncate">{{data.gender.labels[i]}}</div>
+                                </div>
+                                <div class="font-medium text-right">{{data.gender.uniqueVisitors * dataset / 100 | number:'1.0-0'}}</div>
+                                <div class="text-right text-secondary">{{dataset}}%</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <!-- Age -->
+          
+            <!-- Language -->
+            <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden p-6">
+                <div class="flex items-start justify-between">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Needed</div>
+                   
+                </div>
+                <div class="flex flex-col flex-auto mt-6 h-44">
+                    <apx-chart
+                        class="flex flex-auto items-center justify-center w-full h-full"
+                        [chart]="chartLanguage.chart"
+                        [colors]="chartLanguage.colors"
+                        [labels]="chartLanguage.labels"
+                        [plotOptions]="chartLanguage.plotOptions"
+                        [series]="chartLanguage.series"
+                        [states]="chartLanguage.states"
+                        [tooltip]="chartLanguage.tooltip"></apx-chart>
+                </div>
+                <div class="mt-8">
+                    <div class="-my-3 divide-y">
+                        <ng-container *ngFor="let dataset of data.language.series; let i = index">
+                            <div class="grid grid-cols-3 py-3">
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex-0 w-2 h-2 rounded-full"
+                                        [style.backgroundColor]="chartLanguage.colors[i]"></div>
+                                    <div class="ml-3 truncate">{{data.language.labels[i]}}</div>
+                                </div>
+                                <div class="font-medium text-right">{{data.language.uniqueVisitors * dataset / 100 | number:'1.0-0'}}</div>
+                                <div class="text-right text-secondary">{{dataset}}%</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

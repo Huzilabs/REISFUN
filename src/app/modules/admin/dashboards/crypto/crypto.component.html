@@ -1,0 +1,408 @@
+<div class="w-full shadow-lg bg-white" *ngIf="!loading && !error && propertyDetails">
+    <div class="flex flex-col shadow-lg bg-white">
+        <!-- Header Section -->
+        <div class="flex flex-wrap justify-between p-4">
+            <!-- Header -->
+            <div class="w-full sm:w-auto mb-4 sm:mb-0">
+                <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-3xl font-semibold tracking-wide leading-tight text-gray-800 whitespace-nowrap" style="font-family: sans-serif;">
+                    <span *ngIf="!editMode">{{propertyDetails.title || 'Property Details'}}</span>
+                    <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['title']" class="border border-gray-300 rounded p-2 w-full text-base w-full">
+                </h1>  
+            </div>     
+        
+            <!-- Action Icons and Button -->
+            <div class="flex flex-wrap gap-6 mr-2 items-center w-full sm:w-auto justify-start sm:justify-end">
+                <!-- Save/Cancel/Edit Icons -->
+                <div class="flex-shrink-0" *ngIf="editMode">
+                    <mat-icon svgIcon="heroicons_solid:save" class="text-xl sm:text-2xl md:text-3xl lg:text-4xl cursor-pointer" (click)="saveChanges()"></mat-icon>
+                </div>
+                <div class="flex-shrink-0" *ngIf="editMode">
+                    <mat-icon svgIcon="heroicons_solid:x" class="text-xl sm:text-2xl md:text-3xl lg:text-4xl cursor-pointer" (click)="cancelChanges()"></mat-icon>
+                </div>
+                <div class="flex-shrink-0" *ngIf="!editMode">
+                    <mat-icon svgIcon="heroicons_solid:pencil" class="text-xl sm:text-2xl md:text-3xl lg:text-4xl cursor-pointer" (click)="toggleEditMode()"></mat-icon>
+                </div>
+        
+                <!-- Trash Icon -->
+                <div class="flex-shrink-0" *ngIf="!editMode">
+                    <mat-icon svgIcon="heroicons_solid:trash" class="text-xl sm:text-2xl md:text-3xl lg:text-4xl cursor-pointer" (click)="deleteProperty()"></mat-icon>
+                </div>
+        
+                <!-- Close Deal Button -->
+                <div class="flex-shrink-0" *ngIf="!editMode">
+                    <button class="bg-green-500 p-2 sm:p-3 rounded-full flex items-center justify-center gap-2 text-white w-auto" (click)="openCloseDealModal()">
+                        <mat-icon svgIcon="heroicons_solid:shield-check" class="text-white text-sm sm:text-base md:text-lg lg:text-xl"></mat-icon>
+                        <span class="hidden sm:inline">Close Deal</span>
+                    </button>
+                </div>  
+            </div>
+        </div>
+        <div class="border-t-2 border-[#454545] w-full"></div>
+        
+        <!-- Status Buttons Section -->
+        <div class="btns-div flex flex-wrap gap-4 justify-center sm:justify-start p-4" *ngIf="!editMode">
+            <!-- Pre Marketing Button -->
+            <button 
+              class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+              [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'Pre Marketing'}"
+              (click)="updateStatus('Pre Marketing')">
+              Pre Marketing
+            </button>  
+          
+            <!-- Waiting for Response Button -->
+            <button 
+              class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+              [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'Waiting for Response'}"
+              (click)="updateStatus('Waiting for Response')">
+              Waiting for Response
+            </button>
+          
+            <!-- Waiting for Interest Button -->
+            <button 
+              class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+              [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'Waiting for Interest'}"
+              (click)="updateStatus('Waiting for Interest')">
+              Waiting for Interest
+            </button>
+          
+            <!-- Interested Buyers Button -->
+            <button 
+              class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+              [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'Interested Buyers'}"
+              (click)="updateStatus('Interested Buyers')">
+              Interested Buyers
+            </button>
+          
+            <!-- Walkthrough Schedule Button -->
+            <button 
+              class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+              [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'Walkthrough Schedule'}"
+              (click)="updateStatus('Walkthrough Schedule')">
+              Walkthrough Schedule
+            </button>
+          
+            <!-- Walkthrough Finished Button -->
+            <button 
+              class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+              [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'Walkthrough Finished'}"
+              (click)="updateStatus('Walkthrough Finished')">
+              Walkthrough Finished
+            </button>
+          
+            <!-- Cancel Button -->
+            <button 
+              class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+              [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'Cancel'}"
+              (click)="updateStatus('Cancel')">
+              Cancel
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Content Form -->
+    <form [formGroup]="propertyForm" *ngIf="propertyForm">
+        <div class="flex flex-col md:flex-row shadow-lg bg-white p-4 gap-4 rounded-lg">
+            <!-- Image Container -->
+            <div class="w-full md:w-3/5">
+                <div class="relative w-full h-120 rounded-lg overflow-hidden">
+                    <!-- Property Image -->
+                    <img *ngIf="propertyDetails?.attachments?.length" 
+                        [src]="propertyDetails?.attachments[0]?.file_url" 
+                        alt="Property Image" 
+                        class="w-full h-full object-cover absolute inset-0 transition-transform duration-300 hover:scale-105">
+                    
+                    <!-- Status Badge -->
+                    <div class="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-xs md:text-sm font-medium z-10">
+                        {{ propertyDetails?.status }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Details Container -->
+            <div class="w-full md:w-2/5 flex flex-col justify-between h-120 overflow-auto">
+                <!-- Property details content -->
+                <div class="bg-white border border-[#454545] p-4">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-gray-800 rounded-md p-1 mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg md:text-xl font-bold">Land Information</h3>
+                        <div class="ml-auto">
+                            <div class="bg-blue-100 px-4 py-2 rounded-md">
+                                <a [href]="propertyDetails?.zillow" target="_blank" class="text-blue-600 font-medium flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                                        <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V9L14 3H6z"></path>
+                                        <path d="M14 3v6h6"></path>
+                                    </svg>
+                                    Zillow
+                                </a>
+                            </div>  
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <span class="text-gray-500">Property Type:</span>
+                        <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.property_type || 'Single House' }}</span>
+                        <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['property_type']" class="border border-gray-300 rounded p-1 ml-2 w-40">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="border rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-2xl font-bold">
+                                    <span *ngIf="!editMode">{{ propertyDetails?.bedrooms || '0' }}</span>
+                                    <input *ngIf="editMode" type="number" [formControl]="propertyForm.controls['bedrooms']" class="border border-gray-300 rounded p-1 w-16">
+                                </div>
+                                <div class="text-gray-500 text-sm">Bed Rooms</div>
+                            </div>
+                            <div class="bg-red-100 p-2 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 4v16"></path>
+                                    <path d="M2 8h18a2 2 0 0 1 2 2v10"></path>
+                                    <path d="M2 17h20"></path>
+                                    <path d="M6 8v9"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="border rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-2xl font-bold">
+                                    <span *ngIf="!editMode">{{ propertyDetails?.bathrooms || '0' }}</span>
+                                    <input *ngIf="editMode" type="number" [formControl]="propertyForm.controls['bathrooms']" class="border border-gray-300 rounded p-1 w-16">
+                                </div>
+                                <div class="text-gray-500 text-sm">Bath Rooms</div>
+                            </div>
+                            <div class="bg-red-100 p-2 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#e53e3e" viewBox="0 0 24 24">
+                                    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm1 5h-2c-1.1 0-2 .9-2 2v5h1v7h2v-5h1v5h2v-7h1V9c0-1.1-.9-2-2-2z"/>
+                                </svg>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="border rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-2xl font-bold">
+                                    <span *ngIf="!editMode">{{ propertyDetails?.cooling || '0' }}</span>
+                                    <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['cooling']" class="border border-gray-300 rounded p-1 w-16">
+                                </div>
+                                <div class="text-gray-500 text-sm">Heating / Cooling</div>
+                            </div>
+                            <div class="bg-red-100 p-2 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="border rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-2xl font-bold">
+                                    <span *ngIf="!editMode">{{ propertyDetails?.sqft || '0' }}</span>
+                                    <input *ngIf="editMode" type="number" [formControl]="propertyForm.controls['sqft']" class="border border-gray-300 rounded p-1 w-16">
+                                </div>
+                                <div class="text-gray-500 text-sm">Living Area Size</div>
+                            </div>
+                            <div class="bg-red-100 p-2 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="border rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-2xl font-bold">
+                                    <span *ngIf="!editMode">{{ propertyDetails?.lot_size || '0' }}</span>
+                                    <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['lot_size']" class="border border-gray-300 rounded p-1 w-16">
+                                </div>
+                                <div class="text-gray-500 text-sm">Lot Size</div>
+                            </div>
+                            <div class="bg-red-100 p-2 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <div class="border rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <div class="text-2xl font-bold">
+                                    <span *ngIf="!editMode">{{ propertyDetails?.year_built || '0' }}</span>
+                                    <input *ngIf="editMode" type="number" [formControl]="propertyForm.controls['year_built']" class="border border-gray-300 rounded p-1 w-16">
+                                </div>
+                                <div class="text-gray-500 text-sm">Built In</div>
+                            </div>
+                            <div class="bg-red-100 p-2 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white border border-[#454545] p-4">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-gray-800 rounded-md p-1 mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="9" y1="21" x2="9" y2="9"></line>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg md:text-xl font-bold">Property Characteristics</h3>
+                    </div>
+                    
+                    <!-- Property Characteristics Table -->
+                    <div class="divide-y divide-gray-200">
+                        <!-- No. of Units -->
+                        <div class="py-3 flex justify-between">
+                            <span class="text-gray-600">No. of Units</span>
+                            <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.units || '1' }}</span>
+                            <input *ngIf="editMode" type="number" [formControl]="propertyForm.controls['units']" class="border border-gray-300 rounded p-1 w-16">
+                        </div>
+                        
+                        <!-- Basement -->
+                        <div class="py-3 flex justify-between">
+                            <span class="text-gray-600">Basement</span>
+                            <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.basement ? 'Yes' : 'No' }}</span>
+                            <select *ngIf="editMode" [formControl]="propertyForm.controls['basement']" class="border border-gray-300 rounded p-1">
+                                <option [ngValue]="true">Yes</option>
+                                <option [ngValue]="false">No</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Parking Spaces -->
+                        <div class="py-3 flex justify-between">
+                            <span class="text-gray-600">Parking Spaces</span>
+                            <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.parking_spaces || 'N/A' }}</span>
+                            <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['parking_spaces']" class="border border-gray-300 rounded p-1 w-40">
+                        </div>
+                        
+                        <!-- Zoning Type -->
+                        <div class="py-3 flex justify-between">
+                            <span class="text-gray-600">Zoning Type</span>
+                            <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.zoning_type || 'N/A' }}</span>
+                            <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['zoning_type']" class="border border-gray-300 rounded p-1 w-40">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white border border-[#454545] p-4">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-gray-800 rounded-md p-1 mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1v22"></path>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg md:text-xl font-bold">Pricing Information</h3>
+                    </div>
+                    
+                    <div class="divide-y divide-gray-200">
+                        <!-- Price -->
+                        <div class="py-3 flex justify-between">
+                            <span class="text-gray-600">Price</span>
+                            <span *ngIf="!editMode" class="font-bold">{{ formatPrice(propertyDetails?.price) }}</span>
+                            <input *ngIf="editMode" type="number" [formControl]="propertyForm.controls['price']" class="border border-gray-300 rounded p-1 w-32">
+                        </div>
+                        
+                        <!-- Profit -->
+                        <div class="py-3 flex justify-between">
+                            <span class="text-gray-600">Profit</span>
+                            <span *ngIf="!editMode" class="font-bold">{{ formatPrice(propertyDetails?.profit) }}</span>
+                            <input *ngIf="editMode" type="number" [formControl]="propertyForm.controls['profit']" class="border border-gray-300 rounded p-1 w-32">
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="py-3">
+                            <label for="description" class="block text-gray-600 font-medium mb-2">
+                                Description
+                            </label>
+                            <textarea
+                                id="description"
+                                class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
+                                rows="4"
+                                [formControl]="propertyForm.controls['description']"
+                                *ngIf="editMode"
+                            ></textarea>
+                            <p *ngIf="!editMode" class="text-gray-700">{{ propertyDetails?.description || 'No description available' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <!-- Full Property Details Section -->
+   
+</div>
+
+<!-- Loading state -->
+
+
+<!-- Error state -->
+<div *ngIf="error" class="p-4 bg-red-100 text-red-700 rounded-lg">
+    <p>{{ error }}</p>
+</div>
+
+<!-- No property ID state -->
+<div *ngIf="!propertyId && !loading && !error" class="p-4 bg-yellow-100 text-yellow-700 rounded-lg">
+    <p>No property ID specified.</p>
+</div>
+
+<!-- Close Deal Modal -->
+<div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50" *ngIf="showCloseDealModal">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+        <!-- Modal header -->
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold">Close Deal</h3>
+            <button type="button" class="text-gray-400 hover:text-gray-600" (click)="showCloseDealModal = false">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Profit input -->
+        <div class="mb-4">
+            <label for="profit" class="block text-gray-700 font-medium mb-2">Profit Amount (USD)</label>
+            <input
+                type="number"
+                id="profit"
+                [(ngModel)]="profit"
+                class="w-full border border-gray-300 rounded p-2"
+                placeholder="Enter profit amount"
+            />
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex justify-end space-x-2">
+            <button
+                type="button"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                (click)="showCloseDealModal = false"
+            >
+                Cancel
+            </button>
+            <button  
+                type="button"
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                (click)="closeDeal()"
+                [disabled]="loading"
+            >
+                {{ loading ? 'Closing...' : 'Close Deal' }}
+            </button>
+        </div>  
+    </div>
+</div>
