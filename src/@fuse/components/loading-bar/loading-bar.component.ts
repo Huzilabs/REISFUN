@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FuseLoadingBarService } from '@fuse/components/loading-bar/loading-bar.service';
 import { takeUntil } from 'rxjs/operators';
@@ -22,7 +22,10 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy
     /**
      * Constructor
      */
-    constructor(private _fuseLoadingBarService: FuseLoadingBarService)
+    constructor(
+        private _fuseLoadingBarService: FuseLoadingBarService,
+        private cdr: ChangeDetectorRef // Inject ChangeDetectorRef to manually trigger change detection
+    )
     {
     }
 
@@ -55,20 +58,22 @@ export class FuseLoadingBarComponent implements OnChanges, OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((value) => {
                 this.mode = value;
+                this.cdr.detectChanges();  // Manually trigger change detection after mode update
             });
 
         this._fuseLoadingBarService.progress$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((value) => {
                 this.progress = value;
+                this.cdr.detectChanges();  // Manually trigger change detection after progress update
             });
 
         this._fuseLoadingBarService.show$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((value) => {
                 this.show = value;
+                this.cdr.detectChanges();  // Manually trigger change detection after show update
             });
-
     }
 
     /**

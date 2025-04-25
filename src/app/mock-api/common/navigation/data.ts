@@ -83,7 +83,15 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 badge: {
                     title  : '27',
                     classes: 'px-2 bg-pink-600 text-white rounded-full'
-                }
+                },
+               
+            },
+            {
+                id   : 'user-interface.forms.fields',
+                title: 'Add Deal',
+                type : 'basic',
+                icon : 'heroicons_outline:view-list',
+                link : '/ui/forms/fields'
             },
             // {
             //     id   : 'apps.notes',
@@ -709,8 +717,9 @@ export const defaultNavigation: FuseNavigationItem[] = [
     //             icon : 'heroicons_outline:view-list',
     //             link : '/ui/datatable'
     //         },
+   
     //         {
-    //             id      : 'user-interface.forms',
+    //             id      : 'user-interface.forms.fields',
     //             title   : 'Forms',
     //             type    : 'collapsable',
     //             icon    : 'heroicons_outline:pencil-alt',

@@ -34,7 +34,7 @@ const routerConfig: ExtraOptions = {
 
     ],
     imports     : [
-        CommonModule,
+        CommonModule,  
         MatIconModule,
         MatButtonModule,
         MatDialogModule,
@@ -60,6 +60,7 @@ const routerConfig: ExtraOptions = {
         MatDialogModule,
         MatIconModule,  
         MatSortModule,
+        
         // GoogleMapsModule,
         MatTableModule,
         ToastrModule.forRoot({  // Configure toastr globally

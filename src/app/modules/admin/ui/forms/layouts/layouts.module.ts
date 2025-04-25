@@ -35,8 +35,8 @@ export const routes: Route[] = [
         MatRadioModule,
         MatSelectModule,
         SharedModule
-    ]
+    ],
+    providers: []  // Add this line
 })
-export class FormsLayoutsModule
-{
-}
+export class FormsLayoutsModule { }
+  

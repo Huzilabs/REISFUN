@@ -11,7 +11,7 @@ export const project = {
                 'wont-fix'     : 4,
                 're-opened'    : 8,
                 'needs-triage' : 6
-            },
+            },  
             'last-week': {
                 'new-issues'   : 197,
                 'closed-issues': 72,
@@ -248,9 +248,57 @@ export const project = {
             }
         ]
     },
+    recentTransactions: [
+        {
+            id           : '1b6fd296-bc6a-4d45-bf4f-e45519a58cf5',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
+            transactionId: '528651571NT',
+            name         : 'Morgan Page',
+            amount       : +1358.75,
+            status       : 'completed',
+            date         : '2019-10-07T22:22:37.274Z'
+        },
+        {
+            id           : '2dec6074-98bd-4623-9526-6480e4776569',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
+            transactionId: '421436904YT',
+            name         : 'Nita Hebert',
+            amount       : -1042.82,
+            status       : 'completed',
+            date         : '2019-12-18T14:51:24.461Z'
+        },
+        {
+            id           : 'ae7c065f-4197-4021-a799-7a221822ad1d',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
+            transactionId: '685377421YT',
+            name         : 'Marsha Chambers',
+            amount       : +1828.16,
+            status       : 'pending',
+            date         : '2019-12-25T17:52:14.304Z'
+        },
+        {
+            id           : '0c43dd40-74f6-49d5-848a-57a4a45772ab',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
+            transactionId: '884960091RT',
+            name         : 'Charmaine Jackson',
+            amount       : +1647.55,
+            status       : 'completed',
+            date         : '2019-11-29T06:32:16.111Z'
+        },
+        {
+            id           : 'e5c9f0ed-a64c-4bfe-a113-29f80b4e162c',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
+            transactionId: '361402213NT',
+            name         : 'Maura Carey',
+            amount       : -927.43,
+            status       : 'completed',
+            date         : '2019-11-24T12:13:23.064Z'
+        }
+    ],
     teamMembers       : [
         {
             id    : '2bfa2be5-7688-48d5-b5ac-dc0d9ac97f14',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
             avatar: 'assets/images/avatars/female-10.jpg',
             name  : 'Nadia Mcknight',
             email : 'nadiamcknight@mail.com',
@@ -259,6 +307,7 @@ export const project = {
         },
         {
             id    : '77a4383b-b5a5-4943-bc46-04c3431d1566',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
             avatar: 'assets/images/avatars/male-19.jpg',
             name  : 'Best Blackburn',
             email : 'blackburn.best@beadzza.me',
@@ -267,6 +316,7 @@ export const project = {
         },
         {
             id    : '8bb0f597-673a-47ca-8c77-2f83219cb9af',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
             avatar: 'assets/images/avatars/male-14.jpg',
             name  : 'Duncan Carver',
             email : 'duncancarver@mail.info',
@@ -275,6 +325,7 @@ export const project = {
         },
         {
             id    : 'c318e31f-1d74-49c5-8dae-2bc5805e2fdb',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
             avatar: 'assets/images/avatars/male-01.jpg',
             name  : 'Martin Richards',
             email : 'martinrichards@mail.biz',
@@ -283,6 +334,7 @@ export const project = {
         },
         {
             id    : '0a8bc517-631a-4a93-aacc-000fa2e8294c',
+            image:"https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
             avatar: 'assets/images/avatars/female-20.jpg',
             name  : 'Candice Munoz',
             email : 'candicemunoz@mail.co.uk',

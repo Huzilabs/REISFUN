@@ -1568,16 +1568,16 @@ export const analytics = {
         uniqueVisitors: 46085,
         series        : [80, 20],
         labels        : [
-            'New',
-            'Returning'
+            'Goals',
+            'Remaining'
         ]
     },
     gender             : {
         uniqueVisitors: 46085,
         series        : [55, 45],
         labels        : [
-            'Male',
-            'Female'
+            'Current',
+            'remaining'
         ]
     },
     age                : {
@@ -1586,14 +1586,14 @@ export const analytics = {
         labels        : [
             'Under 30',
             'Over 30'
-        ]
+        ]   
     },
     language           : {
         uniqueVisitors: 46085,
-        series        : [25, 75],
+        series        : [75, 25],
         labels        : [
-            'English',
-            'Other'
+            'Needed',
+            'Remaining'
         ]
     }
 };

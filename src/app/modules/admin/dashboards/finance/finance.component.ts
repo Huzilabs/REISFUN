@@ -9,8 +9,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { FinanceService } from './finance.service';
+
+
 interface Property {
-  id: string;
+  id: string;  
   title: string;
   description: string | null;
   status: string;
@@ -275,8 +277,10 @@ export class FinanceComponent implements OnInit, OnDestroy {
   }
 
 
-
+onclickaddDeal(){
+  this.router.navigate(['ui/forms/fields'])
+}
 
   // ADD Details Page
 
-}
+}    
