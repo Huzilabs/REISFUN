@@ -30,8 +30,8 @@ import { Calendar, CalendarDrawerMode, CalendarEvent, CalendarEventEditMode, Cal
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation  : ViewEncapsulation.None
 })
-export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy
-{
+export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
+    
     @ViewChild('eventPanel') private _eventPanel: TemplateRef<any>;
     @ViewChild('fullCalendar') private _fullCalendar: FullCalendarComponent;
     @ViewChild('drawer') private _drawer: MatDrawer;

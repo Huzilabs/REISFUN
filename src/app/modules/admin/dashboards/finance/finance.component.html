@@ -47,9 +47,10 @@
             </mat-select>
           </mat-form-field>
         </div>  
-        <button (click)="onclickaddDeal()">
+        <button (click)="onclickaddDeal()" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
           Add Deal
         </button>
+        
       </div>
     </div>
   </div>
@@ -67,14 +68,14 @@
   </div>
 
   <!-- Property grid -->
-  <div *ngIf="!isLoading && paginatedProperties.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+  <div *ngIf="!isLoading && paginatedProperties.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
     <div 
   *ngFor="let property of paginatedProperties; trackBy: trackByFn" 
   class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-200 cursor-pointer p-2 border border-gray-200"
   (click)="onPropertyClick(property)">
   <!-- Full title without line clamping -->
   <h3 class="text-base font-semibold text-gray-800 break-words h-14">{{ property.title }}</h3>
-
+  
   <!-- Property image -->
   <div class="h-48 overflow-hidden">
     <img 

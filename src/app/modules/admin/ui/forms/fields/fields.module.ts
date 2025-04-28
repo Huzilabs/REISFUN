@@ -13,6 +13,7 @@ import { FormsFieldsComponent } from 'app/modules/admin/ui/forms/fields/fields.c
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { Toast, ToastrModule } from 'ngx-toastr';
 
 const routes: Route[] = [
   {
@@ -36,7 +37,8 @@ const routes: Route[] = [
     SharedModule,
     CommonModule,
     ReactiveFormsModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    ToastrModule
 
   ],
   exports: [FormsFieldsComponent]

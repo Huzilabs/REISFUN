@@ -15,10 +15,10 @@
         "prefix": "app",
         "architect": {
           "build": {
-            "builder": "@angular-builders/custom-webpack:browser",  // Change this line
+            "builder": "@angular-builders/custom-webpack:browser", 
             "options": {
               "customWebpackConfig": {
-                "path": "./webpack.config.js"  // Path to your webpack config
+                "path": "./webpack.config.js"  
               },
               "outputPath": "dist/fuse",
               "index": "src/index.html",
@@ -54,7 +54,9 @@
                 "src/styles/vendors.scss",
                 "src/@fuse/styles/main.scss",
                 "src/styles/styles.scss",
-                "src/styles/tailwind.scss"
+                "src/styles/tailwind.scss",
+                "node_modules/ngx-toastr/toastr.css"
+
               ],
               "scripts": []
             },

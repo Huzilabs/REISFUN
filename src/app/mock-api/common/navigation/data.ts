@@ -31,6 +31,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : '/dashboards/deals'
             },
             // {
+            //     id   : 'dashboards.adddeals',
+            //     title: 'Add Deal',
+            //     type : 'basic',
+            //     icon : 'heroicons_outline:view-list',
+            //     link : '/dashboards/adddeals'
+            // }
+            // {
             //     id   : 'dashboards.propertydetails',
             //     title: 'PropertyDetails',
             //     type : 'basic',
@@ -86,13 +93,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 },
                
             },
-            {
-                id   : 'user-interface.forms.fields',
-                title: 'Add Deal',
-                type : 'basic',
-                icon : 'heroicons_outline:view-list',
-                link : '/ui/forms/fields'
-            },
+         
             // {
             //     id   : 'apps.notes',
             //     title: 'Notes',

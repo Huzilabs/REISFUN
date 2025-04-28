@@ -274,11 +274,11 @@ export class FinanceComponent implements OnInit, OnDestroy {
    */
   trackByFn(index: number, item: any): any {
     return item.id || index;
-  }
+  }  
 
 
 onclickaddDeal(){
-  this.router.navigate(['ui/forms/fields'])
+  this.router.navigate(['dashboards/adddeals'])
 }
 
   // ADD Details Page

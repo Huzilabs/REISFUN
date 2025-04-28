@@ -42,6 +42,8 @@ export class FormsFieldsComponent implements AfterViewInit {
     private toastr: ToastrService,
     private ngZone: NgZone
   ) {
+    console.log(this.toastr); 
+
     this.fetchAgents();
     this.propertyForm = this.fb.group({
       title: ['', Validators.required],
@@ -68,51 +70,42 @@ export class FormsFieldsComponent implements AfterViewInit {
       inspection_period_end_date: ['']
     });
   }
-
+  
   ngAfterViewInit() {
     if (typeof google === 'undefined' || !google.maps) {
       console.error('Google Maps API NOT loaded!');
       return;
     }
-
-    this.map = new google.maps.Map(this.mapElement.nativeElement, {
-      center: { lat: 37.7749, lng: -122.4194 },
-      zoom: 16,
-    });
-
-    this.marker = new google.maps.Marker({
-      position: this.map.getCenter(),
-      map: this.map,
-      draggable: true,
-    });
-
-    setTimeout(() => {
-      if (!this.searchBoxElement || !this.searchBoxElement.nativeElement) {
-        console.error('Search Box Element is not found!');
+  
+    // Check if the search box element is available
+    if (!this.searchBoxElement || !this.searchBoxElement.nativeElement) {
+      console.error('Search Box Element is not found!');
+      return;
+    }
+  
+    // Initialize the Google Places Autocomplete for the search box element
+    const autocomplete = new google.maps.places.Autocomplete(this.searchBoxElement.nativeElement);
+  
+    // Add an event listener for when a place is selected from the autocomplete suggestions
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+  
+      // If no geometry or location is found for the selected place, log an error
+      if (!place.geometry || !place.geometry.location) {
+        console.error('No geometry found for place');
         return;
       }
-
-      const autocomplete = new google.maps.places.Autocomplete(this.searchBoxElement.nativeElement);
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        if (!place.geometry || !place.geometry.location) {
-          console.error('No geometry found for place');
-          return;
-        }
-
-        this.map.setCenter(place.geometry.location);
-        this.map.setZoom(18);
-        this.marker.setPosition(place.geometry.location);
-
-        this.propertyForm.patchValue({
-          address: place.formatted_address,
-        });
-
-        this.onSearch();
+  
+      // Update the form with the selected address
+      this.propertyForm.patchValue({
+        address: place.formatted_address,
       });
-    }, 500);
+  
+      // You can add any additional code you want to run after the address is selected
+      this.onSearch();
+    });
   }
-
+  
   navigatetoPreviousPage() {
     this.location.back();
   }
@@ -197,9 +190,11 @@ export class FormsFieldsComponent implements AfterViewInit {
       this.fileType = file.type.split('/')[1] || 'unknown';
   
       this.toastr.success('Image Uploaded Successfully');
+
     } catch (error) {
       console.error('Error uploading image:', error);
       this.toastr.error('Error uploading image');
+
     } finally {
       this.isUploading = false;
     }
@@ -233,6 +228,7 @@ export class FormsFieldsComponent implements AfterViewInit {
       }
 
       this.toastr.error('Please fill in all required fields');
+
       return;
     }
 

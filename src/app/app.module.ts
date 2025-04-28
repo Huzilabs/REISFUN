@@ -40,7 +40,6 @@ const routerConfig: ExtraOptions = {
         MatDialogModule,
         ReactiveFormsModule,
         BrowserModule,
-        BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, routerConfig),
 
         // Fuse, FuseConfig & FuseMockAPI
@@ -63,12 +62,14 @@ const routerConfig: ExtraOptions = {
         
         // GoogleMapsModule,
         MatTableModule,
-        ToastrModule.forRoot({  // Configure toastr globally
-            positionClass: 'toast-top-right',  // Adjust position
-            timeOut: 3000,                    // Adjust timeout
-            preventDuplicates: true,          // Prevent duplicate toasts
-            closeButton: true,                // Show close button
-            progressBar: true                 // Show progress bar
+        BrowserAnimationsModule,
+        ToastrModule.forRoot({  
+            positionClass: 'toast-top-right',  
+            timeOut: 3000,                    
+            preventDuplicates: true,          
+            closeButton: true,                
+            progressBar: true,
+            maxOpened:5,              
           }),
     ],
     bootstrap   : [
