@@ -14,7 +14,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Dashboard',   
                 type : 'basic',
                 icon : 'heroicons_outline:clipboard-check',
-                link : '/dashboards/dashboard'
+                link : '/dashboards/dashboard'  
             },
             {
                 id   : 'dashboards.reporting',
@@ -29,7 +29,35 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type : 'basic',
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/deals'
+            },  
+            {
+                id   : 'dashboards.closedeals',
+                title: 'Close Deals',
+                type : 'basic',
+                icon : 'heroicons_outline:lock-closed',
+                link : '/ui/closedeals'
             },
+            {
+                id   : 'apps.chat',
+                title: 'Chat',
+                type : 'basic',
+                icon : 'heroicons_outline:chat-alt',
+                link : '/apps/chat'
+            },
+            // {
+            //     id   : 'apps.contacts',
+            //     title: 'Contacts',
+            //     type : 'basic',
+            //     icon : 'heroicons_outline:user-group',
+            //     link : '/apps/contacts'
+            // },  
+            {
+                id   : 'apps.tasks',
+                title: 'Calendar',
+                type : 'basic',
+                icon : 'heroicons_outline:check-circle',
+                link : '/apps/calendarr'
+            }
             // {
             //     id   : 'dashboards.adddeals',
             //     title: 'Add Deal',
@@ -48,75 +76,56 @@ export const defaultNavigation: FuseNavigationItem[] = [
             
         ]
     },
-    {
-        id      : 'apps',
-        title   : 'Tasks',
-        subtitle: 'Custom made application designs',
-        type    : 'group',
-        icon    : 'heroicons_outline:home',
-        children: [
+    // {
+    //     id      : 'apps',
+    //     title   : 'Tasks',
+    //     subtitle: 'Custom made application designs',
+    //     type    : 'group',
+    //     icon    : 'heroicons_outline:home',
+    //     children: [
             
-            {
-                id      : 'apps.calendar',
-                title   : 'Calendar',
-                subtitle: '3 upcoming events',
-                type    : 'basic',
-                icon    : 'heroicons_outline:calendar',
-                link    : '/apps/calendar'
-            },
-            {
-                id   : 'apps.chat',
-                title: 'Chat',
-                type : 'basic',
-                icon : 'heroicons_outline:chat-alt',
-                link : '/apps/chat'
-            },
-            {
-                id   : 'apps.contacts',
-                title: 'Contacts',
-                type : 'basic',
-                icon : 'heroicons_outline:user-group',
-                link : '/apps/contacts'
-            },
+    //         // {
+    //         //     id      : 'apps.calendar',
+    //         //     title   : 'Calendar',
+    //         //     subtitle: '3 upcoming events',
+    //         //     type    : 'basic',
+    //         //     icon    : 'heroicons_outline:calendar',
+    //         //     link    : '/apps/calendar'
+    //         // },
+           
            
             
            
-            {
-                id   : 'apps.mailbox',
-                title: 'Mailbox',
-                type : 'basic',
-                icon : 'heroicons_outline:mail',
-                link : '/apps/mailbox',
-                badge: {
-                    title  : '27',
-                    classes: 'px-2 bg-pink-600 text-white rounded-full'
-                },
+    //         // {
+    //         //     id   : 'apps.mailbox',
+    //         //     title: 'Mailbox',
+    //         //     type : 'basic',
+    //         //     icon : 'heroicons_outline:mail',
+    //         //     link : '/apps/mailbox',
+    //         //     badge: {
+    //         //         title  : '27',
+    //         //         classes: 'px-2 bg-pink-600 text-white rounded-full'
+    //         //     },
                
-            },
+    //         // },
          
-            // {
-            //     id   : 'apps.notes',
-            //     title: 'Notes',
-            //     type : 'basic',
-            //     icon : 'heroicons_outline:pencil-alt',
-            //     link : '/apps/notes'
-            // },
-            // {
-            //     id   : 'apps.scrumboard',
-            //     title: 'Scrumboard',
-            //     type : 'basic',
-            //     icon : 'heroicons_outline:view-boards',
-            //     link : '/apps/scrumboard'
-            // },
-            // {
-            //     id   : 'apps.tasks',
-            //     title: 'Tasks',
-            //     type : 'basic',
-            //     icon : 'heroicons_outline:check-circle',
-            //     link : '/apps/tasks'
-            // }
-        ]
-    },
+    //         // {
+    //         //     id   : 'apps.notes',
+    //         //     title: 'Notes',
+    //         //     type : 'basic',
+    //         //     icon : 'heroicons_outline:pencil-alt',
+    //         //     link : '/apps/notes'
+    //         // },
+    //         // {
+    //         //     id   : 'apps.scrumboard',
+    //         //     title: 'Scrumboard',
+    //         //     type : 'basic',
+    //         //     icon : 'heroicons_outline:view-boards',
+    //         //     link : '/apps/scrumboard'
+    //         // },
+           
+    //     ]
+    // },
     // {
     //     id      : 'pages',
     //     title   : 'Pages',

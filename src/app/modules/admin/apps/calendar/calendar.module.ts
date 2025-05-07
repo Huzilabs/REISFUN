@@ -16,7 +16,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FullCalendarModule } from '@fullcalendar/angular';
 import { FuseDateRangeModule } from '@fuse/components/date-range';
 import { SharedModule } from 'app/shared/shared.module';
 import { CalendarComponent } from 'app/modules/admin/apps/calendar/calendar.component';
@@ -24,6 +23,7 @@ import { CalendarRecurrenceComponent } from 'app/modules/admin/apps/calendar/rec
 import { CalendarSettingsComponent } from 'app/modules/admin/apps/calendar/settings/settings.component';
 import { CalendarSidebarComponent } from 'app/modules/admin/apps/calendar/sidebar/sidebar.component';
 import { calendarRoutes } from 'app/modules/admin/apps/calendar/calendar.routing';
+import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 
 @NgModule({
     declarations: [
@@ -49,9 +49,10 @@ import { calendarRoutes } from 'app/modules/admin/apps/calendar/calendar.routing
         MatSelectModule,
         MatSidenavModule,
         MatTooltipModule,
-        FullCalendarModule,
         FuseDateRangeModule,
-        SharedModule
+        SharedModule,
+        FullCalendarModule,
+
     ],
     providers   : [
         {

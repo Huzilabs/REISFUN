@@ -1,12 +1,12 @@
-<div class="flex flex-col w-full">
+<div class="flex flex-col w-full dark:bg-gray-800  ">
     <div class="w-full">
-        <div class="w-full shadow-lg bg-white" *ngIf="!loading && !error && propertyDetails">
-            <div class="flex flex-col shadow-lg bg-white">
+        <div class="w-full shadow-lg bg-white " *ngIf="!loading && !error && propertyDetails">
+            <div class="flex flex-col shadow-lg bg-white dark:bg-gray-800 dark:text-white">
                 <!-- Header Section -->
-                <div class="flex flex-wrap justify-between p-4">
+                <div class="flex flex-wrap justify-between p-4 dark:bg-[#0f172a]">
                     <!-- Header -->
-                    <div class="w-full sm:w-auto mb-4 sm:mb-0">
-                        <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-3xl font-semibold tracking-wide leading-tight text-gray-800 whitespace-nowrap" style="font-family: sans-serif;">
+                    <div class="w-full sm:w-auto mb-4 sm:mb-0   dark:text-white">
+                        <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-3xl font-semibold tracking-wide leading-tight text-gray-800 whitespace-nowrap dark:text-white" style="font-family: sans-serif;">
                             <span *ngIf="!editMode">{{propertyDetails.title || 'Property Details'}}</span>
                             <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['title']" class="border border-gray-300 rounded p-2 w-full text-base w-full">
                         </h1>  
@@ -117,8 +117,8 @@
             </div>
             
             <!-- Main Content Form -->
-            <form [formGroup]="propertyForm" *ngIf="propertyForm">
-                <div class="flex flex-col md:flex-row shadow-lg bg-white p-4 gap-4 rounded-lg">
+            <form [formGroup]="propertyForm" *ngIf="propertyForm"  >
+                <div class="flex flex-col md:flex-row shadow-lg bg-white p-4 gap-4 rounded-lg dark:bg-gray-800">
                     <!-- Image Container -->
                     <div class="w-full md:w-3/5">
                         <div class="relative w-full h-120 rounded-lg overflow-hidden">
@@ -136,9 +136,9 @@
                     </div>
                     
                     <!-- Details Container -->
-                    <div class="w-full md:w-2/5 flex flex-col justify-between h-120 overflow-auto">
+                    <div class="w-full md:w-2/5 flex flex-col justify-between h-120 overflow-auto ">
                         <!-- Property details content -->
-                        <div class="bg-white border border-[#454545] p-4">
+                        <div class="bg-white border border-[#454545] p-4 dark:bg-gray-800">
                             <div class="flex items-center mb-4">
                                 <div class="bg-gray-800 rounded-md p-1 mr-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -268,30 +268,30 @@
                             </div>
                         </div>
                         
-                        <div class="bg-white border border-[#454545] p-4">
+                        <div class="bg-white border border-[#454545] p-4 dark:bg-gray-800">
                             <div class="flex items-center mb-4">
-                                <div class="bg-gray-800 rounded-md p-1 mr-2">
+                                <div class="bg-gray-800 rounded-md p-1 mr-2 ">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                         <line x1="3" y1="9" x2="21" y2="9"></line>
                                         <line x1="9" y1="21" x2="9" y2="9"></line>
                                     </svg>
                                 </div>
-                                <h3 class="text-lg md:text-xl font-bold">Property Characteristics</h3>
+                                <h3 class="text-lg md:text-xl font-bold dark:text-white">Property Characteristics</h3>
                             </div>
                             
                             <!-- Property Characteristics Table -->
                             <div class="divide-y divide-gray-200">
                                 <!-- No. of Units -->
                                 <div class="py-3 flex justify-between">
-                                    <span class="text-gray-600">No. of Units</span>
+                                    <span class="text-gray-600 dark:text-white">No. of Units</span>
                                     <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.units || '1' }}</span>
                                     <input *ngIf="editMode" type="number" [formControl]="propertyForm.controls['units']" class="border border-gray-300 rounded p-1 w-16">
                                 </div>
                                 
                                 <!-- Basement -->
                                 <div class="py-3 flex justify-between">
-                                    <span class="text-gray-600">Basement</span>
+                                    <span class="text-gray-600 dark:text-white">Basement</span>
                                     <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.basement ? 'Yes' : 'No' }}</span>
                                     <select *ngIf="editMode" [formControl]="propertyForm.controls['basement']" class="border border-gray-300 rounded p-1">
                                         <option [ngValue]="true">Yes</option>
@@ -301,21 +301,21 @@
                                 
                                 <!-- Parking Spaces -->
                                 <div class="py-3 flex justify-between">
-                                    <span class="text-gray-600">Parking Spaces</span>
+                                    <span class="text-gray-600 dark:text-white">Parking Spaces</span>
                                     <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.parking_spaces || 'N/A' }}</span>
                                     <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['parking_spaces']" class="border border-gray-300 rounded p-1 w-40">
                                 </div>
                                 
                                 <!-- Zoning Type -->
                                 <div class="py-3 flex justify-between">
-                                    <span class="text-gray-600">Zoning Type</span>
+                                    <span class="text-gray-600 dark:text-white">Zoning Type</span>
                                     <span *ngIf="!editMode" class="font-medium">{{ propertyDetails?.zoning_type || 'N/A' }}</span>
                                     <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['zoning_type']" class="border border-gray-300 rounded p-1 w-40">
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="bg-white border border-[#454545] p-4">
+                        <div class="bg-white border border-[#454545] p-4 dark:bg-gray-800">
                             <div class="flex items-center mb-4">
                                 <div class="bg-gray-800 rounded-md p-1 mr-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -427,7 +427,9 @@
           
     </div>       
     <!-- Google Details  -->
-    <div class="w-full flex flex-col md:flex-row overflow-hidden mb-6 mt-6 p-4 bg-white">
+      
+    <div class="w-full flex flex-col md:flex-row overflow-hidden mb-6 mt-6 p-4 bg-white dark:bg-gray-800">
+     
         <!-- Map Section (70% width on desktop, full width on mobile) -->
         <div class="w-full md:w-8/12 h-120 md:h-[600px] mb-4 md:mb-0">
           <div class="p-2">
@@ -443,20 +445,20 @@
         </div>
       
         <!-- Property Listings Section (30% width on desktop, full width on mobile) -->
-        <div class="w-full md:w-4/12 flex flex-col bg-white md:pl-4">
+        <div class="w-full md:w-4/12 flex flex-col bg-white md:pl-4 dark:bg-gray-800">
           <!-- CTA Button -->
-          <div class="p-2 bg-white border-b">
+          <div class="p-2 bg-white border-b dark:bg-gray-800">
             <button (click)="onclickaddDeal()" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
               Log a Past Deal
             </button>
           </div>
       
           <!-- Scrollable property listings -->
-          <div class="overflow-y-auto max-h-120 md:h-[600px]">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4 p-2" >
+          <div class="overflow-y-auto max-h-120 md:h-[600px] ">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4 p-2 " >
               <div 
                 *ngFor="let property of paginatedProperties; trackBy: trackByFn" 
-                class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-200 cursor-pointer border"
+                class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white dark:bg-black hover:shadow-xl transition-shadow duration-200 cursor-pointer border"
                 (click)="searchProperty(property.title)" >
                 <!-- Property image -->
                 <div class="h-40 overflow-hidden">
@@ -469,7 +471,7 @@
                 
                 <!-- Property title -->
                 <div class="p-2">
-                  <h3 class="text-base font-semibold text-gray-800">{{ property.title }}</h3>
+                  <h3 class="text-base font-semibold text-gray-800 dark:text-white">{{ property.title }}</h3>
                 </div>
                 
                 <!-- Property info -->

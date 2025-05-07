@@ -12,7 +12,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import momentPlugin from '@fullcalendar/moment';
 import rrulePlugin from '@fullcalendar/rrule';
-import timeGridPlugin from '@fullcalendar/timegrid';
+import timeGridPlugin from '@fullcalendar/timegrid';  
 import { clone, cloneDeep, isEqual, omit } from 'lodash-es';
 import * as moment from 'moment';
 import { RRule } from 'rrule';
@@ -606,7 +606,6 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
     onCalendarUpdated(calendar): void
     {
         // Re-render the events
-        this._fullCalendarApi.rerenderEvents();
     }
 
     /**

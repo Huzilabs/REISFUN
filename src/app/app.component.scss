@@ -3,4 +3,22 @@
     flex: 1 1 auto;
     width: 100%;
     height: 100%;
+    scrollbar-width: thin;  /* Makes the scrollbar thinner */
+    scrollbar-color: transparent transparent; 
+}  
+
+
+/* For Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 0px !important;  /* Hides the scrollbar */
+    height: 0px !important; /* Hides horizontal scrollbar */
+  }
+  :host ::ng-deep   .fc-day-grid-event {
+    // border: 2px solid black !important;
+    min-height: 50px !important;
+    // height: 200px !important;
+  }
+  :host ::ng-deep   .fc-time {
+display: none !important;  
 }
+

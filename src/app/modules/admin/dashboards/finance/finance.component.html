@@ -1,56 +1,59 @@
 <!-- Property Listing Section -->
 <div class="flex flex-col flex-auto min-w-0 bg-card dark:bg-transparent">
   <!-- Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between p-6 sm:pb-4">
-    <div>
-      <h2 class="text-3xl font-semibold tracking-tight">All Florida Inventory </h2>
-      <p class="mt-1 text-secondary">Manage your property listings</p>
-    </div>
-    <div class="mt-4 sm:mt-0">
-      <div class="flex items-center gap-2">
-        <!-- Status filter -->
-        <mat-form-field appearance="outline" class="w-full sm:w-48">
-          <mat-label>Filter by Status</mat-label>
-          <mat-select [formControl]="statusFilter">
-            <mat-option *ngFor="let status of statusOptions" [value]="status">
-              {{ status === 'all' ? 'All Statuses' : (status | titlecase) }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Search input -->
-        <mat-form-field appearance="outline" class="w-full sm:w-64">
-          <mat-label>Search properties</mat-label>
-          <input 
-            matInput 
-            [formControl]="searchQuery" 
-            placeholder="Search by title, type or price">
-          <button 
-            *ngIf="searchQuery.value" 
-            matSuffix 
-            mat-icon-button 
-            aria-label="Clear" 
-            (click)="searchQuery.setValue('')">
-            <mat-icon>close</mat-icon>
-          </button>
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-        
-        <!-- Properties per page selector -->
-        <div class="flex items-center">
-          <!-- <span class="text-sm text-secondary">Properties per page:</span> -->
-          <mat-form-field appearance="outline" class="w-20">
-            <mat-select [value]="pageSize.toString()" (selectionChange)="onPageSizeChange($event)">
-              <mat-option *ngFor="let size of pageSizeOptions" [value]="size.toString()">
-                {{ size }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>  
-        <button (click)="onclickaddDeal()" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
-          Add Deal
+  <div class="flex flex-col space-y-4 p-4 md:p-6">
+    <!-- Main container - row on large screens, column on small -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between w-full">
+      <!-- Header Section -->
+      <div class="flex flex-col mb-4 lg:mb-0">
+        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">All Florida Inventory</h2>
+        <p class="mt-1 text-gray-500 text-sm md:text-base">Manage your property listings</p>
+      </div>
+  
+      <!-- Filters Section -->
+      <div class="w-full lg:w-auto flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:flex-wrap lg:flex-nowrap sm:items-center sm:gap-3">
+      <!-- Status filter -->
+      <mat-form-field appearance="outline" class="w-full sm:w-40 md:w-48">
+        <mat-label>Filter by Status</mat-label>
+        <mat-select [formControl]="statusFilter">
+          <mat-option *ngFor="let status of statusOptions" [value]="status">
+            {{ status === 'all' ? 'All Statuses' : (status | titlecase) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Search input -->
+      <mat-form-field appearance="outline" class="w-full sm:w-56 md:w-64">
+        <mat-label>Search properties</mat-label>
+        <input 
+          matInput 
+          [formControl]="searchQuery" 
+          placeholder="Search by title, type or price">
+        <button 
+          *ngIf="searchQuery.value" 
+          matSuffix 
+          mat-icon-button 
+          aria-label="Clear" 
+          (click)="searchQuery.setValue('')">
+          <mat-icon>close</mat-icon>
         </button>
-        
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      
+      <!-- Properties per page selector -->
+      <mat-form-field appearance="outline" class="w-24 sm:w-20">
+        <mat-label>Per page</mat-label>
+        <mat-select [value]="pageSize.toString()" (selectionChange)="onPageSizeChange($event)">
+          <mat-option *ngFor="let size of pageSizeOptions" [value]="size.toString()">
+            {{ size }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Add Deal Button -->
+      <button (click)="onclickaddDeal()" class="w-full sm:w-auto px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+        Add Deal
+      </button>
       </div>
     </div>
   </div>
@@ -71,10 +74,10 @@
   <div *ngIf="!isLoading && paginatedProperties.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
     <div 
   *ngFor="let property of paginatedProperties; trackBy: trackByFn" 
-  class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-200 cursor-pointer p-2 border border-gray-200"
+  class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-200 cursor-pointer p-2 border border-gray-200 dark:bg-transparent "
   (click)="onPropertyClick(property)">
   <!-- Full title without line clamping -->
-  <h3 class="text-base font-semibold text-gray-800 break-words h-14">{{ property.title }}</h3>
+  <h3 class="text-base font-semibold text-gray-800 break-words h-14 dark:text-white ">{{ property.title }}</h3>
   
   <!-- Property image -->
   <div class="h-48 overflow-hidden">

@@ -84,6 +84,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy
             // Prepare data for table display
             this.reportinglist = completeData;
             this.updateTableData();
+            
     
             console.log("Complete Monthly Data:", this.sortedData);
           });
@@ -118,7 +119,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy
         this.updateTableData();
 
       }
-
+    
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------

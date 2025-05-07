@@ -21,6 +21,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+// import { GhlCallbackComponent } from './ghl-callback/ghl-callback.component';
 // import { GoogleMapsModule } from '@angular/google-maps';
 // import { PropertydetailspageComponent } from './modules/admin/apps/dashboard/propertydetailspage/propertydetailspage.component';
 const routerConfig: ExtraOptions = {
@@ -69,7 +70,7 @@ const routerConfig: ExtraOptions = {
             preventDuplicates: true,          
             closeButton: true,                
             progressBar: true,
-            maxOpened:5,              
+            maxOpened:5,                                         
           }),
     ],
     bootstrap   : [

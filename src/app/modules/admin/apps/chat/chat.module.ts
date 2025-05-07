@@ -15,6 +15,8 @@ import { ContactInfoComponent } from 'app/modules/admin/apps/chat/contact-info/c
 import { ConversationComponent } from 'app/modules/admin/apps/chat/conversation/conversation.component';
 import { NewChatComponent } from 'app/modules/admin/apps/chat/new-chat/new-chat.component';
 import { ProfileComponent } from 'app/modules/admin/apps/chat/profile/profile.component';
+import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
     declarations: [
@@ -34,7 +36,11 @@ import { ProfileComponent } from 'app/modules/admin/apps/chat/profile/profile.co
         MatInputModule,
         MatMenuModule,
         MatSidenavModule,
-        SharedModule
+        SharedModule,
+        CommonModule,
+        RouterModule,
+        HttpClientModule
+        
     ]
 })
 export class ChatModule

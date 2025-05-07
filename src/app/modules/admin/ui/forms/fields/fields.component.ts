@@ -1,10 +1,18 @@
-import { Component, ViewEncapsulation, AfterViewInit, ViewChild, ElementRef, NgZone } from '@angular/core';
+import {
+  Component,
+  ViewEncapsulation,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  NgZone
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
 import { Azureblobservice } from 'app/shared/azureblobservice.service';
 import { environment } from 'environments/environment';
+import { GhlIntegrationService } from 'app/shared/GHLintegration.service';
 
 @Component({
   selector: 'forms-fields',
@@ -26,13 +34,12 @@ export class FormsFieldsComponent implements AfterViewInit {
 
   agents: any[] = [];
   filteredAgents: any[] = [];
-  apiUrl = `${environment.apiUrl}/agents`;
-
   searchQuery: string = '';
   selectedEmail: string = '';
   selectedPhone: string = '';
   selectedID: string = '';
   showDropdown: boolean = false;
+  apiUrl = `${environment.apiUrl}/agents`;
 
   constructor(
     private fb: FormBuilder,
@@ -40,14 +47,14 @@ export class FormsFieldsComponent implements AfterViewInit {
     private azureBlobService: Azureblobservice,
     private location: Location,
     private toastr: ToastrService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private ghlIntegrationService: GhlIntegrationService
   ) {
-    console.log(this.toastr); 
+    this.ghlIntegrationService.initialize();
 
-    this.fetchAgents();
     this.propertyForm = this.fb.group({
       title: ['', Validators.required],
-      address: ['', Validators.required],
+      address: [''],
       status: ['', Validators.required],
       price: ['', [Validators.required, Validators.pattern('^[0-9]{1,}$')]],
       propertyType: ['', Validators.required],
@@ -64,48 +71,107 @@ export class FormsFieldsComponent implements AfterViewInit {
       agent_remark: [''],
       description: [''],
       coordinates: [''],
-      location_id: [''],
+      location_id: [this.ghlIntegrationService.getLocationId()],
       agent_id: [''],
       profit: ['', [Validators.required, Validators.pattern('^[0-9]{1,}$')]],
       inspection_period_end_date: ['']
     });
+
+    this.propertyForm.get('address')?.valueChanges.subscribe(address => {
+      if (address) {
+        this.propertyForm.get('title')?.setValue(address, { emitEvent: false });
+        this.generateZillowLink(address);
+      }
+    });
+
+    this.fetchAgents();  
   }
-  
+
   ngAfterViewInit() {
     if (typeof google === 'undefined' || !google.maps) {
       console.error('Google Maps API NOT loaded!');
       return;
     }
   
-    // Check if the search box element is available
-    if (!this.searchBoxElement || !this.searchBoxElement.nativeElement) {
-      console.error('Search Box Element is not found!');
-      return;
-    }
-  
     // Initialize the Google Places Autocomplete for the search box element
     const autocomplete = new google.maps.places.Autocomplete(this.searchBoxElement.nativeElement);
   
-    // Add an event listener for when a place is selected from the autocomplete suggestions
     autocomplete.addListener('place_changed', () => {
       const place = autocomplete.getPlace();
   
-      // If no geometry or location is found for the selected place, log an error
+      // Ensure there is geometry data
       if (!place.geometry || !place.geometry.location) {
         console.error('No geometry found for place');
         return;
       }
   
-      // Update the form with the selected address
+      // Capture the full formatted address
+      const fullAddress = place.formatted_address || '';
+  
+      // Set the full address as the title and address
       this.propertyForm.patchValue({
-        address: place.formatted_address,
+        address: fullAddress,  // Set the full address in the address field
+        title: fullAddress     // Ensure title matches the address
       });
   
-      // You can add any additional code you want to run after the address is selected
-      this.onSearch();
+      // Optional: Generate Zillow link using the full address
+      this.generateZillowLink(fullAddress);
     });
   }
   
+
+  private initializeAutocomplete(): void {
+    if (
+      typeof google === 'undefined' ||
+      !google.maps ||
+      !this.searchBoxElement ||
+      !this.searchBoxElement.nativeElement
+    ) {
+      console.error('Google Maps API or search box element not available.');
+      return;
+    }
+  
+    const nativeInput = this.searchBoxElement.nativeElement as HTMLInputElement;
+  
+    // Prevent 'Enter' key from triggering unwanted form submissions
+    nativeInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    });
+  
+    const autocomplete = new google.maps.places.Autocomplete(nativeInput);
+  
+    autocomplete.addListener('place_changed', () => {
+      this.ngZone.run(() => {
+        const place = autocomplete.getPlace();
+  
+        if (!place.geometry || !place.geometry.location) {
+          console.error('No geometry found for selected place');
+          return;
+        }
+  
+        const formattedAddress = place.formatted_address || '';
+        this.propertyForm.patchValue({ address: formattedAddress });
+  
+        this.onSearch();
+      });
+    });
+  }
+  
+
+  generateZillowLink(address: string): void {
+    if (!address) return;
+    const formattedAddress = encodeURIComponent(address.split(' ').join('-'));
+    const zillowLink = `http://www.zillow.com/homes/${formattedAddress}_rb`;
+    this.propertyForm.patchValue({ zillow_link: zillowLink });
+    setTimeout(() => {
+      if (this.zillowInput?.nativeElement) {
+        this.zillowInput.nativeElement.value = zillowLink;
+      }
+    });
+  }
+
   navigatetoPreviousPage() {
     this.location.back();
   }
@@ -138,23 +204,12 @@ export class FormsFieldsComponent implements AfterViewInit {
         if (response?.property?.length > 0) {
           const property = response.property[0];
 
-          const formattedAddress = encodeURIComponent(fullAddress.split(' ').join('-'));
-          const zillowLink = `http://www.zillow.com/homes/${formattedAddress}_rb`;
-
-          console.log(zillowLink);
-          setTimeout(() => {
-            this.zillowInput.nativeElement.value = zillowLink;
-          });
-
-          console.log('Generated Zillow Link:', zillowLink);
-
           this.propertyForm.patchValue({
             bathsfull: property?.building?.rooms?.bathsfull || '',
             beds: property?.building?.rooms?.beds || '',
             yearbuilt: property?.summary?.yearbuilt || '',
             lotsize2: property?.lot?.lotsize2 || '',
             propertyType: property?.summary?.propertyType || '',
-            zillow_link: zillowLink
           });
 
           this.errorMessage = '';
@@ -200,7 +255,6 @@ export class FormsFieldsComponent implements AfterViewInit {
     }
   }
   
-
   extractFilePath(url: string): string {
     try {
       const urlObj = new URL(url);
@@ -210,78 +264,70 @@ export class FormsFieldsComponent implements AfterViewInit {
     }
   }
 
-  submitForm() {
+  submitForm(event?: Event): void {
+    if (event) {
+      event.preventDefault(); // Prevent default form submit behavior
+    }
+  
     if (this.propertyForm.invalid) {
-      console.error('Form Validation Errors:', this.propertyForm.errors);
-      console.log('Profit Value:', this.propertyForm.value.profit);
-
       Object.keys(this.propertyForm.controls).forEach((key) => {
         const control = this.propertyForm.get(key);
         if (control?.invalid) {
-          console.error(`Invalid Field: ${key}, Errors:`, control.errors);
+          console.error(`Invalid Field: ${key}`, control.errors);
         }
       });
-      if (this.propertyForm.invalid) {
-        console.error('Form Validation Errors:', this.propertyForm.errors);
-        this.toastr.error('Please fill in all required fields');
-        return;
-      }
-
+  
       this.toastr.error('Please fill in all required fields');
-
       return;
     }
-
-    console.log('Form Values:', this.propertyForm.value);
-
+  
+    const formValue = this.propertyForm.value;
+  
     const requestBody = {
-      title: this.propertyForm.value.address || '',
-      description: this.propertyForm.value.description || '',
-      status: this.propertyForm.value.status || '',
-      coordinates: this.propertyForm.value.coordinates || '',
-      location_id: this.propertyForm.value.location_id || '',
-      price: parseFloat(this.propertyForm.value.price) || 0,
-      property_type: this.propertyForm.value.propertyType || '',
-      bedrooms: parseInt(this.propertyForm.value.beds) || 0,
-      bathrooms: parseInt(this.propertyForm.value.bathsfull) || 0,
-      sqft: parseInt(this.propertyForm.value.sqft) || 0,
-      lot_size: parseInt(this.propertyForm.value.lotsize2) || 0,
-      year_built: parseInt(this.propertyForm.value.yearbuilt) || 0,
-      agent_name: this.propertyForm.value.agent_name || '',
-      agent_phone_number: this.propertyForm.value.agent_phone_number || '',
-      agent_email: this.propertyForm.value.agent_email || '',
-      zillow_link: this.propertyForm.value.zillow_link || '',
-      hoa: this.propertyForm.value.hoa || '',
-      inspection_period_end_date: this.propertyForm.value.inspection_period_end_date || null,
-      agent_remark: this.propertyForm.value.agent_remark || '',
+      title: formValue.address,
+      description: formValue.description,
+      status: formValue.status,
+      coordinates: formValue.coordinates,
+      location_id: formValue.location_id || this.ghlIntegrationService.getLocationId(),
+      price: parseFloat(formValue.price),
+      property_type: formValue.propertyType,
+      bedrooms: parseInt(formValue.beds),
+      bathrooms: parseInt(formValue.bathsfull),
+      sqft: parseInt(formValue.sqft),
+      lot_size: parseInt(formValue.lotsize2),
+      year_built: parseInt(formValue.yearbuilt),
+      agent_name: formValue.agent_name,
+      agent_phone_number: formValue.agent_phone_number,
+      agent_email: formValue.agent_email,
+      zillow_link: formValue.zillow_link,
+      hoa: formValue.hoa,
+      inspection_period_end_date: formValue.inspection_period_end_date || null,
+      agent_remark: formValue.agent_remark,
       leads: true,
-      agent_id: this.propertyForm.value.agent_id || '',
-      profit: parseFloat(this.propertyForm.value.profit) || 0,
+      agent_id: formValue.agent_id,
+      profit: parseFloat(formValue.profit),
       attachments: this.fileUrl
         ? [{
-          file_url: this.fileUrl,
-          file_type: this.fileType,
-          uploaded_by: '52404d37-380a-b4bd-3da1-5fab7cd8cf7d'
-        }]
+            file_url: this.fileUrl,
+            file_type: this.fileType,
+            uploaded_by: '52404d37-380a-b4bd-3da1-5fab7cd8cf7d'
+          }]
         : []
     };
-
-    console.log('Request Body:', JSON.stringify(requestBody, null, 2));
-
-    this.http.post(`${environment.apiUrl}/leads`, requestBody, {
-      headers: { 'Content-Type': 'application/json' },
-    }).subscribe({
-      next: (response: any) => {
+  
+    // Ensure API call happens without causing a page reload
+    this.http.post(`${environment.apiUrl}/leads`, requestBody).subscribe({
+      next: () => {
         this.toastr.success('Lead Created Successfully');
-        location.reload();
-        console.log(response);
+        location.reload(); // If this triggers an unwanted refresh, replace it with a success message or manual data update
       },
       error: (error) => {
         console.error('API Error:', error);
-        this.toastr.error('Error submitting data', error);
+        this.toastr.error('Error submitting data');
       },
     });
   }
+  
 
   fetchAgents() {
     this.http.get<{ success: boolean; data: any[] }>(this.apiUrl).subscribe({
@@ -331,4 +377,5 @@ export class FormsFieldsComponent implements AfterViewInit {
       agent_id: agent?.id || ''
     });
   }
+  
 }

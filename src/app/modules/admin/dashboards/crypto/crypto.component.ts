@@ -428,7 +428,7 @@ this.toastr.error('error in closing the deal', error)
     // Create Pegman Image.
     const pegmanImage = document.createElement("img");
     pegmanImage.id = "pegmanImage";
-    pegmanImage.src = "https://reisfun-ddc71.web.app/propert.jpg";
+    pegmanImage.src = "assets/images/logo/logo.svg";
 pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", "ml-2");
 
   
@@ -617,7 +617,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
     : '';
     const infoContent = `
       <div style="width:230px;border-radius:10px">
-      <p style="margin:0 0 0 0; width:100%; font-size:13px; font-weight:bold;font-family:Times New Roman">${property.title || ''}</p>
+      <p style="margin:0 0 0 0; width:100%; font-size:13px; font-weight:bold;font-family:Times New Roman"  >${property.title || ''}</p>
           
       ${imageHtml}
 
@@ -873,7 +873,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
   
   
   onclickaddDeal(){
-    this.router.navigate(['ui/forms/fields'])
+    this.router.navigate(['dashboards/adddeals'])
   }
   
 }

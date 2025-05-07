@@ -24,6 +24,9 @@ import { tasksRoutes } from 'app/modules/admin/apps/tasks/tasks.routing';
 import { TasksComponent } from 'app/modules/admin/apps/tasks/tasks.component';
 import { TasksDetailsComponent } from 'app/modules/admin/apps/tasks/details/details.component';
 import { TasksListComponent } from 'app/modules/admin/apps/tasks/list/list.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -51,7 +54,10 @@ import { TasksListComponent } from 'app/modules/admin/apps/tasks/list/list.compo
         MatSidenavModule,
         MatTooltipModule,
         FuseFindByKeyPipeModule,
-        SharedModule
+        SharedModule,
+        FullCalendarModule,
+        ReactiveFormsModule,
+        CommonModule
     ],
     providers   : [
         {

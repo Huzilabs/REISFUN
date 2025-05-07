@@ -8,8 +8,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { FinanceService } from 'app/modules/admin/dashboards/finance/finance.service';
 import { HttpClient } from '@angular/common/http';
+
 import { environment } from 'environments/environment';
-// import { environments } from 'environments/environment';
+import { GhlIntegrationService } from 'app/shared/GHLintegration.service';
 
 @Component({
     selector       : 'project',
@@ -32,7 +33,6 @@ export class ProjectComponent implements OnInit, OnDestroy
     @ViewChild('recentTransactionsTable', {read: MatSort}) recentTransactionsTableMatSort: MatSort;
     recentTransactionsDataSource: MatTableDataSource<any> = new MatTableDataSource();
     recentTransactionsTableColumns: string[] = ['transactionId', 'date', 'name', 'amount', 'status'];
-    // private _unsubscribeAll: Subject<any> = new Subject<any>();
     chartDealsStatus: ApexOptions = {};  // New chart for deals status
     dealsStatusData = {
         closed: 0,
@@ -42,34 +42,54 @@ export class ProjectComponent implements OnInit, OnDestroy
     };
     isDealsDataLoading = true;
     
-    
-    /**
-     * Constructor
-     */
     constructor(
         private _projectService: ProjectService,
         private _router: Router,
         private _financeService: FinanceService,
         private http:HttpClient,
-        // private _changeDetectorRef: ChangeDetectorRef  ,
         private cdr: ChangeDetectorRef,
-
-
-    )
-    {     this.getallannoucements();
-        this.fetchDealsStatusData();  // Fetch deals status data on init
+        private ghlIntegrationService: GhlIntegrationService
+    ) { 
+        this.getallannoucements();
+        this.fetchDealsStatusData();
         this.leadersData();
-
+        this.ghlIntegrationService.initialize();
 
     }
+    postannouncements() {
+        console.log('Starting announcement post process');
+    
+        // Get userType from the service
+        this.ghlIntegrationService.getUserType().subscribe(
+          (userType: string | null) => {
+            if (userType === 'Company') {
+              this.http.post(`${environment.apiUrl}/announcements`, this.newAccoucment).subscribe(
+                (res: any) => {
+                  console.log('Posted successfully', res);
+                  this.getallannoucements();
+                  this.showform = false;
+                  this.newAccoucment = { title: '', description: '', location_id: '', is_active: true, is_featured: true };
+                },
+                (err) => {
+                  console.log("Error posting announcement", err);
+                }
+              );
+            } else {
+              console.log('Only users with Company role can post announcements');
+            }
+          },
+          (error) => {
+            console.error('Error getting user type:', error);
+          }
+        );
+      }  
+
     fetchDealsStatusData(): void {
         this.isDealsDataLoading = true;
         this.http.get(`${environment.apiUrl}/dashboard?status_count=true`).subscribe(
             (response: any) => {
                 if (response.success && response.data) {
-                    // Process the API response
                     this.processStatusCounts(response.data);
-                    // Initialize the deals status chart
                     this.initializeDealsStatusChart();
                 }
                 this.isDealsDataLoading = false;
@@ -82,6 +102,7 @@ export class ProjectComponent implements OnInit, OnDestroy
             }
         );
     }
+
     processStatusCounts(statusCounts: any[]): void {
         statusCounts.forEach(item => {
             const status = item.status.toLowerCase();
@@ -93,20 +114,18 @@ export class ProjectComponent implements OnInit, OnDestroy
                 this.dealsStatusData.available = parseInt(item.count, 10);
             }
             else if (status === 'in-progress') {
-                this.dealsStatusData. inprogress = parseInt(item.count, 10);
+                this.dealsStatusData.inprogress = parseInt(item.count, 10);
             }
-            
-            
         });
     }
+
     initializeDealsStatusChart(): void {
         const labels = ['Closed', 'Cancelled', 'Available', 'In-progress'];
         const series = [
             this.dealsStatusData.closed,
             this.dealsStatusData.cancelled,
             this.dealsStatusData.available,
-            this.dealsStatusData. inprogress,
-            
+            this.dealsStatusData.inprogress,
         ];
 
         this.chartDealsStatus = {
@@ -122,7 +141,7 @@ export class ProjectComponent implements OnInit, OnDestroy
                     enabled: false
                 }
             },
-            colors: ['#28a745', '#e10611', '#ffc107','#14B8A6'], // green for closed, red for cancelled, blue for available
+            colors: ['#28a745', '#e10611', '#ffc107','#14B8A6'],
             labels: labels,
             legend: {
                 position: 'bottom',
@@ -163,102 +182,74 @@ export class ProjectComponent implements OnInit, OnDestroy
             }
         };
     }
-    getleadersData: any = []; // Store the leaderboard data
-  leadersDataSource = new MatTableDataSource<any>(); // Table data source
-  leadersTableColumns: string[] = ['image', 'name', 'closed_count', 'total_profit']; // Columns of the leaderboard table
 
-        
-  leadersData() {
-    this.http.get(`${environment.apiUrl}/dashboard?leaderboard=true`).subscribe((result: any) => {
-      // Check if the response has the expected data structure
-      if (result && result.data && Array.isArray(result.data)) {
-        // Store the result data
-        this.getleadersData = result.data;
+    getleadersData: any = [];
+    leadersDataSource = new MatTableDataSource<any>();
+    leadersTableColumns: string[] = ['image', 'name', 'closed_count', 'total_profit'];
 
-        // Set the data for the table
-        this.leadersDataSource.data = this.getleadersData;
-        console.log('Fetched Leaders Data:', result); // Log the result to inspect the structure
-      } else {
-        console.error('Invalid data format received:', result);
-      }
-    }, error => {
-      console.error('Error fetching leaderboard data:', error);
-    });
-  }
-    // Initialize deals status chart
+    leadersData() {
+        this.http.get(`${environment.apiUrl}/dashboard?leaderboard=true`).subscribe((result: any) => {
+            if (result && result.data && Array.isArray(result.data)) {
+                this.getleadersData = result.data;
+                this.leadersDataSource.data = this.getleadersData;
+                console.log('Fetched Leaders Data:', result);
+            } else {
+                console.error('Invalid data format received:', result);
+            }
+        }, error => {
+            console.error('Error fetching leaderboard data:', error);
+        });
+    }
+
+    annoucementlist:any = {};
+    showform = false;
+    newAccoucment = {
+        "title": "",
+        "description": "",
+        "is_active": false,
+        "is_featured": true,
+        "location_id": ""
+    }
+
+    getallannoucements() {
+        this.http.get(`${environment.apiUrl}/announcements?list=true`).subscribe(
+            (result: any) => {
+                console.log("Announcement Data: ", result);
+                this.annoucementlist = result;
+                this.cdr.detectChanges();
+            },
+            (err) => {
+                console.log("Error fetching announcements:", err);
+            }
+        );
+    }  
+    
   
-
-    annoucementlist:any ={};
-showform =false;   
-newAccoucment ={
-     
-  "title":"",
-  "description": "",
-  "is_active": false,
-  "is_featured": true,
-  "location_id": ""
-}
-
-getallannoucements() {
-    this.http.get(`${environment.apiUrl}/announcements?list=true`).subscribe(
-      (result: any) => {
-        console.log("Announcement Data: ", result);  // Check if data is coming here
-        this.annoucementlist = result;
-        this.cdr.detectChanges();  // Manually trigger change detection to update the view
-      },
-      (err) => {
-        console.log("Error fetching announcements:", err);  // Log errors if any
-      }
-    );
-  }  
-  
-postannoucments(){
-  this.http.post(`${environment.apiUrl}/announcements`, this.newAccoucment).subscribe((res:any)=>{
-    console.log('posted successfully', res),
-    this.getallannoucements();
-    this.showform = false;
-    this.newAccoucment = {title:'',description:'', location_id:'', is_active:true, is_featured:true};
-  },  
-  (err)=>{
-    console.log("Error posting annoucement", err)
-    // this.toaster.error(err)
-  }
-)
-}  
-
-
-
-
-    ngAfterViewInit(): void
-    {
-        // Make the data source sortable
+    ngAfterViewInit(): void {
         this.recentTransactionsDataSource.sort = this.recentTransactionsTableMatSort;
     }
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
+    userType: string | null = null;
 
-    /**
-     * On init
-     */
-    ngOnInit(): void
-    {
-        // Get the data
+    ngOnInit(): void {
+        this.ghlIntegrationService.getUserType().subscribe(
+            (userType: string | null) => {
+                this.userType = userType; // Store the user type in a variable
+                console.log('User Type in ngOnInit:', this.userType); // Check the value
+            },
+            (error) => {
+                console.error('Error fetching user type:', error);
+            }
+        );
+    
+
         this._projectService.data$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((data) => {
-
-                // Store the data
                 this.data = data;
-
-                // Prepare the chart data
                 this._prepareChartData();
                 this.recentTransactionsDataSource.data = data.recentTransactions;
-
-
             });
 
-        // Attach SVG fill fixer to all ApexCharts
         window['Apex'] = {
             chart: {
                 events: {
@@ -271,57 +262,19 @@ postannoucments(){
                 }
             }
         };
-        
     }
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
+    ngOnDestroy(): void {
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Fix the SVG fill references. This fix must be applied to all ApexCharts
-     * charts in order to fix 'black color on gradient fills on certain browsers'
-     * issue caused by the '<base>' tag.
-     *
-     * Fix based on https://gist.github.com/Kamshak/c84cdc175209d1a30f711abd6a81d472
-     *
-     * 
-     * @param element
-     * @private
-     */
-    private _fixSvgFill(element: Element): void
-    {
-        // Current URL
+    private _fixSvgFill(element: Element): void {
         const currentURL = this._router.url;
-
-        // 1. Find all elements with 'fill' attribute within the element
-        // 2. Filter out the ones that doesn't have cross reference so we only left with the ones that use the 'url(#id)' syntax
-        // 3. Insert the 'currentURL' at the front of the 'fill' attribute value
         Array.from(element.querySelectorAll('*[fill]'))
              .filter(el => el.getAttribute('fill').indexOf('url(') !== -1)
              .forEach((el) => {
@@ -330,13 +283,9 @@ postannoucments(){
              });
     }
 
-    /**
-     * Prepare the chart data from the data
-     *
-     * @private
-     */
-    private _prepareChartData(): void
-    {
+    private _prepareChartData(): void {
+        // Chart data preparation logic here
+
         // Github issues
         this.chartGithubIssues = {
             chart      : {
@@ -635,5 +584,21 @@ postannoucments(){
                 }
             }
         };
+    }
+    wordCount: number = 0;
+    descriptionError: boolean = false;
+  
+    // Method to handle input change, word count, and character validation
+    onDescriptionChange(event: any): void {
+      this.wordCount = this.getWordCount(event);
+  
+      // Validate the character count
+      this.descriptionError = event.length > 255;
+    }
+  
+    // Method to calculate word count
+    getWordCount(text: string): number {
+      const words = text.trim().split(/\s+/);
+      return words.filter(word => word.length > 0).length;
     }
 }
