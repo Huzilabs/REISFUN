@@ -47,6 +47,12 @@ interface Property {
     location_id: string;
     close_date: string | null;
     agent_id: string;
+    rep_deal_id: string;
+    lead_gen:string;
+    joint_partner_info:string;
+    buyer_walkin_appointments:string;
+    deal_text:string;
+    is_assignable:string;
     attachments: PropertyAttachment[];
     update_lead: boolean;
   }  
@@ -87,6 +93,21 @@ export class CryptoComponent implements OnInit, OnDestroy, AfterViewInit {
     properties: Property[] = [];
 
     paginatedProperties: Property[] = [];
+othersDropdownOpen = false;
+
+othersStatuses = [
+  { key: 'target-new-buyers-nearby', label: 'Target New Buyers Nearby' },
+  { key: 'call-vip-buyers-+-get-feedback=no-traction', label: 'Call VIP BUYERS + Get Feedback = No Traction' },
+  { key: 'price-drop-sent-out', label: 'Price Drop Sent Out' },
+  { key: 'waiting-for-buyers-emd', label: 'Waiting for Buyers EMD' },
+  
+  { key: 'pending-retrade', label: 'Pending Retrade' },
+  
+  { key: 'need-photos', label: 'Need Photos' },
+  
+  { key: 'flipping-ourselves', label: 'Flipping Outselves' },
+  // add more as needed
+];
 
 
     constructor(
@@ -189,7 +210,21 @@ export class CryptoComponent implements OnInit, OnDestroy, AfterViewInit {
             parking_spaces: [this.propertyDetails.parking_spaces || ''],
             zoning_type: [this.propertyDetails.zoning_type || ''],
             description: [this.propertyDetails.description || ''],
-            zillow: [this.propertyDetails.zillow || '']
+            zillow: [this.propertyDetails.zillow || ''],
+            agent_name: [this.propertyDetails.agent_name || ''],
+            agent_email: [this.propertyDetails.agent_email || ''],
+            agent_phone: [this.propertyDetails.agent_phone || ''],
+
+             rep_deal_id: [this.propertyDetails.rep_deal_id || ''],
+    lead_gen:[this.propertyDetails.lead_gen || ''],
+    joint_partner_info:[this.propertyDetails.joint_partner_info || ''],
+    buyer_walkin_appointments:[this.propertyDetails.buyer_walkin_appointments || ''],
+    deal_text:[this.propertyDetails.deal_text || ''],
+    is_assignable:[this.propertyDetails.is_assignable || ''],
+    
+
+
+
         });
     }
 
@@ -275,8 +310,8 @@ this.toastr.success("Deal deleted successfully")
 
     updateStatus(status: string): void {
         this.loading = true;
-        const statusUpdate = { id: this.propertyId, status: status };
-
+        const statusUpdate = { id: this.propertyId, status: status, update_status: true };
+  
         this.http.patch(`${environment.apiUrl}/leads`, statusUpdate)
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(
@@ -610,24 +645,60 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
    * on marker hover.
    */
   addHoverInfoWindow(marker: google.maps.Marker, property: any): void {
-    const imageHtml = property.attachments && property.attachments.length > 0
-    ? `<span >
-         <img src="${property.attachments[0].file_url}" alt="Property Image" style="max-width:100%; display:block; margin-bottom:6px;margin-top:10px;border-radius:7px">
-       </span>`
-    : '';
+    
     const infoContent = `
-      <div style="width:230px;border-radius:10px">
-      <p style="margin:0 0 0 0; width:100%; font-size:13px; font-weight:bold;font-family:Times New Roman"  >${property.title || ''}</p>
-          
-      ${imageHtml}
-
-        <div style="font-size:14px; color:black;">
-          <p style="margin-top:10px;font-size:13px; font-family:Times New Roman;"><font style="font-weight:bold">Price:</font> <strong>${property.price || ''}</strong></p>
-          <p style="margin-top:10px;font-size:13px; font-family:Times New Roman;"><font style="font-weight:bold">Agent Name:</font> <strong>${property.agent_name || ''}</strong></p>
-          <p style="margin-top:10px;font-size:13px; font-family:Times New Roman;"><font style="font-weight:bold">Coordinates:</font> <strong>${property.coordinates || ''}</strong></p>
+    <div style="width:300px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:10px; font-family:'Arial', sans-serif; background-color:#fff;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <a href="${property.zillow || '#'}" target="_blank" style="display:flex; align-items:center; text-decoration:none; color:#0077e6; font-weight:500; font-size:15px; transition:color 0.2s; padding:4px 10px; border-radius:4px; background-color:#f0f7ff;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
+            <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V9L14 3H6z"></path>
+            <path d="M14 3v6h6"></path>
+          </svg>
+          Zillow
+        </a>
+        <div style="display:flex; align-items:center; font-size:14px; color:#596b82; background-color:#f5f7fa; padding:4px 12px; border-radius:16px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>${property.property_type || 'Residential'}</span>
         </div>
-      </div>  
-    `;
+      </div>
+      
+      <div style="font-size:18px; font-weight:600; color:#333; margin-bottom:14px; line-height:1.3;">
+        ${property.title || 'Property Address'}
+      </div>
+      
+      <div style="display:flex; align-items:center; font-size:15px; color:#444; background-color:#f8f9fa; padding:10px; border-radius:8px;">
+        <div style="display:flex; align-items:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+            <path d="M3 22v-7"></path>
+            <path d="M21 22v-7"></path>
+            <path d="M3 8v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8"></path>
+            <path d="M5 2h14a2 2 0 0 1 2 2v4H3V4a2 2 0 0 1 2-2z"></path>
+          </svg>
+          <span style="font-weight:500">${property.bedrooms || '0'} beds</span>
+        </div>
+        <span style="margin:0 8px; color:#ddd">|</span>
+        <div style="display:flex; align-items:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+            <path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
+            <path d="M21 13v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"></path>
+          </svg>
+          <span style="font-weight:500">${property.bathrooms || '0'} baths</span>
+        </div>
+        <span style="margin:0 8px; color:#ddd">|</span>
+        <div style="display:flex; align-items:center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+            <path d="M3 9h18"></path>
+            <path d="M9 21V9"></path>
+          </svg>
+          <span style="font-weight:500">${property.sqft || '0'} sqft</span>
+        </div>
+      </div>
+    </div>
+  `;
     const infoWindow = new google.maps.InfoWindow({
       content: infoContent
     });
@@ -876,4 +947,84 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
     this.router.navigate(['dashboards/adddeals'])
   }
   
+
+repDealButtonClicked(name: string): void {
+  if (!this.propertyDetails || !this.propertyId) {
+    console.error('Property details or ID missing');
+    return;
+  }
+
+  this.loading = true;
+
+  const updatePayload = {
+    ...this.propertyDetails,
+    id: this.propertyId,
+    rep_deal_id: name,
+    update_lead: true
+  };
+
+  console.log('Sending update payload:', JSON.stringify(updatePayload, null, 2));
+
+  this.http.put(`${environment.apiUrl}/leads`, updatePayload).subscribe({
+    next: (response) => {
+      console.log('Backend response:', response);
+      this.propertyDetails.rep_deal_id = name;
+      this.propertyForm.controls['rep_deal_id'].setValue(name);
+      this.toastr.success('REP DEAL ID updated successfully');
+      this.loading = false;
+      location.reload()
+    },
+    error: (error) => {
+      console.error('Update error:', error);
+      if(error.error) {
+        console.error('Backend error message:', error.error);
+      }
+      this.toastr.error('Failed to update REP DEAL ID');
+      this.loading = false;
+    }
+  });
+}
+
+
+leadGenButtonClicked(status: string): void {
+  if (!this.propertyDetails || !this.propertyId) {
+    console.error('Property details or ID missing');
+    return;
+  }
+
+  this.loading = true;
+
+  const updatePayload = {
+    ...this.propertyDetails,  // Include all current fields (required by backend)
+    id: this.propertyId,      // Explicitly include ID
+    lead_gen: status,         // Override lead_gen with selected status
+    update_lead: true         // Backend flag to trigger update (if required)
+  };
+
+  console.log('Sending update payload for lead_gen:', JSON.stringify(updatePayload, null, 2));
+
+  this.http.put(`${environment.apiUrl}/leads`, updatePayload).subscribe({
+    next: (response) => {
+      console.log('Backend response:', response);
+      this.propertyDetails.lead_gen = status;
+      this.propertyForm.controls['lead_gen'].setValue(status);
+      this.toastr.success('Lead Gen updated successfully');
+      this.loading = false;
+      location.reload()
+    },
+    error: (error) => {
+      console.error('Update error:', error);
+      if (error.error) {
+        console.error('Backend error message:', error.error);
+      }
+      this.toastr.error('Failed to update Lead Gen');
+      this.loading = false;
+    }
+  });
+}
+
+
+
+
+
 }

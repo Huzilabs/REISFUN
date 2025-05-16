@@ -80,6 +80,8 @@ export class TypographyComponent
       pegmanImage.id = "pegmanImage";
       pegmanImage.src = "assets/images/logo/logo.svg";
       pegmanImage.classList.add("pegman-image");
+      pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", "ml-2");
+
   
       // Create Fullscreen Image.
       const fullscreenImage = document.createElement("img");
@@ -241,24 +243,59 @@ export class TypographyComponent
      * on marker hover.
      */
     addHoverInfoWindow(marker: google.maps.Marker, property: any): void {
-      const imageHtml = property.attachments && property.attachments.length > 0
-      ? `<span >
-           <img src="${property.attachments[0].file_url}" alt="Property Image" style="max-width:100%; display:block; margin-bottom:6px;margin-top:10px;border-radius:7px">
-         </span>`
-      : '';
       const infoContent = `
-        <div style="width:230px;border-radius:10px">
-        <p style="margin:0 0 0 0; width:100%; font-size:13px; font-weight:bold;font-family:Times New Roman">${property.title || ''}</p>
-            
-        ${imageHtml}
-  
-          <div style="font-size:14px; color:black;">
-            <p style="margin-top:10px;font-size:13px; font-family:Times New Roman;"><font style="font-weight:bold">Price:</font> <strong>${property.price || ''}</strong></p>
-            <p style="margin-top:10px;font-size:13px; font-family:Times New Roman;"><font style="font-weight:bold">Agent Name:</font> <strong>${property.agent_name || ''}</strong></p>
-            <p style="margin-top:10px;font-size:13px; font-family:Times New Roman;"><font style="font-weight:bold">Coordinates:</font> <strong>${property.coordinates || ''}</strong></p>
-          </div>
-        </div>  
-      `;
+  <div style="width:300px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:10px; font-family:'Arial', sans-serif; background-color:#fff;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+      <a href="${property.zillow || '#'}" target="_blank" style="display:flex; align-items:center; text-decoration:none; color:#0077e6; font-weight:500; font-size:15px; transition:color 0.2s; padding:4px 10px; border-radius:4px; background-color:#f0f7ff;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
+          <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V9L14 3H6z"></path>
+          <path d="M14 3v6h6"></path>
+        </svg>
+        Zillow
+      </a>
+      <div style="display:flex; align-items:center; font-size:14px; color:#596b82; background-color:#f5f7fa; padding:4px 12px; border-radius:16px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>${property.property_type || 'Residential'}</span>
+      </div>
+    </div>
+    
+    <div style="font-size:18px; font-weight:600; color:#333; margin-bottom:14px; line-height:1.3;">
+      ${property.title || 'Property Address'}
+    </div>
+    
+    <div style="display:flex; align-items:center; font-size:15px; color:#444; background-color:#f8f9fa; padding:10px; border-radius:8px;">
+      <div style="display:flex; align-items:center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+          <path d="M3 22v-7"></path>
+          <path d="M21 22v-7"></path>
+          <path d="M3 8v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8"></path>
+          <path d="M5 2h14a2 2 0 0 1 2 2v4H3V4a2 2 0 0 1 2-2z"></path>
+        </svg>
+        <span style="font-weight:500">${property.bedrooms || '0'} beds</span>
+      </div>
+      <span style="margin:0 8px; color:#ddd">|</span>
+      <div style="display:flex; align-items:center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+          <path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
+          <path d="M21 13v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"></path>
+        </svg>
+        <span style="font-weight:500">${property.bathrooms || '0'} baths</span>
+      </div>
+      <span style="margin:0 8px; color:#ddd">|</span>
+      <div style="display:flex; align-items:center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+          <path d="M3 9h18"></path>
+          <path d="M9 21V9"></path>
+        </svg>
+        <span style="font-weight:500">${property.sqft || '0'} sqft</span>
+      </div>
+    </div>
+  </div>
+`;
       const infoWindow = new google.maps.InfoWindow({
         content: infoContent
       });

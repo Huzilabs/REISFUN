@@ -24,8 +24,15 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : '/dashboards/reporting'
             },
             {
+              id   : 'apps.scrumboard',
+                 title: 'MLS ',
+                 type : 'basic',
+                 icon : 'heroicons_outline:view-boards',
+                 link : '/apps/mls'
+             },
+            {  
                 id   : 'dashboards.deals',
-                title: 'Deals',
+                title: 'Inventory',
                 type : 'basic',
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/deals'
@@ -44,20 +51,21 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:chat-alt',
                 link : '/apps/chat'
             },
-            // {
-            //     id   : 'apps.contacts',
-            //     title: 'Contacts',
-            //     type : 'basic',
-            //     icon : 'heroicons_outline:user-group',
-            //     link : '/apps/contacts'
-            // },  
+            {
+                id   : 'apps.contacts',
+                title: 'Contacts',
+                type : 'basic',
+                icon : 'heroicons_outline:user-group',
+                link : '/apps/contacts'
+            },  
             {
                 id   : 'apps.tasks',
                 title: 'Calendar',
                 type : 'basic',
                 icon : 'heroicons_outline:check-circle',
                 link : '/apps/calendarr'
-            }
+            },
+            
             // {
             //     id   : 'dashboards.adddeals',
             //     title: 'Add Deal',
@@ -72,7 +80,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
             //     icon : 'heroicons_outline:cash',
             //     link : '/dashboards/propertydetails'
             // },
-            
+            //  {
+            //     id   : 'pages.maintenance',
+            //     title: 'MLS Details',
+            //     type : 'basic',
+            //     icon : 'heroicons_outline:exclamation',
+            //     link : '/pages/mlsdetails'
+            // }
             
         ]
     },
@@ -116,13 +130,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     //         //     icon : 'heroicons_outline:pencil-alt',
     //         //     link : '/apps/notes'
     //         // },
-    //         // {
-    //         //     id   : 'apps.scrumboard',
-    //         //     title: 'Scrumboard',
-    //         //     type : 'basic',
-    //         //     icon : 'heroicons_outline:view-boards',
-    //         //     link : '/apps/scrumboard'
-    //         // },
+    //         // 
            
     //     ]
     // },

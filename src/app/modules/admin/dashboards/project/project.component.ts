@@ -72,7 +72,7 @@ export class ProjectComponent implements OnInit, OnDestroy
                 },
                 (err) => {
                   console.log("Error posting announcement", err);
-                }
+                }  
               );
             } else {
               console.log('Only users with Company role can post announcements');
@@ -211,18 +211,49 @@ export class ProjectComponent implements OnInit, OnDestroy
         "location_id": ""
     }
 
-    getallannoucements() {
-        this.http.get(`${environment.apiUrl}/announcements?list=true`).subscribe(
-            (result: any) => {
-                console.log("Announcement Data: ", result);
-                this.annoucementlist = result;
-                this.cdr.detectChanges();
-            },
-            (err) => {
-                console.log("Error fetching announcements:", err);
-            }
-        );
-    }  
+getallannoucements() {
+    // Get the locationId from the GhlIntegrationService
+    const locationId = this.ghlIntegrationService.getLocationId();
+
+    // Get the userType from the GhlIntegrationService
+    this.ghlIntegrationService.getUserType().subscribe((userType: string | null) => {
+        console.log("User Type fetched:", userType);  
+
+        // If userType is 'Company', fetch all announcements without location filter
+        if (userType === 'Company') {
+            console.log("User is a Company, fetching all announcements...");
+            this.http.get(`${environment.apiUrl}/announcements?list=true`).subscribe(
+                (result: any) => {
+                    console.log("Announcement Data for Company:", result);
+                    this.annoucementlist = result;
+                    this.cdr.detectChanges();
+                },
+                (err) => {
+                    console.log("Error fetching announcements:", err);
+                }
+            );
+        } else if (locationId) {
+            // If locationId is available, fetch announcements for the specific locationId
+            console.log("Location ID fetched:", locationId);
+            this.http.get(`${environment.apiUrl}/announcements?list=true&location_id=${locationId}`).subscribe(
+                (result: any) => {
+                    console.log("Announcement Data for locationId:", result);
+                    this.annoucementlist = result;
+                    this.cdr.detectChanges();
+                },
+                (err) => {
+                    console.log("Error fetching announcements:", err);
+                }
+            );
+        } else {
+            // If neither userType is 'Company' nor locationId is available, show nothing
+            this.annoucementlist = {};  // Clear announcement data
+            console.log("No locationId available and userType is not Company. No announcements to display.");
+        }
+    });
+}
+
+
     
   
     ngAfterViewInit(): void {

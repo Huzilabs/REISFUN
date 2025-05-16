@@ -230,16 +230,12 @@
                                                     <mat-label class="text-sm text-gray-600">Title</mat-label>
                                                     <input matInput [(ngModel)]="newAccoucment.title" name="title" placeholder="Enter announcement title" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
                                                 </mat-form-field>
-                                
-                                                <!-- Description Input -->
-                                                <mat-form-field class="w-full mb-4">
+<mat-form-field class="w-full mb-4">  
                                                     <mat-label class="text-sm text-gray-600">Description</mat-label>
-                                                    <textarea matInput [(ngModel)]="newAnnouncement.description" name="description" placeholder="Enter announcement description" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500" (ngModelChange)="onDescriptionChange($event)"></textarea>
-                                                    <div *ngIf="descriptionError" class="text-red-500 text-sm">Description exceeds 255 characters.</div>
-                                                    <div class="text-sm text-gray-500">
-                                                        Word count: {{ wordCount }} | Max characters: 255
-                                                    </div>
-                                                </mat-form-field>
+                                                    <input matInput [(ngModel)]="newAccoucment.description" name="description" placeholder="Enter announcement description" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                </mat-form-field>                                
+                                                <!-- Description Input -->
+                                              
                                                 
                                 
                                                 <!-- Location ID Input -->

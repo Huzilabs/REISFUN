@@ -1,66 +1,133 @@
-<div
-    class="absolute inset-0 flex flex-col min-w-0 overflow-y-auto"
-    cdkScrollable>
+<!-- Property Listing Section -->
+<div class="flex flex-col flex-auto min-w-0 bg-card dark:bg-transparent">
+  <!-- Header -->
+  <div class="flex flex-col space-y-4 p-4 md:p-6">
+    <!-- Main container - row on large screens, column on small -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between w-full">
+      <!-- Header Section -->
+      <div class="flex flex-col mb-4 lg:mb-0">
+        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight">All MLS LEADS </h2>
+        <p class="mt-1 text-gray-500 text-sm md:text-base">Manage your MLS listings</p>
+      </div>
+  
+      <!-- Filters Section -->
+      <div class="w-full lg:w-auto flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:flex-wrap lg:flex-nowrap sm:items-center sm:gap-3">
+      <!-- Status filter -->
+      <mat-form-field appearance="outline" class="w-full sm:w-40 md:w-48">
+        <mat-label>Filter by Status</mat-label>
+      <mat-select [formControl]="statusFilter">
+  <mat-option *ngFor="let status of statusOptions" [value]="status">
+    {{ statusLabels[status] || status }}
+  </mat-option>
+</mat-select>  
 
-    <!-- Main -->
-    <div class="flex flex-col flex-auto items-center p-6 sm:p-10">
+      </mat-form-field>
+  
+      <!-- Search input -->
+      <mat-form-field appearance="outline" class="w-full sm:w-56 md:w-64">
+        <mat-label>Search properties</mat-label>
+        <input 
+          matInput 
+          [formControl]="searchQuery" 
+          placeholder="Search by title, type or price">
+        <button 
+          *ngIf="searchQuery.value" 
+          matSuffix 
+          mat-icon-button 
+          aria-label="Clear" 
+          (click)="searchQuery.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      
+      <!-- Properties per page selector -->
+      <mat-form-field appearance="outline" class="w-24 sm:w-20">
+        <mat-label>Per page</mat-label>
+        <mat-select [value]="pageSize.toString()" (selectionChange)="onPageSizeChange($event)">
+          <mat-option *ngFor="let size of pageSizeOptions" [value]="size.toString()">
+            {{ size }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- Add Deal Button -->
+      <button (click)="onclickaddDeal()" class="w-full sm:w-auto px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+        Add Deal
+      </button>
+      </div>
+    </div>
+  </div>
 
-        <!-- Title -->
-        <div class="mt-4 md:mt-24 text-3xl md:text-6xl font-extrabold tracking-tight leading-7 sm:leading-10">
-            Scrumboard Boards
-        </div>
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="flex justify-center items-center p-8">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
 
-        <!-- Boards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8 md:mt-16">
-            <ng-container *ngFor="let board of boards; trackBy: trackByFn">
-                <a
-                    class="flex flex-col items-start w-56 p-6 rounded-lg shadow bg-card rounded-lg hover:shadow-xl transition-shadow duration-150 ease-in-out"
-                    [routerLink]="[board.id]">
-                    <div class="flex items-center justify-center p-4 rounded-full bg-primary-50 text-primary-700 dark:bg-primary dark:text-on-primary">
-                        <mat-icon
-                            class="text-current"
-                            [svgIcon]="board.icon"></mat-icon>
-                    </div>
-                    <!-- Title -->
-                    <div class="mt-5 text-lg font-medium leading-5">{{board.title}}</div>
-                    <!-- Description -->
-                    <div class="mt-0.5 line-clamp-2 text-secondary">{{board.description}}</div>
-                    <!-- Members -->
-                    <ng-container *ngIf="board.members?.length">
-                        <div class="w-12 h-1 mt-6 border-t-2"></div>
-                        <div class="flex items-center mt-6 -space-x-1.5">
-                            <ng-container *ngFor="let member of board.members.slice(0, 5); trackBy: trackByFn">
-                                <img
-                                    class="flex-0 w-8 h-8 rounded-full ring ring-offset-1 ring-bg-card ring-offset-transparent object-cover"
-                                    [src]="member.avatar"
-                                    alt="Member avatar">
-                            </ng-container>
-                            <ng-container *ngIf="board.members.length > 5">
-                                <div class="flex flex-0 items-center justify-center w-8 h-8 rounded-full ring ring-offset-1 ring-bg-card ring-offset-transparent bg-gray-200 text-gray-500">
-                                    <div class="text-md font-semibold">
-                                        +{{ board.members.slice(5).length }}
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </ng-container>
-                    <!-- Last activity -->
-                    <div class="flex items-center mt-4 text-md font-md">
-                        <div class="text-secondary">Edited:</div>
-                        <div class="ml-1">{{formatDateAsRelative(board.lastActivity)}}</div>
-                    </div>
-                </a>
-            </ng-container>
-            <!-- New board -->
-            <div class="flex flex-col items-center justify-center w-56 rounded-lg cursor-pointer border-2 border-gray-300 border-dashed hover:bg-hover transition-colors duration-150 ease-in-out">
-                <mat-icon
-                    class="icon-size-12 text-hint"
-                    [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-            </div>
-        </div>
+  <!-- No results message -->
+  <div *ngIf="!isLoading && filteredProperties.length === 0" class="flex flex-col items-center justify-center p-8">
+    <mat-icon class="text-6xl mb-4 text-hint">search</mat-icon>
+    <h2 class="text-2xl font-semibold">No properties found</h2>
+    <p class="text-secondary mt-2">Try adjusting your search or filter criteria</p>
+  </div>
 
+  <!-- Property grid -->
+  <div *ngIf="!isLoading && paginatedProperties.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+    <div 
+  *ngFor="let property of paginatedProperties; trackBy: trackByFn" 
+  class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white hover:shadow-xl transition-shadow duration-200 cursor-pointer p-2 border border-gray-200 dark:bg-transparent "
+  (click)="onPropertyClick(property)">
+  <!-- Full title without line clamping -->
+  <h3 class="text-base font-semibold text-gray-800 break-words h-14 dark:text-white ">{{ property.title }}</h3>
+  
+  <!-- Property image -->
+  <div class="h-48 overflow-hidden">
+    <img 
+      [src]="getPropertyThumbnail(property)" 
+      [alt]="property.title"
+      class="w-full h-full object-cover"
+    >
+  </div>
+  
+  <!-- Property info -->
+  <div class="flex flex-col p-2 gap-2">
+    <div class="flex justify-between items-start">
+      <div 
+        [ngClass]="getStatusColor(property.status)"
+        class="text-white text-xs font-medium px-2 py-1 rounded-full"
+      >
+        {{ property.status | titlecase }}
+      </div>
+    </div>
+    <div class="mt-2 text-sm">
+      {{ property.inspection_period_end_date ? (property.inspection_period_end_date | date: 'MM/dd/yyyy') : '8/2/2025' }}
     </div>
 
+    
+    <div class="text-xl font-semibold  mt-1">
+      <font class="text-black-600 text-sm">Est. Price:</font> <font class="text-green-600"> {{ getFormattedPrice(property.price) }}</font>
+    </div>
+    
+   
+    
+ 
+  </div>
 </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center p-6 border-t border-gray-200">
+    <mat-paginator
+      *ngIf="filteredProperties.length > 0"
+      [length]="totalProperties"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>
+
 
 

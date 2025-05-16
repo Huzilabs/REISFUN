@@ -1,1 +1,222 @@
-<router-outlet></router-outlet>
+<div class="max-w-full mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+  <!-- Search and Filter Bar -->
+  <div class="p-5 bg-white border-b border-gray-200 flex flex-col sm:flex-row gap-4 items-center justify-between">
+    <div class="relative w-full sm:w-64">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <input type="text" placeholder="Search contacts..." [formControl]="searchControl"
+        class="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+    </div>
+    <div class="flex gap-2 w-full sm:w-auto">
+      <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg py-2 px-4 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        Add Contact
+      </button>
+      <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg py-2 px-4 transition duration-150 focus:outline-none focus:ring-2 focus:ring-gray-300 flex items-center">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+        </svg>
+        Filter
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-4 mx-4 mt-4 rounded shadow-sm">
+    <div class="flex items-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span class="font-medium">{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Table Container with horizontal scroll for small devices -->
+  <div *ngIf="!errorMessage && contacts.length > 0" class="overflow-x-auto">
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr class="bg-gray-50 text-gray-700 text-xs md:text-sm leading-normal">
+          <th class="py-3 px-4 md:px-6 text-left whitespace-nowrap font-semibold">
+            <button class="flex items-center focus:outline-none group" (click)="updateSortField('name')">
+              Name
+              <svg class="ml-1 h-4 w-4 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+              </svg>
+            </button>
+          </th>
+          <th class="py-3 px-4 md:px-6 text-left whitespace-nowrap font-semibold hidden xs:table-cell">
+            <button class="flex items-center focus:outline-none group" (click)="updateSortField('id')">
+              ID
+              <svg class="ml-1 h-4 w-4 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+              </svg>
+            </button>
+          </th>
+          <th class="py-3 px-4 md:px-6 text-left whitespace-nowrap font-semibold">
+            <button class="flex items-center focus:outline-none group" (click)="updateSortField('email')">
+              Email
+              <svg class="ml-1 h-4 w-4 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+              </svg>
+            </button>
+          </th>
+          <th class="py-3 px-4 md:px-6 text-left whitespace-nowrap font-semibold">
+            <button class="flex items-center focus:outline-none group" (click)="updateSortField('role')">
+              Role
+              <svg class="ml-1 h-4 w-4 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+              </svg>
+            </button>
+          </th>
+          <th class="py-3 px-4 md:px-6 text-left whitespace-nowrap font-semibold hidden md:table-cell">
+            <button class="flex items-center focus:outline-none group" (click)="updateSortField('location_ids')">
+              Location  
+              <svg class="ml-1 h-4 w-4 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+              </svg>
+            </button>
+          </th>
+          <th class="py-3 px-4 md:px-6 text-left whitespace-nowrap font-semibold hidden sm:table-cell">
+            <button class="flex items-center focus:outline-none group" (click)="updateSortField('phone')">
+              Phone
+              <svg class="ml-1 h-4 w-4 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+              </svg>
+            </button>
+          </th>
+          <th class="py-3 px-4 md:px-6 text-left whitespace-nowrap font-semibold hidden lg:table-cell">
+            <button class="flex items-center focus:outline-none group" (click)="updateSortField('created_at')">
+              Created
+              <svg class="ml-1 h-4 w-4 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+              </svg>
+            </button>
+          </th>
+          <th class="py-3 px-4 md:px-6 text-right whitespace-nowrap font-semibold">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-600 text-xs md:text-sm divide-y divide-gray-200">
+        <tr *ngFor="let contact of paginatedContacts; let i = index" 
+            class="hover:bg-blue-50 transition duration-150">
+          <td class="py-3 px-4 md:px-6">
+            <div class="flex items-center">
+              <div class="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-medium mr-3 hidden sm:flex">
+                {{ contact.name.charAt(0) }}
+              </div>
+              <div>
+                <p class="font-medium text-gray-800">{{ contact.name }}</p>
+                <p class="text-xs text-gray-500 xs:hidden">{{ contact.id }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-4 md:px-6 text-gray-500 hidden xs:table-cell">{{ contact.id }}</td>
+          <td class="py-3 px-4 md:px-6 break-all">
+            <a href="mailto:{{ contact.email }}" class="text-blue-600 hover:text-blue-800 hover:underline">{{ contact.email }}</a>
+          </td>
+          <td class="py-3 px-4 md:px-6">
+            <span [ngClass]="{
+              'bg-green-100 text-green-800': contact.role === 'admin',
+              'bg-blue-100 text-blue-800': contact.role === 'user',
+              'bg-purple-100 text-purple-800': contact.role === 'manager',
+              'bg-gray-100 text-gray-800': !['admin', 'user', 'manager'].includes(contact.role)
+            }" class="text-xs font-medium px-2.5 py-0.5 rounded-full">
+              {{ contact.role }}
+            </span>
+          </td>
+          <td class="py-3 px-4 md:px-6 hidden md:table-cell">
+            <span *ngIf="contact.location_ids" class="inline-flex items-center">
+              <svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              {{ contact.location_ids }}
+            </span>
+            <span *ngIf="!contact.location_ids" class="text-gray-400">—</span>
+          </td>
+          <td class="py-3 px-4 md:px-6 hidden sm:table-cell">
+            <a *ngIf="contact.phone" href="tel:{{ contact.phone }}" class="hover:text-blue-600">{{ contact.phone }}</a>
+            <span *ngIf="!contact.phone" class="text-gray-400">—</span>
+          </td>
+          <td class="py-3 px-4 md:px-6 hidden lg:table-cell text-gray-500">
+            {{ contact.created_at | date: 'MMM d, y' }}
+          </td>
+          <td class="py-3 px-4 md:px-6 text-right">
+            <div class="flex justify-end space-x-2">
+              <button class="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600" title="Edit">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+              <button class="text-gray-400 hover:text-red-600 focus:outline-none focus:text-red-600" title="Delete">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+ <div class="flex items-center justify-end space-x-2 p-4">
+  <button
+    (click)="setPage(currentPage - 1)"
+    [disabled]="currentPage === 1"
+    class="px-3 py-1 rounded-md border border-gray-300 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors duration-200"
+  >
+    Previous
+  </button>
+
+  <!-- Page numbers -->
+  <button
+    *ngFor="let page of pageNumbers"
+    (click)="page !== -1 && setPage(page)"
+    [class.font-semibold]="page === currentPage"
+    [disabled]="page === -1"
+    class="px-3 py-1 rounded-md border border-gray-300 mx-0.5
+           disabled:opacity-50 disabled:cursor-default
+           hover:bg-gray-100 transition-colors duration-200
+           cursor-pointer
+           {{ page === currentPage ? 'bg-indigo-600 text-white border-indigo-600' : 'text-gray-700' }}"
+  >
+    {{ page === -1 ? '...' : page }}
+  </button>
+
+  <button
+    (click)="setPage(currentPage + 1)"
+    [disabled]="currentPage === totalPages"
+    class="px-3 py-1 rounded-md border border-gray-300 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors duration-200"
+  >
+    Next
+  </button>
+</div>
+
+
+  <!-- No contacts message -->
+  <div *ngIf="contacts.length === 0 && !errorMessage" class="bg-white p-8 rounded-lg text-center">
+    <div class="bg-gray-50 py-12 px-4 rounded-xl">
+      <svg class="w-20 h-20 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+      </svg>
+      <h3 class="mt-4 text-gray-900 text-lg font-medium">No contacts available</h3>
+      <p class="mt-2 text-gray-500 text-base max-w-md mx-auto">Your contact list is empty. Add your first contact to start building your network.</p>
+      <div class="mt-6">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg py-2 px-6 text-sm transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300 flex items-center mx-auto">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          Add Your First Contact
+        </button>
+      </div>   
+    </div>
+  </div>
+</div>

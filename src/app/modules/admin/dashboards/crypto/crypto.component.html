@@ -7,26 +7,31 @@
                     <!-- Header -->
                     <div class="w-full sm:w-auto mb-4 sm:mb-0   dark:text-white">
                         <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-3xl font-semibold tracking-wide leading-tight text-gray-800 whitespace-nowrap dark:text-white" style="font-family: sans-serif;">
-                            <span *ngIf="!editMode">{{propertyDetails.title || 'Property Details'}}</span>
-                            <input *ngIf="editMode" type="text" [formControl]="propertyForm.controls['title']" class="border border-gray-300 rounded p-2 w-full text-base w-full">
+                            <span class="w-full" *ngIf="!editMode">{{propertyDetails.title || 'Property Details'}}</span>
+                            <input *ngIf="editMode" 
+       type="text" 
+       [formControl]="propertyForm.controls['title']" 
+       class="border border-black rounded p-2 w-full whitespace-nowrap text-base">
+
                         </h1>  
                     </div>       
                 
                     <!-- Action Icons and Button -->
                     <div class="flex flex-wrap gap-6 mr-2 items-center w-full sm:w-auto justify-start sm:justify-end">
                         <!-- Save/Cancel/Edit Icons -->
-                        <div class="flex-shrink-0" *ngIf="editMode">
-                            <mat-icon svgIcon="heroicons_solid:save"
-                                      class="text-xl sm:text-2xl md:text-3xl lg:text-4xl cursor-pointer"
-                                      [ngClass]="{' text-white': editMode, 'bg-transparent text-black': !editMode}"
-                                      (click)="saveChanges()"></mat-icon>
+                       
+                        <div class="flex-shrink-0 bg-black text-white p-2 rounded-lg text-sm" *ngIf="editMode">
+                            <button [ngClass]="{'bg-black text-white': editMode, 'bg-transparent text-black': !editMode}"
+                            (click)="cancelChanges()">Cancel</button>
                         </div>
-                        <div class="flex-shrink-0" *ngIf="editMode">
-                            <mat-icon svgIcon="heroicons_solid:x"
-                                      class="text-xl sm:text-2xl md:text-3xl lg:text-4xl cursor-pointer"
-                                      [ngClass]="{'bg-black text-white': editMode, 'bg-transparent text-black': !editMode}"
-                                      (click)="cancelChanges()"></mat-icon>
+                         <div class="flex-shrink-0 bg-red-600 text-white p-2 rounded-lg text-sm" *ngIf="editMode">
+                            <button [ngClass]="{' text-white': editMode, 'bg-red-600 text-white': !editMode}"
+                            (click)="saveChanges()">Save Changes</button>
+                                    
+                                       
+                                    
                         </div>
+                        
                         <div class="flex-shrink-0" *ngIf="!editMode">
                             <mat-icon svgIcon="heroicons_solid:pencil"
                                       class="text-xl sm:text-2xl md:text-3xl lg:text-4xl cursor-pointer"
@@ -44,10 +49,8 @@
                     
                         <!-- Close Deal Button -->
                         <div class="flex-shrink-0" *ngIf="!editMode">
-                            <button class="bg-green-500 p-2 sm:p-3 rounded-full flex items-center justify-center gap-2 text-white w-auto"
+                            <button class="bg-red-600 p-1 sm:p-3 rounded-lg flex items-center justify-center gap-2 text-white w-auto"
                                     (click)="openCloseDealModal()">
-                                <mat-icon svgIcon="heroicons_solid:shield-check"
-                                          class="text-white text-sm sm:text-base md:text-lg lg:text-xl"></mat-icon>
                                 <span class="hidden sm:inline">Close Deal</span>
                             </button>
                         </div>
@@ -57,64 +60,120 @@
                 <div class="border-t-2 border-[#454545] w-full"></div>
                 
                 <!-- Status Buttons Section -->
-                <div class="btns-div flex flex-wrap gap-4 justify-center sm:justify-start p-4" *ngIf="!editMode">
-                    <!-- Pre Marketing Button -->
-                    <button 
-                      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-                      [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'pre marketing'}"
-                      (click)="updateStatus('pre marketing')">
-                      Pre Marketing
-                    </button>  
-                  
-                    <!-- Waiting for Response Button -->
-                    <button 
-                      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-                      [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'waiting for response'}"
-                      (click)="updateStatus('waiting for response')">
-                      Waiting for Response
-                    </button>
-                  
-                    <!-- Waiting for Interest Button -->
-                    <button 
-                      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-                      [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'waiting for interest'}"
-                      (click)="updateStatus('Waiting for Interest')">
-                      Waiting for Interest
-                    </button>
-                  
-                    <!-- Interested Buyers Button -->
-                    <button 
-                      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-                      [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'interested buyers'}"
-                      (click)="updateStatus('interested buyers')">
-                      Interested Buyers
-                    </button>
-                  
-                    <!-- Walkthrough Schedule Button -->
-                    <button 
-                      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-                      [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'walkthrough schedule'}"
-                      (click)="updateStatus('walkthrough schedule')">
-                      Walkthrough Schedule
-                    </button>
-                  
-                    <!-- Walkthrough Finished Button -->
-                    <button 
-                      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-                      [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'walkthrough finished'}"
-                      (click)="updateStatus('walkthrough finished')">
-                      Walkthrough Finished
-                    </button>
-                  
-                    <!-- Cancel Button -->
-                    <button 
-                      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-                      [ngClass]="{'bg-blue-500 text-white': propertyDetails.status === 'cancel'}"
-                      (click)="updateStatus('cancel')">
-                      Cancel
-                    </button>
-                </div>
-            </div>
+<div class="btns-div flex flex-wrap gap-4 justify-center sm:justify-start p-4" *ngIf="!editMode">
+
+  <!-- Pre Marketing Button -->
+  <button 
+    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+    [ngClass]="{
+      'bg-black text-white hover:bg-black': propertyDetails.status === 'active',
+      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'active'
+    }"
+    (click)="updateStatus('active')">
+    Active
+  </button>  
+
+  <!-- Waiting for Response Button -->
+  <button 
+    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+    [ngClass]="{
+      'bg-black text-white hover:bg-black': propertyDetails.status === 'email-&-text-blast-sent',
+      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'email-&-text-blast-sent'
+    }"
+    (click)="updateStatus('email-&-text-blast-sent')">
+    Email & Text Blast Sent
+  </button>
+
+  <!-- Waiting for Interest Button -->
+  <button 
+    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+    [ngClass]="{
+      'bg-black text-white hover:bg-black': propertyDetails.status === 'assigned',
+      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'assigned'
+    }"
+    (click)="updateStatus('assigned')">
+    Assigned
+  </button>
+
+  <!-- Interested Buyers Button -->
+  <button 
+    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+    [ngClass]="{
+      'bg-black text-white hover:bg-black': propertyDetails.status === 'cancelled',
+      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'cancelled'
+    }"
+    (click)="updateStatus('cancelled')">
+    Cancelled 
+  </button>
+
+  <!-- Walkthrough Schedule Button -->
+  <button 
+    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+    [ngClass]="{
+      'bg-black text-white hover:bg-black': propertyDetails.status === 'sidelines',
+      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'sidelines'
+    }"
+    (click)="updateStatus('sidelines')">
+    Sidelines
+  </button>
+
+  <!-- Walkthrough Finished Button -->
+  <button 
+    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+    [ngClass]="{
+      'bg-black text-white hover:bg-black': propertyDetails.status === 'closed',
+      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'closed'
+    }"
+    (click)="updateStatus('closed')">
+    Closed
+  </button>
+
+  <!-- Cancel Button -->
+  <button 
+    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+    [ngClass]="{
+      'bg-black text-white hover:bg-black': propertyDetails.status === 'lot-deal',
+      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'lot-deal'
+    }"
+    (click)="updateStatus('lot-deal')">
+    Lot Deal
+  </button>
+
+  <!-- Others Dropdown Button INSIDE the same flex container -->
+  <div class="relative">
+    <button
+      type="button"
+      (click)="othersDropdownOpen = !othersDropdownOpen"
+      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base flex items-center space-x-1"
+      [attr.aria-expanded]="othersDropdownOpen"
+      aria-haspopup="true"
+    >
+      <span>Others</span>
+      <svg class="w-4 h-4 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+
+    <div
+      *ngIf="othersDropdownOpen"
+      class="absolute z-20 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1"
+      role="menu"
+      aria-orientation="vertical"
+      tabindex="-1"
+    >
+      <button
+        *ngFor="let status of othersStatuses"
+        (click)="updateStatus(status.key); othersDropdownOpen = false"
+        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        role="menuitem"
+        tabindex="-1"
+      >
+        {{ status.label }}
+      </button>
+    </div>
+  </div>
+
+</div>
             
             <!-- Main Content Form -->
             <form [formGroup]="propertyForm" *ngIf="propertyForm"  >
@@ -149,7 +208,7 @@
                                 <h3 class="text-lg md:text-xl font-bold">Land Information</h3>
                                 <div class="ml-auto">
                                     <div class="bg-blue-100 px-4 py-2 rounded-md">
-                                        <a [href]="propertyDetails?.zillow" target="_blank" class="text-blue-600 font-medium flex items-center">
+                                        <a [href]="propertyDetails?.zillow_link" target="_blank" class="text-blue-600 font-medium flex items-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
                                                 <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V9L14 3H6z"></path>
                                                 <path d="M14 3v6h6"></path>
@@ -360,7 +419,183 @@
                     </div>
                 </div>
             </form>
-            
+     <div class="bg-white p-6 rounded-lg shadow-md mb-4 max-w-full">
+  <h3 class="text-xl font-semibold text-gray-900 mb-4 border-b border-gray-300 pb-2">
+    AGENT INFORMATION
+  </h3>
+
+  <!-- View Mode -->
+  <div *ngIf="!editMode" class="flex space-x-8 text-gray-700 items-center">
+    <div class="flex flex-col">
+      <span class="text-sm font-medium text-gray-500">Agent Name</span>
+      <span class="text-base font-semibold text-gray-800">
+        {{ propertyDetails?.agent_name || 'N/A' }}
+      </span>
+    </div>
+
+    <div class="flex flex-col">
+      <span class="text-sm font-medium text-gray-500">Agent Phone</span>
+      <span class="text-base font-semibold text-gray-800">
+        {{ propertyDetails?.agent_phone_number || 'N/A' }}
+      </span>
+    </div>
+
+    <div class="flex flex-col max-w-xs truncate">
+      <span class="text-sm font-medium text-gray-500">Agent Email</span>
+      <span class="text-base font-semibold text-gray-800 truncate">
+        {{ propertyDetails?.agent_email || 'N/A' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Edit Mode -->
+  <form *ngIf="editMode" [formGroup]="propertyForm" class="flex space-x-8 items-center">
+    <div class="flex flex-col">
+      <label for="agent_name" class="text-sm font-medium text-gray-500 mb-1">Agent Name</label>
+      <input
+        id="agent_name"
+        type="text"
+        formControlName="agent_name"
+        class="border border-gray-300 rounded p-2 text-base w-64"
+        placeholder="Agent Name"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <label for="agent_phone_number" class="text-sm font-medium text-gray-500 mb-1">Agent Phone</label>
+      <input
+        id="agent_phone_number"
+        type="text"
+        formControlName="agent_phone_number"
+        class="border border-gray-300 rounded p-2 text-base w-48"
+        placeholder="Agent Phone"
+      />
+    </div>
+
+    <div class="flex flex-col max-w-xs">
+      <label for="agent_email" class="text-sm font-medium text-gray-500 mb-1">Agent Email</label>
+      <input
+        id="agent_email"
+        type="email"
+        formControlName="agent_email"
+        class="border border-gray-300 rounded p-2 text-base w-64 truncate"
+        placeholder="Agent Email"
+      />
+    </div>
+  </form>
+</div>
+
+<div class="bg-white p-6 rounded-lg shadow-md mb-4 max-w-full">
+  <h3 class="text-xl font-semibold text-gray-900 mb-4 border-b border-gray-300 pb-2">
+    OTHER INFO.
+  </h3>
+
+  <div *ngIf="!editMode" class=" space-x-16 text-gray-700 items-center">
+   <div class="flex flex-col space-y-3 border-b border-gray-300 pb-2">
+  <span class="text-sm font-medium text-gray-500">REP DEAL ID</span>
+  
+
+  <div class="flex space-x-6 mt-2">
+    <button
+  *ngFor="let name of ['riley', 'seth', 'zion', 'remy', 'matthew', 'mario', 'sammy']"
+  (click)="repDealButtonClicked(name)"
+  [ngClass]="{
+    'bg-black text-white': propertyForm.controls['rep_deal_id'].value === name,
+    'bg-gray-200 text-gray-700 hover:bg-gray-300': propertyForm.controls['rep_deal_id'].value !== name
+  }"
+  class="px-4 py-2 rounded-md font-semibold transition-colors duration-200"
+  type="button"
+>
+  {{ name | titlecase }}
+</button>
+
+  </div>
+</div>
+
+
+
+
+
+     </div>
+
+ <div class="flex flex-col space-y-3 mt-4 border-b border-gray-300 pb-2">
+  <span class="text-sm font-medium text-gray-500">LEAD GEN</span>
+  
+
+  
+  <!-- Buttons for edit mode -->
+  <div  class="flex space-x-4 mt-2">
+   
+   <button
+    *ngFor="let status of ['direct to seller', 'agent outreach', 'on market', 'joint venture']"
+    (click)="leadGenButtonClicked(status)"
+    [ngClass]="{
+      'bg-black text-white': propertyForm.controls['lead_gen'].value === status,
+      'bg-gray-200 text-gray-700 hover:bg-gray-300': propertyForm.controls['lead_gen'].value !== status
+    }"
+    class="px-4 py-2 rounded-md font-semibold text-sm transition-colors duration-200 whitespace-nowrap"
+    type="button"
+  >
+    {{ status | titlecase }}
+  </button>
+  </div>
+</div>
+
+<div class="flex mt-8 gap-18 mb-4">
+  <div class="flex flex-col max-w-xs truncate">
+    <span class="text-sm font-medium text-gray-500">JOINT PARTNER INFO</span>
+    <ng-container *ngIf="!editMode; else editJointPartner">
+      <span class="text-base font-semibold text-gray-800 truncate">
+        {{ propertyDetails?.joint_partner_info || 'N/A' }}
+      </span>
+    </ng-container>
+    <ng-template #editJointPartner>
+      <input type="text" class="border border-gray-300 rounded p-2" formControlName="joint_partner_info" />
+    </ng-template>
+  </div>
+
+  <div class="flex flex-col max-w-xs truncate">
+    <span class="text-sm font-medium text-gray-500">BUYER WALKING APPOINTMENTS</span>
+    <ng-container *ngIf="!editMode; else editBuyerWalkin">
+      <span class="text-base font-semibold text-gray-800 truncate">
+        {{ propertyDetails?.buyer_walkin_appointments || 'N/A' }}
+      </span>
+    </ng-container>
+    <ng-template #editBuyerWalkin>
+      <input type="text" class="border border-gray-300 rounded p-2" formControlName="buyer_walkin_appointments" />
+    </ng-template>
+  </div>
+
+  <div class="flex flex-col max-w-xs truncate">
+    <span class="text-sm font-medium text-gray-500">DEAL TEXT</span>
+    <ng-container *ngIf="!editMode; else editDealText">
+      <span class="text-base font-semibold text-gray-800 truncate">
+        {{ propertyDetails?.deal_text || 'N/A' }}
+      </span>
+    </ng-container>
+    <ng-template #editDealText>
+      <textarea class="border border-gray-300 rounded p-2" formControlName="deal_text" rows="2"></textarea>
+    </ng-template>
+  </div>
+
+  <div class="flex flex-col max-w-xs truncate">
+    <span class="text-sm font-medium text-gray-500">IS ASSIGNABLE</span>
+    <ng-container *ngIf="!editMode; else editIsAssignable">
+      <span class="text-base font-semibold text-gray-800 truncate">
+        {{ propertyDetails?.is_assignable || 'N/A' }}
+      </span>
+    </ng-container>
+    <ng-template #editIsAssignable>
+      <select class="border border-gray-300 rounded p-2" formControlName="is_assignable">
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </ng-template>
+  </div>
+</div>
+
+</div>
             <!-- Full Property Details Section -->
            
         </div>
@@ -377,7 +612,7 @@
         <div *ngIf="!propertyId && !loading && !error" class="p-4 bg-yellow-100 text-yellow-700 rounded-lg">
             <p>No property ID specified.</p>
         </div>
-        
+            
         <!-- Close Deal Modal -->
         <div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50" *ngIf="showCloseDealModal">
             <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
@@ -414,7 +649,7 @@
                     </button>
                     <button  
                         type="button"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                        class="bg-black hover:bg-red-700 text-white px-4 py-2 rounded"
                         (click)="closeDeal()"
                         [disabled]="loading"
                     >
@@ -449,7 +684,7 @@
           <!-- CTA Button -->
           <div class="p-2 bg-white border-b dark:bg-gray-800">
             <button (click)="onclickaddDeal()" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
-              Log a Past Deal
+              Log a Past Deal    
             </button>
           </div>
       

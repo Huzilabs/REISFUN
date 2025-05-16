@@ -22,6 +22,7 @@ import { ScrumboardBoardAddListComponent } from 'app/modules/admin/apps/scrumboa
 import { ScrumboardCardComponent } from 'app/modules/admin/apps/scrumboard/card/card.component';
 import { ScrumboardCardDetailsComponent } from 'app/modules/admin/apps/scrumboard/card/details/details.component';
 import { scrumboardRoutes } from 'app/modules/admin/apps/scrumboard/scrumboard.routing';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
     declarations: [
@@ -46,7 +47,9 @@ import { scrumboardRoutes } from 'app/modules/admin/apps/scrumboard/scrumboard.r
         MatMenuModule,
         MatMomentDateModule,
         MatProgressBarModule,
-        SharedModule
+        SharedModule,
+        MatFormFieldModule,
+        MatSelectModule
     ],
     providers   : [
         {
