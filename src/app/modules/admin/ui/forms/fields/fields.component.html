@@ -30,9 +30,22 @@
                         <mat-label>Status</mat-label>
                         <mat-select formControlName="status">
                             <mat-option value="">Select Status</mat-option>
-                            <mat-option value="Active">Active</mat-option>
-                            <mat-option value="Inactive">Inactive</mat-option>
-                            <mat-option value="Pending">Pending</mat-option>
+                            <mat-option value="active">Active</mat-option>
+                            <mat-option value="email-&-text-blast-sent">Email & Text Blast Sent</mat-option>
+                            <mat-option value="target-new-buyers-nearby">Target new buyers nearby</mat-option>
+                            <mat-option value="call-vip-buyers-get-feedback-no-traction">Call VIP Buyers + Get Feedback = No Traction</mat-option>
+                            <mat-option value="price-drop-sent-out">Price Drop Sent Out</mat-option>
+                            <mat-option value="assigned">Assigned</mat-option>
+                            <mat-option value="waiting-for-buyers-emd">Waiting for buyers EMD</mat-option>
+                            <mat-option value="pending-retrade">Pending Retrade</mat-option>
+                            <mat-option value="closed">Closed</mat-option>
+                            <mat-option value="sidelines">Sidelines</mat-option>
+                            <mat-option value="cancelled">Cancelled</mat-option>
+                            <mat-option value="lot-deal">Lot Deal</mat-option>
+                            <mat-option value="need-photos">Need photos</mat-option>
+                            <mat-option value="flipping-ourselves">Flipping Ourselves</mat-option>
+
+                            
                         </mat-select>
                         <mat-error *ngIf="propertyForm.get('status')?.hasError('required')">Status is required</mat-error>
                     </mat-form-field>
@@ -154,28 +167,96 @@
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:phone'"></mat-icon>
                         <mat-error *ngIf="propertyForm.get('agent_phone_number')?.hasError('required')">Agent phone number is required</mat-error>
                     </mat-form-field>
+   
+
+
+
                 </div>
-                                
+             <div class="flex flex-col sm:flex-row flex-wrap w-full">
+  <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pr-2 md:pr-2 mb-2 sm:mb-0">
+    <mat-label>REP Deal</mat-label>
+    <mat-select formControlName="rep_deal_id">
+      <mat-option value="">Select Deal Person</mat-option>
+      <mat-option value="riley">Riley</mat-option>
+      <mat-option value="seth">Seth</mat-option>
+      <mat-option value="zion">Zion</mat-option>
+      <mat-option value="remy">Remy</mat-option>
+      <mat-option value="matthew">Matthew</mat-option>
+      <mat-option value="mario">Mario</mat-option>
+      <mat-option value="sammy">Sammy</mat-option>
+    </mat-select>
+    <mat-error *ngIf="propertyForm.get('rep_deal_id')?.hasError('required')">Rep_deal_id is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
+    <mat-label>Lead Gen</mat-label>
+    <mat-select formControlName="lead_gen">
+      <mat-option value="">Select Lead Gen</mat-option>
+      <mat-option value="direct to seller">Direct to Seller/Cold Calling</mat-option>
+      <mat-option value="agent outreach">Agent Outreach</mat-option>
+      <mat-option value="on market">On Market</mat-option>
+      <mat-option value="koin venture">Joint Venture</mat-option>
+    </mat-select>
+    <mat-error *ngIf="propertyForm.get('lead_gen')?.hasError('required')">Lead_Gen is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-full md:w-1/3 md:pl-2 mb-2 sm:mb-0">
+    <mat-label>Close Date</mat-label>
+    <input matInput formControlName="close_date" />
+    <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+    <mat-error *ngIf="propertyForm.get('close_date')?.hasError('required')">Close Date is required</mat-error>
+    <mat-error *ngIf="propertyForm.get('close_date')?.hasError('pattern')">Must be a valid number</mat-error>
+  </mat-form-field>
+</div>
+
+             <div class="flex flex-col sm:flex-row flex-wrap w-full">
+  <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pr-2 md:pr-2 mb-2 sm:mb-0">
+    <mat-label>Joint Partner Info</mat-label>
+    <input matInput formControlName="joint_partner_info" />
+    <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+    <mat-error *ngIf="propertyForm.get('joint_partner_info')?.hasError('required')">Joint Partner Info is required</mat-error>
+    <mat-error *ngIf="propertyForm.get('joint_partner_info')?.hasError('pattern')">Must be a valid number</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
+    <mat-label>Buyer Inspection Appointments </mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="buyer_walkin_appointments">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field class="w-full md:w-1/3 md:pl-2 mb-2 sm:mb-0">
+    <mat-label>Deal Text</mat-label>
+    <input matInput formControlName="deal_text" />
+    <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
+    <mat-error *ngIf="propertyForm.get('deal_text')?.hasError('required')">Deal Text is required</mat-error>
+    <mat-error *ngIf="propertyForm.get('deal_text')?.hasError('pattern')">Must be a valid number</mat-error>
+  </mat-form-field>
+</div>
+      
                 <!-- Additional details -->
-                <div class="flex flex-col sm:flex-row flex-wrap w-full">
-                    <!-- <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pr-2 md:pr-2 mb-2 sm:mb-0">
-                        <mat-label>Zillow Link</mat-label>
-                        <input matInput #zillowInput formControlName="zillow_link">
-                        <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:link'"></mat-icon>
-                    </mat-form-field> -->
-                    
-                    <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
-                        <mat-label>HOA</mat-label>
-                        <input matInput formControlName="hoa">
-                        <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
-                    </mat-form-field>
-                    
-                    <mat-form-field class="w-full md:w-1/3 md:pl-2">
-                        <mat-label>Agent Remarks</mat-label>
-                        <input matInput formControlName="agent_remark">
-                        <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:document-duplicate'"></mat-icon>
-                    </mat-form-field>
-                </div>  
+               <div class="flex flex-col sm:flex-row flex-wrap w-full">
+  <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pr-2 md:pr-2 mb-2 sm:mb-0">
+    <mat-label>Is Assignable</mat-label>  
+    <mat-select formControlName="is_assignable">
+      <mat-option value="">Select Assignable Status </mat-option>
+      <mat-option value="true">True </mat-option>
+      <mat-option value="false">False </mat-option>
+          </mat-select> </mat-form-field>
+
+  <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
+    <mat-label>HOA</mat-label>
+    <input matInput formControlName="hoa" />
+    <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+  </mat-form-field>
+
+  <mat-form-field class="w-full md:w-1/3 md:pl-2 mb-2 sm:mb-0">
+    <mat-label>Agent Remarks</mat-label>
+    <input matInput formControlName="agent_remark" />
+    <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:document-duplicate'"></mat-icon>
+  </mat-form-field>
+</div>
+
                 
                 <!-- Description field -->
                 <mat-form-field class="w-full">
@@ -188,12 +269,7 @@
                     <div class="text-lg font-medium mb-4">Upload Property Image</div>
                   
                     <!-- Hidden file input -->
-                    <input 
-                        type="file" 
-                        (change)="onFileSelected($event)" 
-                        accept="image/*" 
-                        class="file-input hidden"
-                    />
+                   <input type="file" multiple class="file-input" (change)="onFileSelected($event)" style="display:none" />
                   
                     <!-- Custom Button to trigger file input -->
                     <button 
@@ -217,10 +293,43 @@
                     </div>
                   
                     <!-- Display image URL after upload -->
-                    <div *ngIf="fileUrl" class="mt-4 w-full">
-                        <div class="font-semibold">Image uploaded successfully!</div>
-                        <img [src]="fileUrl" class="mt-2 max-h-60 rounded border shadow" alt="Uploaded property image" />
-                    </div>
+                   <div *ngIf="uploadedFiles.length > 0" class="mt-4 w-full">
+  <div class="font-semibold mb-2">Uploaded Files:</div>
+
+  <div *ngFor="let file of uploadedFiles; let i = index" class="mb-4 flex items-center space-x-4 relative">
+    <!-- Remove button -->
+    <button 
+      type="button"
+      (click)="removeFile(i)"
+      aria-label="Remove uploaded file"
+      class="absolute top-0 right-0 text-red-600 font-bold hover:text-red-800 focus:outline-none"
+      style="background: transparent; border: none; cursor: pointer; font-size: 1.5rem; line-height: 1;">
+      &times;
+    </button>
+
+    <!-- Image preview -->
+    <img *ngIf="isImage(file.fileType)" [src]="file.fileUrl" class="max-h-30 w-20 rounded border shadow" alt="Uploaded image" />
+
+    <!-- PDF icon -->
+    <div *ngIf="file.fileType === 'pdf'" class="file-icon pdf-icon">
+      <img src="assets/images/pdf.png" alt="PDF Icon" class="w-12 h-12" />
+    </div>
+
+    <!-- DOC/DOCX icon -->
+   
+    <div *ngIf="file.fileType === 'msword' || file.fileType === 'vnd.openxmlformats-officedocument.wordprocessingml.document'" class="file-icon doc-icon">
+      <img src="assets/images/microsoft-word.webp" alt="DOC Icon" class="w-12 h-12" />
+    </div>
+
+    <!-- Fallback icon -->
+    <div *ngIf="!isImage(file.fileType) && file.fileType !== 'pdf' && file.fileType !== 'msword' && file.fileType !== 'vnd.openxmlformats-officedocument.wordprocessingml.document'">
+      <img src="assets/icons/file-icon.svg" alt="File Icon" class="w-12 h-12" />
+    </div>
+
+    <div class="flex-1 break-all">{{ extractFileName(file.fileUrl) }}</div>
+  </div>
+</div>
+
                 </div>
 
                 <!-- Submit and Cancel buttons -->   

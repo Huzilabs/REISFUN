@@ -211,7 +211,7 @@
                             <div class=" sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden" style="height: 400px; 
   overflow: auto !important; ">
                                 <div class="flex flex-col sm:flex-row items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">Team Announcement</div>
+                                    <div class="text-lg font-medium tracking-tight leading-6 truncate font-bold">Team Announcement</div>
                                     
                                     <!-- Show Post Button Only for Company User Type -->
                                     <div *ngIf="userType === 'Company'" class="mt-3 sm:mt-0 sm:ml-2">
@@ -265,7 +265,7 @@
                                     <ng-container *ngFor="let scheduleItem of annoucementlist.data; trackBy: trackByFn">
                                         <div class="flex flex-row items-center justify-between py-4 px-0.5">
                                             <div class="flex flex-col">   
-                                                <div class="font-medium">{{ scheduleItem.title }}</div>
+                                                <div class="font-medium font-bold">{{ scheduleItem.title }}</div>
                                                 <div class="flex flex-col sm:flex-row sm:items-center -ml-0.5 mt-2 sm:mt-1 space-y-1 sm:space-y-0 sm:space-x-3">
                                                     <ng-container *ngIf="scheduleItem.time">
                                                         <div class="flex items-center">
@@ -293,7 +293,7 @@
                               
                             <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden" >
                                 <div class="p-6">
-                                    <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">Leaders Board</div>
+                                    <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate font-bold">Leadership Board</div>
                                 </div>  
                                 <div class="overflow-x-auto mx-6">
                                     <table class="w-full bg-transparent" mat-table [dataSource]="leadersDataSource" matSort #leadersTable>
@@ -357,7 +357,7 @@
 
                             <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto  bg-card shadow rounded-2xl overflow-hidden">
                                 <div class="p-6">
-                                    <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">Latest transactions</div>
+                                    <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate font-bold">Latest transactions</div>
                                     <!-- <div class="text-secondary font-medium">1 pending, 4 completed</div> -->
                                 </div>
                                 <div class="overflow-x-auto mx-6">
@@ -487,7 +487,7 @@
                       <!-- Deals Status Chart Widget -->
 <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
     <div class="flex items-start justify-between">
-        <div class="text-lg font-medium tracking-tight leading-6 truncate">Deals Conversation Analysis</div>
+        <div class="text-lg font-medium tracking-tight leading-6 truncate font-bold">Deals Conversation Analysis</div>
     </div>
     
     <div class="flex flex-col flex-auto mt-6">
@@ -513,15 +513,15 @@
     <div class="grid grid-cols-4 border-t divide-x -m-6 mt-4 bg-gray-50 dark:bg-transparent">
         <div class="flex flex-col items-center justify-center p-6 sm:p-4">
             <div class="text-4xl font-semibold leading-none tracking-tighter text-yellow-500">
-                {{dealsStatusData.available}}
+                {{dealsStatusData.active}}
             </div>  
-            <div class="mt-1 text-center text-secondary">Available</div>
+            <div class="mt-1 text-center text-secondary">Active</div>
         </div>
         <div class="flex flex-col items-center justify-center p-6 sm:p-4">
             <div class="text-4xl font-semibold leading-none tracking-tighter text-teal-500">
-                {{dealsStatusData.inprogress}}
+                {{dealsStatusData.assigned}}
             </div>
-            <div class="mt-1 text-center text-secondary">In Progress</div> 
+            <div class="mt-1 text-center text-secondary">Assigned </div> 
         </div>
         <div class="flex flex-col items-center justify-center p-6 sm:p-4">
             <div class="text-4xl font-semibold leading-none tracking-tighter text-green-500">

@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { FinanceService } from './finance.service';
+import { GhlIntegrationService } from 'app/shared/GHLintegration.service';
 
 
 interface Property {
@@ -85,7 +86,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private ghlIntegrationService: GhlIntegrationService
   ) {}
 
   ngOnInit(): void {
@@ -122,9 +124,38 @@ export class FinanceComponent implements OnInit, OnDestroy {
   /**
    * Load properties from API
    */
-  loadProperties(): void {
-    this.isLoading = true;
-    this.http.get<ApiResponse>(`${environment.apiUrl}/leads?list=true&size=100`)
+ 
+
+
+// Following is the code for Enabling Filter with Location ID 
+loadProperties(): void {
+  this.isLoading = true;
+
+  this.ghlIntegrationService.getUserType().pipe(takeUntil(this._unsubscribeAll)).subscribe(userType => {
+    const locationId = this.ghlIntegrationService.getLocationId();
+    console.log('User Type:', userType, 'Location ID:', locationId);
+
+    let url = `${environment.apiUrl}/leads?list=true&size=100`;
+
+    if (userType === 'Company') {
+      // Company user sees all deals
+      url = `${environment.apiUrl}/leads?list=true&size=100`;
+    } else if (locationId) {
+      // Filter deals by location_id for other users
+      url = `${environment.apiUrl}/leads?list=true&size=100&location_id=${locationId}`;
+    } else {
+      // No location_id and not company, show empty list
+      this.properties = [];
+      this.filteredProperties = [];
+      this.paginatedProperties = [];
+      this.totalProperties = 0;
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      console.log('No location ID available for non-company user - no deals to display.');
+      return; // Early exit
+    }
+
+    this.http.get<ApiResponse>(url)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe({
         next: (response) => {
@@ -135,6 +166,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
             this.properties = [];
             this.filteredProperties = [];
             this.paginatedProperties = [];
+            this.totalProperties = 0;
           }
           this.isLoading = false;
           this.cdr.detectChanges();
@@ -145,61 +177,8 @@ export class FinanceComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         }
       });
-  }
-
-
-// Following is the code for Enabling Filter with Location ID 
-// loadProperties(): void {
-//   this.isLoading = true;
-
-//   this.ghlIntegrationService.getUserType().pipe(takeUntil(this._unsubscribeAll)).subscribe(userType => {
-//     const locationId = this.ghlIntegrationService.getLocationId();
-//     console.log('User Type:', userType, 'Location ID:', locationId);
-
-//     let url = `${environment.apiUrl}/leads?list=true&size=100`;
-
-//     if (userType === 'Company') {
-//       // Company user sees all deals
-//       url = `${environment.apiUrl}/leads?list=true&size=100`;
-//     } else if (locationId) {
-//       // Filter deals by location_id for other users
-//       url = `${environment.apiUrl}/leads?list=true&size=100&location_id=${locationId}`;
-//     } else {
-//       // No location_id and not company, show empty list
-//       this.properties = [];
-//       this.filteredProperties = [];
-//       this.paginatedProperties = [];
-//       this.totalProperties = 0;
-//       this.isLoading = false;
-//       this.cdr.detectChanges();
-//       console.log('No location ID available for non-company user - no deals to display.');
-//       return; // Early exit
-//     }
-
-//     this.http.get<ApiResponse>(url)
-//       .pipe(takeUntil(this._unsubscribeAll))
-//       .subscribe({
-//         next: (response) => {
-//           if (response.success) {
-//             this.properties = response.data || [];
-//             this.applyFilters();
-//           } else {
-//             this.properties = [];
-//             this.filteredProperties = [];
-//             this.paginatedProperties = [];
-//             this.totalProperties = 0;
-//           }
-//           this.isLoading = false;
-//           this.cdr.detectChanges();
-//         },
-//         error: (error) => {
-//           console.error('Error loading properties:', error);
-//           this.isLoading = false;
-//           this.cdr.detectChanges();
-//         }
-//       });
-//   });
-// }
+  });
+}
 
 
   // Apply search and status filters

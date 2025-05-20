@@ -60,120 +60,108 @@
                 <div class="border-t-2 border-[#454545] w-full"></div>
                 
                 <!-- Status Buttons Section -->
-<div class="btns-div flex flex-wrap gap-4 justify-center sm:justify-start p-4" *ngIf="!editMode">
+                <div class="btns-div flex flex-wrap gap-3 justify-center sm:justify-start p-4">
 
-  <!-- Pre Marketing Button -->
-  <button 
-    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-    [ngClass]="{
-      'bg-black text-white hover:bg-black': propertyDetails.status === 'active',
-      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'active'
-    }"
-    (click)="updateStatus('active')">
-    Active
-  </button>  
-
-  <!-- Waiting for Response Button -->
-  <button 
-    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-    [ngClass]="{
-      'bg-black text-white hover:bg-black': propertyDetails.status === 'email-&-text-blast-sent',
-      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'email-&-text-blast-sent'
-    }"
-    (click)="updateStatus('email-&-text-blast-sent')">
-    Email & Text Blast Sent
-  </button>
-
-  <!-- Waiting for Interest Button -->
-  <button 
-    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-    [ngClass]="{
-      'bg-black text-white hover:bg-black': propertyDetails.status === 'assigned',
-      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'assigned'
-    }"
-    (click)="updateStatus('assigned')">
-    Assigned
-  </button>
-
-  <!-- Interested Buyers Button -->
-  <button 
-    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-    [ngClass]="{
-      'bg-black text-white hover:bg-black': propertyDetails.status === 'cancelled',
-      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'cancelled'
-    }"
-    (click)="updateStatus('cancelled')">
-    Cancelled 
-  </button>
-
-  <!-- Walkthrough Schedule Button -->
-  <button 
-    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-    [ngClass]="{
-      'bg-black text-white hover:bg-black': propertyDetails.status === 'sidelines',
-      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'sidelines'
-    }"
-    (click)="updateStatus('sidelines')">
-    Sidelines
-  </button>
-
-  <!-- Walkthrough Finished Button -->
-  <button 
-    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-    [ngClass]="{
-      'bg-black text-white hover:bg-black': propertyDetails.status === 'closed',
-      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'closed'
-    }"
-    (click)="updateStatus('closed')">
-    Closed
-  </button>
-
-  <!-- Cancel Button -->
-  <button 
-    class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
-    [ngClass]="{
-      'bg-black text-white hover:bg-black': propertyDetails.status === 'lot-deal',
-      'text-gray-700 hover:bg-gray-200 bg-gray-100': propertyDetails.status !== 'lot-deal'
-    }"
-    (click)="updateStatus('lot-deal')">
-    Lot Deal
-  </button>
-
-  <!-- Others Dropdown Button INSIDE the same flex container -->
-  <div class="relative">
-    <button
-      type="button"
-      (click)="othersDropdownOpen = !othersDropdownOpen"
-      class="status-btn px-4 py-2 rounded-full text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base flex items-center space-x-1"
-      [attr.aria-expanded]="othersDropdownOpen"
-      aria-haspopup="true"
-    >
-      <span>Others</span>
-      <svg class="w-4 h-4 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
-
-    <div
-      *ngIf="othersDropdownOpen"
-      class="absolute z-20 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1"
-      role="menu"
-      aria-orientation="vertical"
-      tabindex="-1"
-    >
-      <button
-        *ngFor="let status of othersStatuses"
-        (click)="updateStatus(status.key); othersDropdownOpen = false"
-        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-        role="menuitem"
-        tabindex="-1"
-      >
-        {{ status.label }}
-      </button>
-    </div>
-  </div>
-
-</div>
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'active'}"
+                    (click)="updateStatus('active')">
+                    Active
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'email-&-text-blast-sent'}"
+                    (click)="updateStatus('email-&-text-blast-sent')">
+                    Email & Text Blast Sent
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'target-new-buyers-nearby'}"
+                    (click)="updateStatus('target-new-buyers-nearby')">
+                    Target new buyers nearby
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'call-vip-buyers-get-feedback-no-traction'}"
+                    (click)="updateStatus('call-vip-buyers-get-feedback-no-traction')">
+                    Call VIP Buyers + Get Feedback = No Traction
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'price-drop-sent-out'}"
+                    (click)="updateStatus('price-drop-sent-out')">
+                    Price Drop Sent Out
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'assigned'}"
+                    (click)="updateStatus('assigned')">
+                    Assigned
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'waiting-for-buyers-emd'}"
+                    (click)="updateStatus('waiting-for-buyers-emd')">
+                    Waiting for buyers EMD
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'pending-retrade'}"
+                    (click)="updateStatus('pending-retrade')">
+                    Pending Retrade
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'closed'}"
+                    (click)="updateStatus('closed')">
+                    Closed
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700 rounded-sm': propertyDetails.status === 'sidelines'}"
+                    (click)="updateStatus('sidelines')">
+                    Sidelines
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'cancelled'}"
+                    (click)="updateStatus('cancelled')">
+                    Cancelled
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'lot-deal'}"
+                    (click)="updateStatus('lot-deal')">
+                    Lot Deal
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'need-photos'}"
+                    (click)="updateStatus('need-photos')">
+                    Need photos
+                  </button>
+                
+                  <button
+                    class="status-btn px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors duration-300 ease-in-out text-sm sm:text-base"
+                    [ngClass]="{'bg-green-400 text-white hover:bg-green-700': propertyDetails.status === 'flipping-ourselves'}"
+                    (click)="updateStatus('flipping-ourselves')">
+                    Flipping Ourselves
+                  </button>
+                
+                </div>
+                
             
             <!-- Main Content Form -->
             <form [formGroup]="propertyForm" *ngIf="propertyForm"  >
@@ -594,7 +582,52 @@
     </ng-template>
   </div>
 </div>
+<div *ngIf="propertyDetails?.attachments?.length" class="mt-8">
+  <div class="font-semibold mb-2">PDF AND DOC FILES HERE</div>
+  
+  <div class="flex space-x-4">
+    <ng-container *ngFor="let file of propertyDetails.attachments">
+      <!-- Only show files that are NOT images -->
+      <ng-container *ngIf="!isImage(file.file_type)">
+        <a 
+          [href]="file.file_url" 
+          download 
+          class="flex flex-col items-center cursor-pointer"
+          title="Download {{ extractFileName(file.file_url) }}">
+          
+          <!-- PDF icon -->
+          <img
+            *ngIf="isPdf(file.file_type)"
+            src="assets/images/pdf.png"
+            alt="PDF Icon"
+            class="w-10 h-10"
+          />
 
+          <!-- Word icon -->
+          <img
+            *ngIf="isDoc(file.file_type)"
+            src="assets/images/microsoft-word.webp"
+            alt="Word Icon"
+            class="w-10 h-10"
+          />
+
+          <!-- Generic file icon as fallback -->
+          <img
+            *ngIf="!isPdf(file.file_type) && !isDoc(file.file_type)"
+            src="assets/icons/file-icon.svg"
+            alt="File Icon"
+            class="w-10 h-10"
+          />
+
+          <span class="text-xs mt-1 truncate max-w-[80px] text-center">
+            {{ extractFileName(file.file_url) }}
+          </span>
+        </a>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+                            
 </div>
             <!-- Full Property Details Section -->
            

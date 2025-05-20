@@ -159,84 +159,62 @@ statusLabels: { [key: string]: string } = {
    */
 
 
-  loadProperties(): void {
-      this.isLoading = true;
-      this.http.get<ApiResponse>(`${environment.apiUrl}/leads?list=true&size=100`)
-        .pipe(takeUntil(this._unsubscribeAll))
-        .subscribe({
-          next: (response) => {
-            if (response.success) {
-              this.properties = response.data || [];
-              this.applyFilters();
-            } else {
-              this.properties = [];
-              this.filteredProperties = [];
-              this.paginatedProperties = [];
-            }
-            this.isLoading = false;
-            this.cdr.detectChanges();
-          },
-          error: (error) => {
-            console.error('Error loading properties:', error);
-            this.isLoading = false;
-            this.cdr.detectChanges();
-          }
-        });
-    }
+ 
+  
 
 
 // Following is the code to filter the MLS properties with Location ID 
-//  loadProperties(): void {
-//   this.isLoading = true;
+ loadProperties(): void {
+  this.isLoading = true;
 
-//   this.ghlIntegrationService.getUserType().pipe(takeUntil(this._unsubscribeAll)).subscribe(userType => {
-//     const locationId = this.ghlIntegrationService.getLocationId();
-//     console.log('User Type:', userType, 'Location ID:', locationId);
+  this.ghlIntegrationService.getUserType().pipe(takeUntil(this._unsubscribeAll)).subscribe(userType => {
+    const locationId = this.ghlIntegrationService.getLocationId();
+    console.log('User Type:', userType, 'Location ID:', locationId);
 
-//     let url = `${environment.apiUrl}/leads?list=true&size=100`;
+    let url = `${environment.apiUrl}/mls_leads?list=true&size=100`;
 
-//     if (userType === 'Company') {
-//       // Company user sees all deals
-//       url = `${environment.apiUrl}/leads?list=true&size=100`;
-//     } else if (locationId) {
-//       // Filter deals by location_id for other users
-//       url = `${environment.apiUrl}/leads?list=true&size=100&location_id=${locationId}`;
-//     } else {
-//       // No location_id and not company, show empty list
-//       this.properties = [];
-//       this.filteredProperties = [];
-//       this.paginatedProperties = [];
-//       this.totalProperties = 0;
-//       this.isLoading = false;
-//       this.cdr.detectChanges();
-//       console.log('No location ID available for non-company user - no deals to display.');
-//       return; // Early exit
-//     }
+    if (userType === 'Company') {
+      // Company user sees all deals
+      url = `${environment.apiUrl}/mls_leads?list=true&size=100`;
+    } else if (locationId) {
+      // Filter deals by location_id for other users
+      url = `${environment.apiUrl}/leads?list=true&size=100&location_id=${locationId}`;
+    } else {
+      // No location_id and not company, show empty list
+      this.properties = [];
+      this.filteredProperties = [];
+      this.paginatedProperties = [];
+      this.totalProperties = 0;
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      console.log('No location ID available for non-company user - no deals to display.');
+      return; // Early exit
+    }
 
-//     this.http.get<ApiResponse>(url)
-//       .pipe(takeUntil(this._unsubscribeAll))
-//       .subscribe({
-//         next: (response) => {
-//           if (response.success) {
-//             this.properties = response.data || [];
-//             this.applyFilters();
-//           } else {
-//             this.properties = [];
-//             this.filteredProperties = [];
-//             this.paginatedProperties = [];
-//             this.totalProperties = 0;
-//           }
-//           this.isLoading = false;
-//           this.cdr.detectChanges();
-//         },
-//         error: (error) => {
-//           console.error('Error loading properties:', error);
-//           this.isLoading = false;
-//           this.cdr.detectChanges();
-//         }
-//       });
-//   });
-// }
+    this.http.get<ApiResponse>(url)
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.properties = response.data || [];
+            this.applyFilters();
+          } else {
+            this.properties = [];
+            this.filteredProperties = [];
+            this.paginatedProperties = [];
+            this.totalProperties = 0;
+          }
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error loading properties:', error);
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+  });
+}
 
 
   // Apply search and status filters
@@ -370,7 +348,7 @@ statusLabels: { [key: string]: string } = {
 
 
 onclickaddDeal(){
-  this.router.navigate(['dashboards/adddeals'])
+  this.router.navigate(['ui/colors'])
 }
 
   // ADD Details Page

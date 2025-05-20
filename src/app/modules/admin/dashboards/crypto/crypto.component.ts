@@ -95,19 +95,7 @@ export class CryptoComponent implements OnInit, OnDestroy, AfterViewInit {
     paginatedProperties: Property[] = [];
 othersDropdownOpen = false;
 
-othersStatuses = [
-  { key: 'target-new-buyers-nearby', label: 'Target New Buyers Nearby' },
-  { key: 'call-vip-buyers-+-get-feedback=no-traction', label: 'Call VIP BUYERS + Get Feedback = No Traction' },
-  { key: 'price-drop-sent-out', label: 'Price Drop Sent Out' },
-  { key: 'waiting-for-buyers-emd', label: 'Waiting for Buyers EMD' },
-  
-  { key: 'pending-retrade', label: 'Pending Retrade' },
-  
-  { key: 'need-photos', label: 'Need Photos' },
-  
-  { key: 'flipping-ourselves', label: 'Flipping Outselves' },
-  // add more as needed
-];
+
 
 
     constructor(
@@ -1011,7 +999,7 @@ leadGenButtonClicked(status: string): void {
       this.toastr.success('Lead Gen updated successfully');
       this.loading = false;
       location.reload()
-    },
+    },  
     error: (error) => {
       console.error('Update error:', error);
       if (error.error) {
@@ -1025,6 +1013,31 @@ leadGenButtonClicked(status: string): void {
 
 
 
+isImage(fileType: string): boolean {
+  if (!fileType) return false;
+  const imageTypes = ['jpeg', 'jpg', 'png', 'gif', 'bmp', 'webp'];
+  return imageTypes.includes(fileType.toLowerCase());
+}
+
+isPdf(fileType: string): boolean {
+  if (!fileType) return false;
+  return fileType.toLowerCase() === 'pdf';
+}
+
+isDoc(fileType: string): boolean {
+  if (!fileType) return false;
+  const lowerType = fileType.toLowerCase();
+  return lowerType === 'msword' || lowerType === 'doc' || lowerType === 'docx' || lowerType.includes('wordprocessingml');
+}
+
+extractFileName(url: string): string {
+  try {
+    const pathname = new URL(url).pathname;
+    return decodeURIComponent(pathname.substring(pathname.lastIndexOf('/') + 1));
+  } catch {
+    return url;
+  }
+}
 
 
 }

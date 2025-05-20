@@ -26,7 +26,7 @@ declare var google: any;  // Declare google object for TypeScript to recognize i
 
 interface Property {
     id: string;  
-    title: string;
+    address: string;
     description: string | null;
     status: string;
     price: string;
@@ -120,7 +120,7 @@ loadSideMapForProperty(address: string) {
   if (!address) {
     console.warn("No address/title provided to loadSideMapForProperty");
     return;
-  }
+  }  
   const geocoder = new google.maps.Geocoder();
 
   geocoder.geocode({ address: address }, (results: any, status: string) => {
@@ -156,7 +156,7 @@ loadSideMapForProperty(address: string) {
         this.markerSide = new google.maps.Marker({
           position: location,
           map: this.mapSide,
-          title: address,
+          address: address,
         });
       } else {
         this.markerSide.setPosition(location);
@@ -215,40 +215,41 @@ loadSideMapForProperty(address: string) {
     }
 
     fetchPropertyDetails(propertyId: string) {
-        this.loading = true;
-        this.error = null;
-        this._changeDetectorRef.markForCheck();
-
-        this.http.get(`${environment.apiUrl}/leads?list=true&id=${propertyId}`)
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(
-                (result: any) => {
-                    this.loading = false;
-                    if (result?.data?.length > 0) {
-                        this.propertyDetails = result.data[0];
-                        this.propertyDetailsBackup = JSON.parse(JSON.stringify(this.propertyDetails));
-                        this.initForm();
-                                            this.loadSideMapForProperty(this.propertyDetails.title);
-
-                    } else {
-                        this.error = "No property details found";
-                        this.propertyDetails = null;
-                        console.error("Invalid API response format", result);
-                    }
-                    this._changeDetectorRef.markForCheck();
-                },
-                (error) => {
-                    this.loading = false;
-                    this.error = 'Error fetching property details';
-                    console.error('Error fetching property details:', error);
-                    this._changeDetectorRef.markForCheck();
-                }
-            );
-    }
+      this.loading = true;
+      this.error = null;
+      this._changeDetectorRef.markForCheck();
+  
+      this.http.get(`${environment.apiUrl}/mls_leads?list=true&id=${propertyId}`)
+          .pipe(takeUntil(this._unsubscribeAll))
+          .subscribe(
+              (result: any) => {
+                  this.loading = false;
+                  if (result?.data?.length > 0) {
+                      this.propertyDetails = result.data[0];
+                      this.propertyDetailsBackup = JSON.parse(JSON.stringify(this.propertyDetails));
+                      this.initForm();
+                      if (this.mapInitialized) {
+                          this.loadSideMapForProperty(this.propertyDetails.address);
+                      }
+                  } else {
+                      this.error = "No property details found";
+                      this.propertyDetails = null;
+                      console.error("Invalid API response format", result);
+                  }
+                  this._changeDetectorRef.markForCheck();
+              },
+              (error) => {
+                  this.loading = false;
+                  this.error = 'Error fetching property details';
+                  console.error('Error fetching property details:', error);
+                  this._changeDetectorRef.markForCheck();
+              }
+          );
+  }
 
     initForm(): void {
         this.propertyForm = this.fb.group({
-            title: [this.propertyDetails.title || ''],
+          address: [this.propertyDetails.address || ''],
             price: [this.propertyDetails.price || ''],
             profit: [this.propertyDetails.profit || ''],
             property_type: [this.propertyDetails.property_type || ''],
@@ -288,7 +289,7 @@ loadSideMapForProperty(address: string) {
           update_lead: true
       };
   
-      this.http.put(`${environment.apiUrl}/leads`, updatedDetails)
+      this.http.put(`${environment.apiUrl}/mls_leads`, updatedDetails)
     .pipe(takeUntil(this._unsubscribeAll))
     .subscribe(
         (response: any) => {
@@ -324,9 +325,9 @@ loadSideMapForProperty(address: string) {
       if (confirmDelete) {
         const deleteData = {
           id: this.propertyDetails.id
-        };
+        };  
         
-        this.http.delete<any>(`${environment.apiUrl}/leads`, { body: deleteData })
+        this.http.delete<any>(`${environment.apiUrl}/mls_leads`, { body: deleteData })
           .subscribe(
             (response) => {
               console.log("Property Deleted Successfully:", response);
@@ -352,9 +353,9 @@ updateStatus(status: string, event?: Event): void {
 
   this.ngZone.runOutsideAngular(() => {
     this.loading = true;
-    const statusUpdate = { id: this.propertyId, status: status, update_status: true };
+    const statusUpdate = { id: this.propertyId, deal_status: status, update_status: true };
 
-    this.http.patch(`${environment.apiUrl}/leads`, statusUpdate)
+    this.http.put(`${environment.apiUrl}/mls_leads`, statusUpdate)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe({
         next: (response) => {
@@ -363,8 +364,8 @@ updateStatus(status: string, event?: Event): void {
             this.propertyDetails.status = status;
             this._changeDetectorRef.markForCheck();
             location.reload()
-            if (this.propertyDetails && this.propertyDetails.title) {
-              this.loadSideMapForProperty(this.propertyDetails.title);
+            if (this.propertyDetails && this.propertyDetails.address) {
+              this.loadSideMapForProperty(this.propertyDetails.address);
             }
             this.toastr.success('Status updated successfully', 'Success');
           });
@@ -409,7 +410,7 @@ updateStatus(status: string, event?: Event): void {
   
       this.loading = true;
   
-      this.http.patch<any>(`${environment.apiUrl}/leads`, updateData)
+      this.http.patch<any>(`${environment.apiUrl}/mls_leads`, updateData)
           .subscribe(
               (response) => {
                   console.log("Deal Closed Successfully:", response);
@@ -458,16 +459,21 @@ this.toastr.error('error in closing the deal', error)
   map!: google.maps.Map;
   marker!: google.maps.Marker; // main marker
   placesService!: google.maps.places.PlacesService;
-
+  private mapInitialized = false;
+  
   ngAfterViewInit() {
     if (typeof google === 'undefined' || !google.maps) {
       console.error('Google Maps API not loaded!');
       return;
       
     }
-   if (this.propertyDetails?.title) {
+    this.mapInitialized = true;
+    if (this.propertyDetails?.address) {
+        this.loadSideMapForProperty(this.propertyDetails.address);
+    }
+   if (this.propertyDetails?.address) {
     setTimeout(() => {
-      this.loadSideMapForProperty(this.propertyDetails.title);
+      this.loadSideMapForProperty(this.propertyDetails.address);
     }, 0);
   }
     // Initialize Map with a default center.
@@ -482,7 +488,7 @@ this.toastr.error('error in closing the deal', error)
       position: this.map.getCenter(),
       map: this.map,
       draggable: true,
-      title: "Main Marker"
+      address: "Main Marker"
     });
   
     // Initialize PlacesService.
@@ -561,7 +567,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
   }  
   
   getalldetails() {
-    this.http.get(`${environment.apiUrl}/leads?list=true`)
+    this.http.get(`${environment.apiUrl}/mls_leads?list=true`)
       .subscribe((result: any) => {
         console.log("API Response:", result);
         
@@ -631,7 +637,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
       const marker = new google.maps.Marker({
         position: { lat, lng },
         map: this.map,
-        title: property.title
+        address: property.address
       });
       this.addHoverInfoWindow(marker, property);
       // On click, re-center the integrated map to this marker.
@@ -652,7 +658,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
                     (property.location && property.location.address) ||
                     property.formatted_address ||
                     property.fullAddress ||
-                    property.title;
+                    property.address;
     if (!address) {
       console.warn("No address available for property:", property);
       return;
@@ -675,7 +681,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
           const marker = new google.maps.Marker({
             position: { lat, lng },
             map: this.map,
-            title: property.title
+            address: property.address
           });
           this.addHoverInfoWindow(marker, property);
           // On click, re-center the map to this marker.
@@ -722,7 +728,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
       </div>
       
       <div style="font-size:18px; font-weight:600; color:#333; margin-bottom:14px; line-height:1.3;">
-        ${property.title || 'Property Address'}
+        ${property.address || 'Property Address'}
       </div>
       
       <div style="display:flex; align-items:center; font-size:15px; color:#444; background-color:#f8f9fa; padding:10px; border-radius:8px;">
@@ -784,15 +790,15 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
   }
   
   
-  searchProperty(title: string) {
+  searchProperty(address: string) {
     if (!this.searchBoxElement || !this.placesService) {
       console.error("SearchBox element or PlacesService is not available.");
       return;
     }
     const inputElement = this.searchBoxElement.nativeElement as HTMLInputElement;
-    inputElement.value = title;
+    inputElement.value = address;
     
-    const selectedProperty = this.propertydetails.find((property) => property.title === title);
+    const selectedProperty = this.propertydetails.find((property) => property.address === address);
     if (selectedProperty) {
       const pegmanImage = document.querySelector("#pegmanImage") as HTMLImageElement;
       if (pegmanImage) {
@@ -801,7 +807,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
     }
     
     this.placesService.findPlaceFromQuery(
-      { query: title, fields: ["geometry", "name"] },
+      { query: address, fields: ["geometry", "name"] },
       (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
           const place = results[0];
@@ -811,7 +817,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
             this.marker.setPosition(place.geometry.location);
           }
         } else {
-          console.error("No place found for:", title);
+          console.error("No place found for:", address);
         }
       }
     );
@@ -846,7 +852,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
      */
     loadProperties(): void {
       this.isLoading = true;
-      this.http.get<ApiResponse>(`${environment.apiUrl}/leads?list=true&size=100`)
+      this.http.get<ApiResponse>(`${environment.apiUrl}/mls_leads?list=true&size=100`)
         .pipe(takeUntil(this._unsubscribeAll))
         .subscribe({
           next: (response) => {
@@ -877,7 +883,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
       // Filter the properties based on search term and status
       this.filteredProperties = this.properties.filter(property => {
         const matchesSearch = !searchTerm || 
-          property.title?.toLowerCase().includes(searchTerm) ||
+          property.address?.toLowerCase().includes(searchTerm) ||
           property.property_type?.toLowerCase().includes(searchTerm) ||
           (property.price && property.price.toString().includes(searchTerm));
     
@@ -1003,4 +1009,69 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
     this.router.navigate(['dashboards/adddeals'])
   }
   
+  updatePropertyField(field: string, value: any, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+  
+    if (!this.propertyId) {
+      this.toastr.error('Property ID is missing');
+      return;
+    }
+  
+    this.loading = true;
+  
+    const updatePayload = {
+      id: this.propertyId,
+      [field]: value
+    };
+  
+    this.http.put(`${environment.apiUrl}/mls_leads`, updatePayload)
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe({
+        next: (response) => {
+          this.loading = false;
+          this.toastr.success(`${field} updated successfully`);
+          // Update local propertyDetails to reflect change immediately
+          if (this.propertyDetails) {
+            this.propertyDetails[field] = value;
+          }
+          this._changeDetectorRef.markForCheck();
+        },
+        error: (error) => {
+          this.loading = false;
+          console.error(`Error updating ${field}:`, error);
+          this.toastr.error(`Failed to update ${field}`);
+          this._changeDetectorRef.markForCheck();
+        }
+      });
+  }
+ 
+
+isImage(fileType: string): boolean {
+  if (!fileType) return false;
+  const imageTypes = ['jpeg', 'jpg', 'png', 'gif', 'bmp', 'webp'];
+  return imageTypes.includes(fileType.toLowerCase());
+}
+
+isPdf(fileType: string): boolean {
+  if (!fileType) return false;
+  return fileType.toLowerCase() === 'pdf';
+}
+
+isDoc(fileType: string): boolean {
+  if (!fileType) return false;
+  const lowerType = fileType.toLowerCase();
+  return lowerType === 'msword' || lowerType === 'doc' || lowerType === 'docx' || lowerType.includes('wordprocessingml');
+}
+
+extractFileName(url: string): string {
+  try {
+    const pathname = new URL(url).pathname;
+    return decodeURIComponent(pathname.substring(pathname.lastIndexOf('/') + 1));
+  } catch {
+    return url;
+  }
+}
+ 
 }

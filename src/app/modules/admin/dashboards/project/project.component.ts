@@ -37,8 +37,8 @@ export class ProjectComponent implements OnInit, OnDestroy
     dealsStatusData = {
         closed: 0,
         cancelled: 0,
-        available: 0,
-        inprogress:0,
+        assigned: 0,
+        active:0,
     };
     isDealsDataLoading = true;
     
@@ -110,22 +110,22 @@ export class ProjectComponent implements OnInit, OnDestroy
                 this.dealsStatusData.closed = parseInt(item.count, 10);
             } else if (status === 'canceled' || status === 'cancelled') {
                 this.dealsStatusData.cancelled = parseInt(item.count, 10);
-            } else if (status === 'available') {
-                this.dealsStatusData.available = parseInt(item.count, 10);
+            } else if (status === 'active') {
+                this.dealsStatusData.active = parseInt(item.count, 10);
             }
-            else if (status === 'in-progress') {
-                this.dealsStatusData.inprogress = parseInt(item.count, 10);
+            else if (status === 'assigned') {
+                this.dealsStatusData.assigned = parseInt(item.count, 10);
             }
         });
     }
 
     initializeDealsStatusChart(): void {
-        const labels = ['Closed', 'Cancelled', 'Available', 'In-progress'];
+        const labels = ['Closed', 'Cancelled', 'Active', 'Assigned'];
         const series = [
             this.dealsStatusData.closed,
             this.dealsStatusData.cancelled,
-            this.dealsStatusData.available,
-            this.dealsStatusData.inprogress,
+            this.dealsStatusData.active,
+            this.dealsStatusData.assigned,
         ];
 
         this.chartDealsStatus = {

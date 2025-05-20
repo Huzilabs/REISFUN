@@ -47,25 +47,34 @@ export class Azureblobservice {
   }
 
   // Method to upload a file to the 'attachments' container
-  async uploadFileToAttachments(blobName: string, file: File): Promise<string> {
-    const containerName = 'attachments'; // Ensure 'attachments' is used here
-    if (!this.blobServiceClient) {
-      console.error('BlobServiceClient not initialized yet.');
-      return '';
-    }
-
-    const containerClient = this.blobServiceClient.getContainerClient(containerName);
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-    try {
-      const uploadBlobResponse = await blockBlobClient.upload(file, file.size);
-      console.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId);
-      return blockBlobClient.url;
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      throw new Error('Failed to upload file');
-    }
+ // Method to upload multiple files to the 'attachments' container
+async uploadFilesToAttachments(files: File[]): Promise<string[]> {
+  const containerName = 'attachments';
+  if (!this.blobServiceClient) {
+    console.error('BlobServiceClient not initialized yet.');
+    return [];
   }
+
+  const containerClient = this.blobServiceClient.getContainerClient(containerName);
+
+  try {
+    // Map over files and upload each, returning array of promises
+    const uploadPromises = files.map(async (file) => {
+      const blockBlobClient = containerClient.getBlockBlobClient(file.name);
+      const uploadResponse = await blockBlobClient.upload(file, file.size);
+      console.log(`Uploaded ${file.name} successfully`, uploadResponse.requestId);
+      return blockBlobClient.url;
+    });
+
+    // Wait for all uploads to finish
+    const uploadedUrls = await Promise.all(uploadPromises);
+    return uploadedUrls;
+  } catch (error) {
+    console.error('Error uploading files:', error);
+    throw new Error('Failed to upload files');
+  }
+}
+
 
   // Method to download a file from the 'attachments' container
   async downloadFileFromAttachments(blobName: string): Promise<Blob> {

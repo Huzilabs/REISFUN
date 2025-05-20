@@ -74,7 +74,16 @@ export class FormsFieldsComponent implements AfterViewInit {
       location_id: [this.ghlIntegrationService.getLocationId()],
       agent_id: [''],
       profit: ['', [Validators.required, Validators.pattern('^[0-9]{1,}$')]],
-      inspection_period_end_date: ['']
+      inspection_period_end_date: [''],
+      close_date:[''],
+      rep_deal_id:[''],
+      lead_gen:[''],
+      joint_partner_info:[''],
+      buyer_walkin_appointments:[''],
+      deal_text:[''],
+      is_assignable:[''],
+      created_by:['me']
+
     });
 
     this.propertyForm.get('address')?.valueChanges.subscribe(address => {
@@ -229,31 +238,42 @@ export class FormsFieldsComponent implements AfterViewInit {
     fileInput?.click();
   }
 
-  async onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (!file) return;
-  
-    this.isUploading = true;
-    try {
-      const containerName = 'attachments'; // You can hardcode or pass this dynamically
-      const blobName = `${Date.now()}-${file.name}`; // Unique blob name
-  
-      await this.azureBlobService.createContainerIfNotExists(containerName);
-      
-      const fullUrl = await this.azureBlobService.uploadFileToAttachments(blobName, file);
-      this.fileUrl = fullUrl;
-      this.fileType = file.type.split('/')[1] || 'unknown';
-  
-      this.toastr.success('Image Uploaded Successfully');
+ // Add an array to store multiple uploaded file URLs and types
+uploadedFiles: { fileUrl: string; fileType: string }[] = [];
 
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      this.toastr.error('Error uploading image');
+async onFileSelected(event: any) {
+  const files: FileList = event.target.files;
+  if (!files || files.length === 0) return;
 
-    } finally {
-      this.isUploading = false;
-    }
+  this.isUploading = true;
+  try {
+    const containerName = 'attachments';
+    await this.azureBlobService.createContainerIfNotExists(containerName);
+
+    const filesArray = Array.from(files);
+
+    // Upload new files
+    const uploadedUrls = await this.azureBlobService.uploadFilesToAttachments(filesArray);
+
+    // Append new uploaded files to the existing list
+    uploadedUrls.forEach((url, idx) => {
+      this.uploadedFiles.push({
+        fileUrl: url,
+        fileType: filesArray[idx].type.split('/')[1] || 'unknown'
+      });
+    });
+
+    this.toastr.success('Files uploaded successfully');
+  } catch (error) {
+    console.error('Error uploading files:', error);
+    this.toastr.error('Error uploading files');
+  } finally {
+    this.isUploading = false;
+    // Clear the file input to allow re-selection of same files if needed
+    event.target.value = null;
   }
+}
+
   
   extractFilePath(url: string): string {
     try {
@@ -264,69 +284,74 @@ export class FormsFieldsComponent implements AfterViewInit {
     }
   }
 
-  submitForm(event?: Event): void {
-    if (event) {
-      event.preventDefault(); // Prevent default form submit behavior
-    }
-  
-    if (this.propertyForm.invalid) {
-      Object.keys(this.propertyForm.controls).forEach((key) => {
-        const control = this.propertyForm.get(key);
-        if (control?.invalid) {
-          console.error(`Invalid Field: ${key}`, control.errors);
-        }
-      });
-  
-      this.toastr.error('Please fill in all required fields');
-      return;
-    }
-  
-    const formValue = this.propertyForm.value;
-  
-    const requestBody = {
-      title: formValue.address,
-      description: formValue.description,
-      status: formValue.status,
-      coordinates: formValue.coordinates,
-      location_id: formValue.location_id || this.ghlIntegrationService.getLocationId(),
-      price: parseFloat(formValue.price),
-      property_type: formValue.propertyType,
-      bedrooms: parseInt(formValue.beds),
-      bathrooms: parseInt(formValue.bathsfull),
-      sqft: parseInt(formValue.sqft),
-      lot_size: parseInt(formValue.lotsize2),
-      year_built: parseInt(formValue.yearbuilt),
-      agent_name: formValue.agent_name,
-      agent_phone_number: formValue.agent_phone_number,
-      agent_email: formValue.agent_email,
-      zillow_link: formValue.zillow_link,
-      hoa: formValue.hoa,
-      inspection_period_end_date: formValue.inspection_period_end_date || null,
-      agent_remark: formValue.agent_remark,
-      leads: true,
-      agent_id: formValue.agent_id,
-      profit: parseFloat(formValue.profit),
-      attachments: this.fileUrl
-        ? [{
-            file_url: this.fileUrl,
-            file_type: this.fileType,
-            uploaded_by: '52404d37-380a-b4bd-3da1-5fab7cd8cf7d'
-          }]
-        : []
-    };
-  
-    // Ensure API call happens without causing a page reload
-    this.http.post(`${environment.apiUrl}/leads`, requestBody).subscribe({
-      next: () => {
-        this.toastr.success('Lead Created Successfully');
-        location.reload(); // If this triggers an unwanted refresh, replace it with a success message or manual data update
-      },
-      error: (error) => {
-        console.error('API Error:', error);
-        this.toastr.error('Error submitting data');
-      },
-    });
+submitForm(event?: Event): void {
+  if (event) {
+    event.preventDefault();
   }
+
+  if (this.propertyForm.invalid) {
+    this.toastr.error('Please fill in all required fields');
+    return;
+  }
+
+  const formValue = this.propertyForm.value;
+
+  // Manually map from form controls to interface keys
+  const requestBody = {
+    id: '', // Usually empty or generated by backend
+    title: formValue.title,
+    description: formValue.description,
+    status: formValue.status,
+    coordinates: formValue.coordinates,
+    location_id: formValue.location_id,
+    price: Number(formValue.price),
+    property_type: formValue.propertyType,
+    bedrooms: Number(formValue.beds),
+    bathrooms: Number(formValue.bathsfull),
+    sqft: Number(formValue.sqft),
+    lot_size: Number(formValue.lotsize2),
+    year_built: Number(formValue.yearbuilt),
+    agent_name: formValue.agent_name,
+    agent_phone_number: formValue.agent_phone_number,
+    agent_email: formValue.agent_email,
+    zillow_link: formValue.zillow_link,
+    hoa: formValue.hoa,
+    agent_remark: formValue.agent_remark,
+    agent_id: formValue.agent_id,
+    profit: Number(formValue.profit),
+    inspection_period_end_date: formValue.inspection_period_end_date
+      ? new Date(formValue.inspection_period_end_date).toISOString()
+      : null,
+    rep_deal_id: formValue.rep_deal_id,
+    lead_gen: formValue.lead_gen,
+    joint_partner_info: formValue.joint_partner_info,
+    buyer_walkin_appointments: formValue.buyer_walkin_appointments
+      ? new Date(formValue.buyer_walkin_appointments).toISOString()
+      : null,
+    deal_text: formValue.deal_text,
+    is_assignable: formValue.is_assignable === true || formValue.is_assignable === 'true',
+    attachments: this.uploadedFiles.length > 0 ? this.uploadedFiles.map(file => ({
+      file_url: file.fileUrl,
+      file_type: file.fileType,
+      uploaded_by: '52404d37-380a-b4bd-3da1-5fab7cd8cf7d'  // make dynamic if possible
+    })) : []
+  };
+
+  console.log('Final request body:', requestBody);
+
+  this.http.post(`${environment.apiUrl}/leads`, requestBody).subscribe({
+    next: () => {
+      this.toastr.success('Lead Created Successfully');
+      location.reload();
+    },
+    error: (error) => {
+      console.error('API Error:', error);
+      this.toastr.error('Error submitting data');
+    }
+  });
+}
+
+
   
 
   fetchAgents() {
@@ -340,7 +365,7 @@ export class FormsFieldsComponent implements AfterViewInit {
           });
         } else {
           console.error('Invalid API response structure:', response);
-        }
+        }  
       },
       error: (err) => {
         console.error('Error fetching agents:', err);
@@ -377,5 +402,22 @@ export class FormsFieldsComponent implements AfterViewInit {
       agent_id: agent?.id || ''
     });
   }
+isImage(fileType: string): boolean {
+  return ['jpeg', 'jpg', 'png', 'gif', 'bmp', 'webp'].includes(fileType.toLowerCase());
+}
+
+extractFileName(url: string): string {
+  try {
+    const pathname = new URL(url).pathname;
+    return decodeURIComponent(pathname.substring(pathname.lastIndexOf('/') + 1));
+  } catch {
+    return url;
+  }
+}
+removeFile(index: number): void {
+  if (index >= 0 && index < this.uploadedFiles.length) {
+    this.uploadedFiles.splice(index, 1);
+  }
+}
   
 }
