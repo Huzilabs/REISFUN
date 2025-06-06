@@ -5,7 +5,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
-
+import { Location, LocationChangeEvent } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -110,7 +110,8 @@ dropdownOpen = false;
       private dialog: MatDialog,
       private cdr: ChangeDetectorRef,
       private router: Router,
-      private ngZone : NgZone
+      private ngZone : NgZone,
+      private location: Location
 
     ) {
         this.getalldetails();
@@ -295,7 +296,10 @@ loadSideMapForProperty(address: string) {
         (response: any) => {
             this.fetchPropertyDetails(this.propertyId!); // Force re-fetch to get fresh values
             this.editMode = false;
-            this.toastr.success("Details Updated Successfully")
+            this.toastr.success("Details Updated Successfully")  
+            location.reload()
+                    this.editMode = true;
+  
         },
         (error) => {
             this.loading = false;
@@ -329,7 +333,7 @@ loadSideMapForProperty(address: string) {
         
         this.http.delete<any>(`${environment.apiUrl}/mls_leads`, { body: deleteData })
           .subscribe(
-            (response) => {
+            (response) => {  
               console.log("Property Deleted Successfully:", response);
 
             this.router.navigate(['dashboards/deals'])
@@ -1033,6 +1037,9 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
           this.loading = false;
           this.toastr.success(`${field} updated successfully`);
           // Update local propertyDetails to reflect change immediately
+
+                      this.editMode = false;
+
           if (this.propertyDetails) {
             this.propertyDetails[field] = value;
           }
@@ -1073,5 +1080,7 @@ extractFileName(url: string): string {
     return url;
   }
 }
- 
+ goBack():void{  
+this.location.back()
+ }
 }

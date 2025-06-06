@@ -28,9 +28,16 @@ export const defaultNavigation: FuseNavigationItem[] = [
                  title: 'MLS ',
                  type : 'basic',
                  icon : 'heroicons_outline:view-boards',
-                 link : '/apps/mls'
+                 link : '/dashboards/mls'
              },
-            {  
+             {
+                id   : 'user-interface.datatable',
+                title: 'Slack Chats',
+                type : 'basic',
+                icon : 'heroicons_outline:chat-alt',
+                link : '/dashboards/chats'
+            },
+            {    
                 id   : 'dashboards.deals',
                 title: 'Inventory',
                 type : 'basic',
@@ -42,28 +49,43 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Close Deals',
                 type : 'basic',
                 icon : 'heroicons_outline:lock-closed',
-                link : '/ui/closedeals'
+                link : '/dashboards/closedeals'
             },
-            {
-                id   : 'apps.chat',
-                title: 'Chat',
-                type : 'basic',
-                icon : 'heroicons_outline:chat-alt',
-                link : '/apps/chat'
-            },
+            // {
+            //     id   : 'apps.chat',
+            //     title: 'Chat',
+            //     type : 'basic',
+            //     icon : 'heroicons_outline:chat-alt',
+            //     link : '/dashboards/chat'
+            // },
             {
                 id   : 'apps.contacts',
                 title: 'Contacts',
                 type : 'basic',
                 icon : 'heroicons_outline:user-group',
-                link : '/apps/contacts'
+                link : '/dashboards/contacts'
             },  
             {
                 id   : 'apps.tasks',
                 title: 'Calendar',
                 type : 'basic',
                 icon : 'heroicons_outline:check-circle',
-                link : '/apps/calendarr'
+                link : '/dashboards/calendar'
+            },
+              {
+                id   : 'pages.activities',
+                title: 'Announcements',
+                type : 'basic',
+                icon : 'heroicons_outline:menu-alt-2',
+                link : '/dashboards/announcements'
+            },
+            {
+                id      : 'apps.calendar',
+                title   : 'Calendar',
+                subtitle: '3 upcoming events',
+                type    : 'basic',
+                icon    : 'heroicons_outline:calendar',
+                link    : '/dashboards/calendarr'  
             },
             
             // {
@@ -141,13 +163,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     //     type    : 'group',
     //     icon    : 'heroicons_outline:document',
     //     children: [
-    //         {
-    //             id   : 'pages.activities',
-    //             title: 'Activities',
-    //             type : 'basic',
-    //             icon : 'heroicons_outline:menu-alt-2',
-    //             link : '/pages/activities'
-    //         },
+    //       
     //         {
     //             id      : 'pages.authentication',
     //             title   : 'Authentication',
@@ -719,7 +735,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     //             title: 'Colors',
     //             type : 'basic',
     //             icon : 'heroicons_outline:color-swatch',
-    //             link : '/ui/colors'
+    //             link : '/dashboards/addmlsdeal'
     //         },
     //         {
     //             id   : 'user-interface.confirmation-dialog',
@@ -728,13 +744,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     //             icon : 'heroicons_outline:question-mark-circle',
     //             link : '/ui/confirmation-dialog'
     //         },
-    //         {
-    //             id   : 'user-interface.datatable',
-    //             title: 'Datatable',
-    //             type : 'basic',
-    //             icon : 'heroicons_outline:view-list',
-    //             link : '/ui/datatable'
-    //         },
+    //         
    
     //         {
     //             id      : 'user-interface.forms.fields',

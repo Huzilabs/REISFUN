@@ -5,7 +5,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GoogleCalendarService } from 'app/shared/googlecalendar.service';
 
 interface EventInput {
     id: string;
@@ -31,6 +32,7 @@ export class TasksComponent implements OnInit {
     events: EventInput[] = [];
     selectedEvent: any = null;
     loading = false;
+    private popupWindow: Window | null = null;
 
     // Updated color palette to match the screenshot
     statusColors = {
@@ -47,14 +49,22 @@ export class TasksComponent implements OnInit {
     constructor(
         private http: HttpClient,
         private cdr: ChangeDetectorRef,
-        private router:Router
+        private router: Router,
+        public googleCalendarService: GoogleCalendarService,
+        private route: ActivatedRoute
     ) {}
 
     /**
      * On init
      */
+    tokenAvailable = true;
+    showingGoogleCalendar = false;
+
     ngOnInit(): void {
-        // Initialize calendar options with enhanced styling
+        // Setup message listener for popup OAuth
+        this.setupPopupMessageListener();
+
+        // Setup FullCalendar
         this.calendarOptions = {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
             initialView: 'timeGridWeek',
@@ -63,7 +73,7 @@ export class TasksComponent implements OnInit {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            slotDuration: '01:00:00', // 1-hour slots
+            slotDuration: '01:00:00',
             slotLabelFormat: {
                 hour: 'numeric',
                 minute: '2-digit',
@@ -71,7 +81,7 @@ export class TasksComponent implements OnInit {
                 meridiem: 'short'
             },
             height: 'auto',
-            contentHeight: 900, // Increased content height for better visibility
+            contentHeight: 900,
             aspectRatio: 1.8,
             themeSystem: 'bootstrap',
             editable: false,
@@ -80,39 +90,156 @@ export class TasksComponent implements OnInit {
             weekends: true,
             nowIndicator: true,
             allDaySlot: false,
-            scrollTime: '06:00:00', // Start scrolled to 6am
+            scrollTime: '06:00:00',
             eventClick: this.handleEventClick.bind(this),
             eventClassNames: 'shadow-sm',
-            eventMinHeight: 120, // Increased minimum height for events to 120px
+            eventMinHeight: 120,
             dayCellClassNames: 'hover:bg-gray-100',
-            viewDidMount: () => {
-                // Add custom styling after view is mounted
-                this.applyCustomStyling();
-            },
-            events: (info, successCallback) => {
-                successCallback(this.events);
-            },
-            eventTimeFormat: { 
+            viewDidMount: () => this.applyCustomStyling(),
+            events: (info, successCallback) => successCallback(this.events),
+            eventTimeFormat: {
                 hour: 'numeric',
                 minute: '2-digit',
-                meridiem: 'short',
-                weekday: false, 
-                year: false, 
-                month: false, 
-                day: false
+                meridiem: 'short'                       
             },
-            eventContent: (arg) => {
-                // Only show the event title, not the time or date
-                return { 
-                    html: `<div class="fc-event-title">${arg.event.title}</div>` 
-                };
-            }
+            eventContent: (arg) => ({
+                html: `<div class="fc-event-title">${arg.event.title}</div>`
+            })
         };
-        
-        
-        
-        // Load events from API
-        this.loadEvents();
+
+        // Check if token already exists in storage
+        const storedToken = this.googleCalendarService.getStoredToken();
+
+        if (storedToken) {
+            console.log('[TasksComponent] Using stored Google token');
+            this.tokenAvailable = true;
+            this.showingGoogleCalendar = true;
+            this.loadGoogleCalendarEvents();
+        } else {
+            console.log('[TasksComponent] No Google token found, loading internal leads calendar');
+            this.tokenAvailable = false;
+            this.showingGoogleCalendar = false;
+            this.loadEvents();
+        }
+    }
+
+    /**
+     * Setup message listener for popup OAuth callback
+     */
+    private setupPopupMessageListener(): void {
+        window.addEventListener('message', (event) => {
+            // In production, restrict this to your domain
+            // if (event.origin !== 'https://yourdomain.com') return;
+
+            if (event.data && event.data.type === 'oauth-code') {
+                console.log('[TasksComponent] Received OAuth code from popup:', event.data.code);
+                
+                // Close the popup
+                if (this.popupWindow) {
+                    this.popupWindow.close();
+                    this.popupWindow = null;
+                }
+
+                // Exchange code for token
+                this.handleOAuthCode(event.data.code);
+            }
+        });
+    }
+
+    /**
+     * Handle OAuth code received from popup
+     */
+    private handleOAuthCode(code: string): void {
+        this.googleCalendarService.getAccessToken(code).subscribe({
+            next: token => {
+                console.log('[TasksComponent] Google token received and will be stored');
+                this.googleCalendarService.storeToken(token);
+
+                // Update UI state
+                this.tokenAvailable = true;
+                this.showingGoogleCalendar = true;
+
+                // Load Google Calendar Events
+                this.loadGoogleCalendarEvents();
+            },
+            error: err => {
+                console.error('[TasksComponent] Failed to exchange Google token:', err);
+
+                // Fallback to internal calendar
+                this.tokenAvailable = false;
+                this.showingGoogleCalendar = false;
+                this.loadEvents();
+            }
+        });
+    }
+
+    loadGoogleCalendarEvents(): void {
+        this.loading = true;
+        this.googleCalendarService.fetchCalendarEvents().subscribe({
+            next: (response: any) => {
+                if (response.success && Array.isArray(response.data)) {
+                    console.log('[TasksComponent] Google Calendar events loaded:', response.data);
+                    this.events = this.transformGoogleEvents(response.data);
+                    this.refreshCalendar();
+                } else {
+                    console.warn('[TasksComponent] Unexpected Google events response:', response);
+                }
+
+                this.loading = false;
+                this.cdr.markForCheck();
+            },
+            error: (err) => {
+                console.error('[TasksComponent] Failed to load Google Calendar events:', err);
+                this.loading = false;
+                this.cdr.markForCheck();
+            }
+        });
+    }
+
+   transformGoogleEvents(googleEvents: any[]): any[] {
+  return googleEvents.map(event => {
+    const isAllDay = !!event.start.date;
+
+    const start = isAllDay ? event.start.date : event.start.dateTime;
+    let end = isAllDay ? event.end?.date : event.end?.dateTime;
+
+    // Adjust end date for all-day events
+    if (isAllDay && end) {
+      const adjusted = new Date(end);
+      adjusted.setDate(adjusted.getDate() - 1);
+      end = adjusted.toISOString().split('T')[0];
+    }
+
+    // Capture the "created" timestamp from the Google Calendar event metadata
+    const createdTime = event.created;  // The "created" time of the event in Google Calendar
+
+    return {
+      id: event.id,
+      title: event.summary || '(No Title)',
+      start,
+      end,
+      allDay: isAllDay,
+      backgroundColor: '#4285F4',
+      borderColor: '#4285F4',
+      textColor: '#ffffff',
+      extendedProps: {
+        link: event.htmlLink,
+        creator: event.creator?.email,
+        visibility: event.visibility,
+        status: event.status,
+        eventType: event.eventType,
+        createdTime: createdTime  // Store the created time in extendedProps
+      }
+    };
+  });
+}
+
+
+    refreshCalendar(): void {
+        if (this.calendarComponent?.getApi) {
+            this.calendarComponent.getApi().removeAllEvents();
+            this.calendarComponent.getApi().addEventSource(this.events);
+        }
     }
 
     /**
@@ -219,7 +346,8 @@ export class TasksComponent implements OnInit {
             
             // Create event title with price if available
             const title = `${lead.title || 'Property'}`;
-        
+    const createdTime = (event as any).created;  // Casting to 'any' to access the 'created' property
+
             // Returning the event object for FullCalendar
             return {
                 id: lead.id,
@@ -239,11 +367,12 @@ export class TasksComponent implements OnInit {
                     propertyDetails: propertyDetails,
                     thumbnail: lead.attachments && lead.attachments[0]?.file_url,
                     mlsNumber: lead.mls_number,
-                    price: lead.price
+                    price: lead.price,  
+                            createdTime: createdTime  // Store the created time in extendedProps
+
                 }
             };
         });
-        
     }
 
     /**
@@ -262,13 +391,13 @@ export class TasksComponent implements OnInit {
             propertyDetails: info.event.extendedProps?.propertyDetails,
             thumbnail: info.event.extendedProps?.thumbnail,
             mlsNumber: info.event.extendedProps?.mlsNumber,
-            price: info.event.extendedProps?.price
-            
+            price: info.event.extendedProps?.price,
+                createdTime: info.event.extendedProps?.createdTime  // Add created time to selectedEvent
+
         };
         this.cdr.markForCheck();
     }
 
-        
     /**
      * Close event details dialog
      */
@@ -276,6 +405,7 @@ export class TasksComponent implements OnInit {
         this.selectedEvent = null;
         this.cdr.markForCheck();
     }
+
     showEventDetails(): void {
         if (this.selectedEvent) {
             // Navigate to the property details page using the event's id
@@ -284,5 +414,76 @@ export class TasksComponent implements OnInit {
         this.selectedEvent = null;
         this.cdr.markForCheck();
     }
-    
+
+    /**
+     * Connect to Google using popup window
+     */
+    connectToGoogle(): void {
+        console.log('[TasksComponent] connectToGoogle() clicked - opening popup');
+
+        // Get the OAuth URL from your service
+        const oauthUrl = this.googleCalendarService.getOAuthUrl();
+        
+        // Open popup window
+        this.popupWindow = window.open(
+            oauthUrl,
+            'google-oauth',
+            'width=600,height=700,scrollbars=yes,resizable=yes'
+        );
+
+        // Check if popup was blocked
+        if (!this.popupWindow) {
+            alert('Popup blocked! Please allow popups for this site and try again.');
+            return;
+        }
+
+        // Optional: Check if popup is closed manually
+        const checkClosed = setInterval(() => {
+            if (this.popupWindow?.closed) {
+                clearInterval(checkClosed);
+                console.log('[TasksComponent] Popup was closed manually');
+                this.popupWindow = null;
+            }
+        }, 1000);
+    }
+
+    showingGoogleEvents = false;
+
+    switchToGoogleCalendar(): void {
+        this.showingGoogleEvents = true;
+        this.loadGoogleCalendarEvents();
+    }
+
+    switchToInternalCalendar(): void {
+        this.showingGoogleEvents = false;
+        this.loadEvents();
+    }
+
+    switchToGoogle(): void {
+        console.log('[TasksComponent] Switching to Google Calendar');
+        this.showingGoogleCalendar = true;
+        this.loadGoogleCalendarEvents();
+    }
+
+    switchToLeads(): void {
+        console.log('[TasksComponent] Switching to Leads Calendar');
+        this.showingGoogleCalendar = false;
+        this.loadEvents();
+    }
+
+    logoutFromGoogle(): void {
+        this.googleCalendarService.clearToken();
+        this.tokenAvailable = false;
+        this.showingGoogleCalendar = false;
+        this.loadEvents();
+    }
+
+    toggleCalendar(): void {
+        this.showingGoogleCalendar = !this.showingGoogleCalendar;
+        if (this.showingGoogleCalendar) {
+            this.switchToGoogle();
+        } else {
+            this.switchToLeads();
+        }
+    }
 }

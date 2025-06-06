@@ -8,90 +8,10 @@
                 <div class="text-3xl font-semibold tracking-tight leading-8">Reporting dashboard</div>
                 <!-- <div class="font-medium tracking-tight text-secondary">Monitor metrics, check reports and review performance</div> -->
             </div>
-            <!-- <div class="flex items-center ml-6">
-                <button
-                    class="hidden sm:inline-flex"
-                    mat-stroked-button>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:cog'"></mat-icon>
-                    <span class="ml-2">Settings</span>
-                </button>
-                <button
-                    class="hidden sm:inline-flex ml-3"
-                    mat-flat-button
-                    [color]="'primary'">
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:save'"></mat-icon>
-                    <span class="ml-2">Export</span>
-                </button>
-
-                <div class="sm:hidden">
-                    <button
-                        [matMenuTriggerFor]="actionsMenu"
-                        mat-icon-button>
-                        <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
-                    </button>
-                    <mat-menu #actionsMenu="matMenu">
-                        <button mat-menu-item>Export</button>
-                        <button mat-menu-item>Settings</button>
-                    </mat-menu>
-                </div>
-            </div> -->
+            
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full mt-8">
-            <!-- Visitors overview -->
-            <!-- <div class="sm:col-span-2 lg:col-span-3 dark flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
-                <div class="flex items-center justify-between mt-10 ml-10 mr-6 sm:mr-10">
-                    <div class="flex flex-col">
-                        <div class="mr-4 text-2xl md:text-3xl font-semibold tracking-tight leading-7">Visitors Overview</div>
-                        <div class="font-medium text-secondary">Number of unique visitors</div>
-                    </div>
-                    <div class="ml-2">
-                        <mat-button-toggle-group
-                            class="hidden sm:inline-flex border-none space-x-1"
-                            value="this-year"
-                            #visitorsYearSelector="matButtonToggleGroup">
-                            <mat-button-toggle
-                                class="px-1.5 rounded-full overflow-hidden border-none font-medium"
-                                value="last-year">Last Year
-                            </mat-button-toggle>
-                            <mat-button-toggle
-                                class="px-1.5 rounded-full overflow-hidden border-none font-medium"
-                                value="this-year">This Year
-                            </mat-button-toggle>
-                        </mat-button-toggle-group>
-                        <div class="sm:hidden">
-                            <button
-                                mat-icon-button
-                                [matMenuTriggerFor]="visitorsMenu">
-                                <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
-                            </button>
-                            <mat-menu #visitorsMenu="matMenu">
-                                <button mat-menu-item>This Year</button>
-                                <button mat-menu-item>Last Year</button>
-                            </mat-menu>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col flex-auto h-80">
-                    <apx-chart
-                        class="flex-auto w-full h-full"
-                        [chart]="chartVisitors.chart"
-                        [colors]="chartVisitors.colors"
-                        [dataLabels]="chartVisitors.dataLabels"
-                        [fill]="chartVisitors.fill"
-                        [grid]="chartVisitors.grid"
-                        [series]="chartVisitors.series[visitorsYearSelector.value]"
-                        [stroke]="chartVisitors.stroke"
-                        [tooltip]="chartVisitors.tooltip"
-                        [xaxis]="chartVisitors.xaxis"
-                        [yaxis]="chartVisitors.yaxis"></apx-chart>
-                </div>
-            </div> -->
-            <!-- Conversions -->
+        <!-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full mt-8">
             <div class="sm:col-span-2 lg:col-span-1 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
                 <div class="flex items-start justify-between m-6 mb-0">
                     <div class="text-lg font-medium tracking-tight leading-6 truncate">Total Profit</div>
@@ -134,7 +54,6 @@
                         [yaxis]="chartConversions.yaxis"></apx-chart>
                 </div>
             </div>
-            <!-- Impressions -->
             <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
                 <div class="flex items-start justify-between m-6 mb-0">
                     <div class="text-lg font-medium tracking-tight leading-6 truncate">Average Closed Deals</div>
@@ -156,7 +75,6 @@
                         [yaxis]="chartImpressions.yaxis"></apx-chart>
                 </div>
             </div>
-            <!-- Visits -->
             <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
                 <div class="flex items-start justify-between m-6 mb-0">
                     <div class="text-lg font-medium tracking-tight leading-6 truncate">Average Profit</div>
@@ -178,83 +96,136 @@
                         [yaxis]="chartVisits.yaxis"></apx-chart>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Visitors vs. Page Views -->
          
         <div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden mt-10">
-            <div class="p-6">
-                <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">Track Profit for Closed Deals</div>
-            </div>
-            <div class="overflow-x-auto mx-6">
-                <table class="w-full bg-transparent" mat-table matSort [dataSource]="sortedData" [trackBy]="trackByFn" #recentTransactionsTable>
-                    <!-- Transaction ID (Month) -->
-                    <ng-container matColumnDef="transactionId">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Month Name</th>
-                        <td mat-cell *matCellDef="let transaction">
-                            <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
-                                {{transaction.transactionId}}
-                            </span>
-                        </td>
-                    </ng-container>
-        
-                    <!-- Date (Closed Deal) -->
-                    <ng-container matColumnDef="date">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Month</th>
-                        <td mat-cell *matCellDef="let transaction">
-                            <span class="pr-6 whitespace-nowrap">
-                                {{transaction.date | date:'MMM dd, y'}}
-                            </span>
-                        </td>
-                    </ng-container>
-        
-                    <!-- Name (Profit) -->
-                    <ng-container matColumnDef="profit_count">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Total Closed Deals </th>
-                        <td mat-cell *matCellDef="let transaction">
-                            <span class="pr-6 whitespace-nowrap">
-                                {{transaction.profit_count}}
-                            </span>
-                        </td>
-                    </ng-container>
-        
-                    <!-- Amount (Total Amount) -->
-                    <ng-container matColumnDef="amount">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Total Amount</th>
-                        <td mat-cell *matCellDef="let transaction">
-                            <span class="pr-6 font-medium whitespace-nowrap">
-                                {{transaction.amount | currency:'USD'}}
-                            </span>
-                        </td>
-                    </ng-container>
-        
-                    <!-- Status -->
-                    <ng-container matColumnDef="status">
-                        <th mat-header-cell mat-sort-header *matHeaderCellDef>Status</th>
-                        <td mat-cell *matCellDef="let transaction">
-                            <span class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
-                                [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': transaction.status === 'pending',
-                                            'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': transaction.status === 'completed'}">
-                                <span class="leading-relaxed whitespace-nowrap">{{transaction.status}}</span>
-                            </span>
-                        </td>
-                    </ng-container>
-        
-                    <!-- Footer -->
-                    <ng-container matColumnDef="recentOrdersTableFooter">
-                        <td class="py-6 px-0 border-0" mat-footer-cell *matFooterCellDef colspan="6">
-                            <button mat-stroked-button (click)="toggleExpanded()">
-                                {{isExpanded ? 'Show First 6 Months' : 'See All Deals'}}
-                            </button>
-                        </td>
-                    </ng-container>
-        
-                    <tr mat-header-row *matHeaderRowDef="recentTransactionsTableColumns"></tr>
-                    <tr class="order-row h-16" mat-row *matRowDef="let row; columns: recentTransactionsTableColumns;"></tr>
-                    <tr class="h-16 border-0" mat-footer-row *matFooterRowDef="['recentOrdersTableFooter']"></tr>
-                </table>
-            </div>
+    <div class="p-6 flex justify-between items-center">
+        <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">
+            Track Profit for Closed Deals
         </div>
+        <div class="flex gap-4 items-center">
+            <!-- Month dropdown in daily mode -->
+           
+
+            <!-- Toggle view mode -->
+         <ng-container *ngIf="viewMode === 'daily'">
+  <div class="flex justify-end items-center px-6 pt-2">
+    <button
+      mat-raised-button
+      color="standard"
+      class="rounded-full shadow-md font-semibold text-sm px-6 py-2 transition duration-200"
+      (click)="toggleViewMode()">
+      ⬅️ Back to Monthly View
+    </button>
+  </div>
+</ng-container>
+
+        </div>
+    </div>
+
+    <div class="overflow-x-auto mx-6">
+<table class="w-full bg-transparent" mat-table matSort [dataSource]="recentTransactionsDataSource" [trackBy]="trackByFn">
+
+    <!-- Transaction ID (Month/Day Label) -->
+    <ng-container matColumnDef="transactionId">
+        <th mat-header-cell *matHeaderCellDef>
+            {{ viewMode === 'monthly' ? 'Month Name' : 'Day' }}
+        </th>
+        <td mat-cell *matCellDef="let transaction; let i = index">
+            <span
+                class="pr-6 font-medium text-sm text-blue-600 cursor-pointer hover:underline whitespace-nowrap"
+                *ngIf="viewMode === 'monthly'"
+                (click)="onMonthClicked(i)">
+                {{ transaction.transactionId }}
+            </span>
+            <span
+                *ngIf="viewMode === 'daily'"
+                class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
+                {{ transaction.transactionId }}
+            </span>
+        </td>
+    </ng-container>
+
+    <!-- Date -->
+    <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let transaction">
+            <span class="pr-6 whitespace-nowrap">
+                {{ transaction.date | date: 'MMM dd, y' }}
+            </span>
+        </td>
+    </ng-container>
+
+    <!-- Total Closed Deals -->
+    <ng-container matColumnDef="profit_count">
+        <th mat-header-cell *matHeaderCellDef>Total Closed Deals</th>
+        <td mat-cell *matCellDef="let transaction">
+            <span class="pr-6 whitespace-nowrap">{{ transaction.profit_count }}</span>
+        </td>
+    </ng-container>
+
+    <!-- Total Amount -->
+    <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+        <td mat-cell *matCellDef="let transaction">
+            <span class="pr-6 font-medium whitespace-nowrap">
+                {{ transaction.amount | currency: 'USD' }}
+            </span>
+        </td>
+    </ng-container>
+
+    <!-- Status -->
+    <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let transaction">
+            <span
+                class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                [ngClass]="{
+                    'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': transaction.status === 'pending',
+                    'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': transaction.status === 'completed'
+                }">
+                {{ transaction.status }}
+            </span>
+        </td>
+    </ng-container>
+
+    <!-- Expand Button Footer (Only Monthly Mode) -->
+    <ng-container matColumnDef="footer">
+        <td mat-footer-cell *matFooterCellDef colspan="5">
+            
+        </td>
+    </ng-container>  
+
+    <!-- Rows -->
+<!-- Header Row with extra padding -->
+<tr mat-header-row *matHeaderRowDef="displayedColumns" class="h-16 px-6 py-4"></tr>
+
+<!-- Data Row with extra padding -->
+<tr
+  mat-row
+  *matRowDef="let row; columns: displayedColumns;"
+  class="h-16 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+</tr>
+
+<!-- Footer Row with extra spacing -->
+<tr
+  mat-footer-row
+  *matFooterRowDef="['footer']"
+  class="h-20 px-6 pt-6 pb-8">
+</tr>
+</table>
+
+<!-- Paginator (always outside table for stable rendering) -->
+<mat-paginator
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons>
+</mat-paginator>
+
+    </div>
+</div>
+
         
         <!-- Section title -->
         <div class="w-full mt-12">

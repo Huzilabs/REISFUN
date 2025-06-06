@@ -43,8 +43,8 @@ export interface FuseNavigationItem
 }
 
 export type FuseVerticalNavigationAppearance =
-    | 'default'
     | 'compact'
+    | 'default'
     | 'dense'
     | 'thin';
 

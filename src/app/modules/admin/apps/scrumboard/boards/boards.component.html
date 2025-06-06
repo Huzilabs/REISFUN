@@ -16,18 +16,18 @@
       <mat-form-field appearance="outline" class="w-full sm:w-40 md:w-48">
         <mat-label>Filter by Status</mat-label>
       <mat-select [formControl]="statusFilter">
-  <mat-option *ngFor="let status of statusOptions" [value]="status">
-    {{ statusLabels[status] || status }}
+  <mat-option *ngFor="let deal_status of statusOptions" [value]="deal_status">
+    {{ statusLabels[deal_status] || deal_status }}
   </mat-option>
 </mat-select>  
-
+  
       </mat-form-field>
   
       <!-- Search input -->
       <mat-form-field appearance="outline" class="w-full sm:w-56 md:w-64">
         <mat-label>Search properties</mat-label>
         <input 
-          matInput 
+          matInput   
           [formControl]="searchQuery" 
           placeholder="Search by title, type or price">
         <button 
@@ -95,8 +95,8 @@
       <div 
         [ngClass]="getStatusColor(property.deal_status)"
         class="text-white text-xs font-medium px-2 py-1 rounded-full"
-      >
-        {{ property.deal_status | titlecase }}
+      >  
+        {{ property.deal_status  }}
       </div>
     </div>
     <div class="mt-2 text-sm">

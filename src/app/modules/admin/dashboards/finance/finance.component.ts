@@ -137,7 +137,7 @@ loadProperties(): void {
 
     let url = `${environment.apiUrl}/leads?list=true&size=100`;
 
-    if (userType === 'Company') {
+    if (userType === 'Company' || userType === 'admin') {
       // Company user sees all deals
       url = `${environment.apiUrl}/leads?list=true&size=100`;
     } else if (locationId) {

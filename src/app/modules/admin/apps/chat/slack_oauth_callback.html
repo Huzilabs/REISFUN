@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OAuth Callback</title>
+  <script>
+    // Get the 'code' from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');  // Capture the 'code' from the URL query string
+
+    if (window.opener && code) {
+      console.log("Sending code to parent:", code);
+      // Send the code to the parent window (DatatableComponent)
+      window.opener.postMessage({
+        type: 'oauth-code',
+        code: code
+      }, '*');  // In production, you should restrict the targetOrigin to your app's URL
+
+      // Close the popup after sending the code
+      window.close();
+    } else {
+      console.error('Error: No code found in URL');
+      alert('Error: No code found in URL');
+    }
+  </script>
+</head>
+<body>
+  <h2>OAuth Processing...</h2>
+  <p>Redirecting back to the app...</p>
+</body>
+</html>

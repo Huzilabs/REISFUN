@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { GhlIntegrationService } from 'app/shared/GHLintegration.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector       : 'profile',
@@ -9,9 +11,20 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 export class ProfileComponent
 {
     /**
-     * Constructor
+     * Constructor  
      */
-    constructor()
-    {
+    constructor(
+        private ghlService: GhlIntegrationService,
+        private router : Router
+    )
+    { 
+        
+        
+
     }
+    
+    ngOnInit(): void {
+  this.ghlService.initialize();
+  this.router.navigateByUrl('/dashboards/reporting');
+}
 }

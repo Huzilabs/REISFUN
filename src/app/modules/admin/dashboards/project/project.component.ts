@@ -62,7 +62,7 @@ export class ProjectComponent implements OnInit, OnDestroy
         // Get userType from the service
         this.ghlIntegrationService.getUserType().subscribe(
           (userType: string | null) => {
-            if (userType === 'Company') {
+            if (userType === 'Company'|| userType === 'admin') {
               this.http.post(`${environment.apiUrl}/announcements`, this.newAccoucment).subscribe(
                 (res: any) => {
                   console.log('Posted successfully', res);
@@ -187,19 +187,45 @@ export class ProjectComponent implements OnInit, OnDestroy
     leadersDataSource = new MatTableDataSource<any>();
     leadersTableColumns: string[] = ['image', 'name', 'closed_count', 'total_profit'];
 
-    leadersData() {
-        this.http.get(`${environment.apiUrl}/dashboard?leaderboard=true`).subscribe((result: any) => {
-            if (result && result.data && Array.isArray(result.data)) {
-                this.getleadersData = result.data;
-                this.leadersDataSource.data = this.getleadersData;
-                console.log('Fetched Leaders Data:', result);
-            } else {
-                console.error('Invalid data format received:', result);
+   leadersData() {
+    const locationId = this.ghlIntegrationService.getLocationId();
+
+    this.ghlIntegrationService.getUserType().subscribe((userType: string | null) => {
+        console.log("User Type fetched for leaderboard:", userType);
+
+        // Determine the correct API endpoint based on userType and locationId
+        let url = `${environment.apiUrl}/dashboard?leaderboard=true`;
+
+        if (userType !== 'Company' && locationId) {
+            url += `&location_id=${locationId}`;
+            console.log("Fetching leaderboard data for locationId:", locationId);
+        } else if (userType === 'Company'|| userType === 'admin') {
+            console.log("User is a Company, fetching all leaderboard data...");
+        } else {
+            console.log("No locationId available and userType is not Company. No leaderboard data to display.");
+            this.getleadersData = [];
+            this.leadersDataSource.data = [];
+            return;
+        }
+
+        // Perform the HTTP GET request
+        this.http.get(url).subscribe(
+            (result: any) => {
+                if (result && result.data && Array.isArray(result.data)) {
+                    this.getleadersData = result.data;
+                    this.leadersDataSource.data = this.getleadersData;
+                    console.log('Fetched Leaders Data:', result);
+                } else {
+                    console.error('Invalid data format received:', result);
+                }
+            },
+            error => {
+                console.error('Error fetching leaderboard data:', error);
             }
-        }, error => {
-            console.error('Error fetching leaderboard data:', error);
-        });
-    }
+        );
+    });
+}
+
 
     annoucementlist:any = {};
     showform = false;
@@ -220,7 +246,7 @@ getallannoucements() {
         console.log("User Type fetched:", userType);  
 
         // If userType is 'Company', fetch all announcements without location filter
-        if (userType === 'Company') {
+        if (userType === 'Company' || userType === 'admin') {
             console.log("User is a Company, fetching all announcements...");
             this.http.get(`${environment.apiUrl}/announcements?list=true`).subscribe(
                 (result: any) => {
@@ -260,8 +286,15 @@ getallannoucements() {
         this.recentTransactionsDataSource.sort = this.recentTransactionsTableMatSort;
     }
     userType: string | null = null;
-
+ email: string | undefined;
+  location: string | undefined; 
     ngOnInit(): void {
+        this.ghlIntegrationService.getUserDetails().subscribe(user => {
+      console.log('User:', user);
+      this.email = user?.email || 'N/A';
+      this.location = user?.location_id || 'N/A';
+    });
+  
         this.ghlIntegrationService.getUserType().subscribe(
             (userType: string | null) => {
                 this.userType = userType; // Store the user type in a variable

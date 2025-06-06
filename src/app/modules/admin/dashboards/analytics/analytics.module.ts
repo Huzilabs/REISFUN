@@ -13,6 +13,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { SharedModule } from 'app/shared/shared.module';
 import { AnalyticsComponent } from 'app/modules/admin/dashboards/analytics/analytics.component';
 import { analyticsRoutes } from 'app/modules/admin/dashboards/analytics/analytics.routing';
+import {  MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
     declarations: [
@@ -30,7 +31,8 @@ import { analyticsRoutes } from 'app/modules/admin/dashboards/analytics/analytic
         MatTableModule,
         MatTooltipModule,
         NgApexchartsModule,
-        SharedModule
+        SharedModule,
+        MatPaginatorModule
     ]
 })
 export class AnalyticsModule

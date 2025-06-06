@@ -18,7 +18,7 @@ interface Property {
   id: string;  
   title: string;
   description: string | null;
-  status: string;
+  deal_status: string;
   price: string;
   property_type: string;
   created_at: string;
@@ -74,35 +74,35 @@ export class ScrumboardBoardsComponent implements OnInit, OnDestroy {
  // In your component.ts
 statusOptions = [
   'all',
-  'untouched',
-  'initialcall',
-  'needscomping',
-  'tasktocomplete',
-  'needsoffer',
-  'specialneedsoffer',
-  'feelthrough',
-  'offersent',
-  'buyersagent',
-  'jvdeal',
+  'un-touched',
+  'initial-call',
+  'needs-comping',
+  'task-to-complete',
+  'needs-offer',
+  'special-needs-offer',
+  'feel-through',
+  'offer-sent',
+  'buyers-agent',
+  'jv-deal',
   'dead',
-  'listingremoved'
+  'listing-removed'
 ];
 
 // Map status keys to nicely formatted labels
 statusLabels: { [key: string]: string } = {
   all: 'All Statuses',
-  untouched: 'Un Touched',
-  initialcall: 'Initial Call',
-  needscomping: 'Needs Comping',
-  tasktocomplete: 'Task To Complete',
-  needsoffer: 'Needs Offer',
-  specialneedsoffer: 'Special Needs Offer',
-  feelthrough: 'Feel Through',
-  offersent: 'Offer Sent',
-  buyersagent: 'Buyers Agent',
-  jvdeal: 'JV Deal',
-  dead: 'Dead',
-  listingremoved: 'Listing Removed'
+  untouched: 'un-touched',
+  initialcall: 'initial-Call',
+  needscomping: 'needs-comping',
+  tasktocomplete: 'task-to-complete',
+  needsoffer: 'needs-offer',
+  specialneedsoffer: 'special-needs-offer',
+  feelthrough: 'feel-through',
+  offersent: 'offer-sent',
+  buyersagent: 'buyers-agent',
+  jvdeal: 'jv-deal',
+  dead: 'dead',
+  listingremoved: 'listing-removed'
 };
  isLoading = false;
   
@@ -159,7 +159,35 @@ statusLabels: { [key: string]: string } = {
    */
 
 
- 
+//  loadProperties(): void {
+//   this.isLoading = true;
+  
+//   const url = `${environment.apiUrl}/mls_leads?list=true&size=100`;
+
+//   this.http.get<ApiResponse>(url)
+//     .pipe(takeUntil(this._unsubscribeAll))
+//     .subscribe({
+//       next: (response) => {
+//         if (response.success) {
+//           this.properties = response.data || [];
+//           this.applyFilters(); // still apply client-side filters like search/status
+//         } else {
+//           this.properties = [];
+//           this.filteredProperties = [];
+//           this.paginatedProperties = [];
+//           this.totalProperties = 0;
+//         }
+//         this.isLoading = false;
+//         this.cdr.detectChanges();
+//       },
+//       error: (error) => {
+//         console.error('Error loading properties:', error);
+//         this.isLoading = false;
+//         this.cdr.detectChanges();
+//       }
+//     });
+// }
+
   
 
 
@@ -173,7 +201,7 @@ statusLabels: { [key: string]: string } = {
 
     let url = `${environment.apiUrl}/mls_leads?list=true&size=100`;
 
-    if (userType === 'Company') {
+    if (userType === 'Company' || userType === 'admin') {
       // Company user sees all deals
       url = `${environment.apiUrl}/mls_leads?list=true&size=100`;
     } else if (locationId) {
@@ -220,7 +248,7 @@ statusLabels: { [key: string]: string } = {
   // Apply search and status filters
   applyFilters(): void {
     const searchTerm = this.searchQuery.value?.toLowerCase() || '';
-    const status = this.statusFilter.value || 'all';
+    const deal_status = this.statusFilter.value || 'all';
   
     // Filter the properties based on search term and status
     this.filteredProperties = this.properties.filter(property => {
@@ -229,7 +257,7 @@ statusLabels: { [key: string]: string } = {
         property.property_type?.toLowerCase().includes(searchTerm) ||
         (property.price && property.price.toString().includes(searchTerm));
   
-      const matchesStatus = status === 'all' || property.status === status;
+const matchesStatus = deal_status === 'all' || property['deal_status'] === deal_status;
   
       return matchesSearch && matchesStatus;
     });
@@ -348,7 +376,7 @@ statusLabels: { [key: string]: string } = {
 
 
 onclickaddDeal(){
-  this.router.navigate(['ui/colors'])
+  this.router.navigate(['dashboards/addmlsdeal'])
 }
 
   // ADD Details Page

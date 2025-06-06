@@ -1,5 +1,91 @@
 <div class="flex flex-col w-full h-full p-6">
     <!-- Header with legend (updated colors) -->
+<div class="mb-4 flex justify-end items-center flex-wrap gap-2">
+  <!-- Connect Button (if no token) -->
+  <button
+    *ngIf="!googleCalendarService.getStoredToken()"
+    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+    (click)="connectToGoogle()"
+  >
+    Connect Google Calendar
+  </button>
+
+  <!-- Logout Button (if token available) -->
+  <button
+    *ngIf="tokenAvailable"
+    class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+    (click)="logoutFromGoogle()"
+  >
+    Logout from Google Calendar
+  </button>
+  
+  <!-- Switch Buttons (if token available) -->
+  <div
+  style="position: absolute; top: 1rem; left: 1rem; z-index: 9999; display: flex; align-items: center; gap: 0.75rem;"
+  *ngIf="tokenAvailable"
+>
+  <!-- Labels -->
+  <span
+    style="font-size: 14px; font-weight: 500;"
+    [ngStyle]="{
+      color: showingGoogleCalendar ? '#333' : '#aaa'
+    }"
+  >
+    Google Calendar
+  </span>
+
+  <!-- Toggle Switch -->
+  <label style="position: relative; display: inline-block; width: 56px; height: 28px;">
+    <input
+      type="checkbox"
+      style="opacity: 0; width: 0; height: 0;"
+      [checked]="showingGoogleCalendar"
+      (change)="toggleCalendar()"
+    />
+    <span
+      style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        border-radius: 999px;
+        transition: background-color 0.3s;
+      "
+      [ngStyle]="{
+        'background-color': showingGoogleCalendar ? '#009b97' : '#888'
+      }"
+    ></span>
+    <span
+      [ngStyle]="{
+        position: 'absolute',
+        top: '3px',
+        left: showingGoogleCalendar ? '30px' : '3px',
+        width: '22px',
+        height: '22px',
+        'background-color': '#fff',
+        'border-radius': '50%',
+        transition: 'left 0.3s'
+      }"
+    ></span>
+  </label>
+
+  <!-- Label -->
+  <span
+    style="font-size: 14px; font-weight: 500;"
+    [ngStyle]="{
+      color: showingGoogleCalendar ? '#aaa' : '#333'
+    }"
+  >
+    Leads Calendar
+  </span>
+</div>
+
+</div>
+
+
+
     <div class="flex justify-end mb-4">
         <!-- Legend with updated colors -->
         <div class="flex items-center space-x-4">
@@ -125,11 +211,18 @@
                 
                 <!-- Date -->
                 <div class="mb-3">
-                    <span class="font-medium text-gray-700">Date Added:</span>
+                    <span class="font-medium text-gray-700">Date:</span>
                     <span class="ml-2">{{selectedEvent.start | date:'MMM d, y'}}</span>
                 </div>
-               
+                <div>
+                  <div *ngIf="selectedEvent">
+
+ <div>
+    <strong>Time:</strong> 
+    {{ selectedEvent.createdTime ? (selectedEvent.createdTime | date: 'h:mm a') : 'Not Available' }}
+  </div>  </div>
                   
+  </div>
             </div>
             
             <!-- Modal footer -->

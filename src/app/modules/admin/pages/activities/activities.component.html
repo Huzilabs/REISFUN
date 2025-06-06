@@ -1,117 +1,98 @@
-<div class="relative flex flex-col flex-auto min-w-0 overflow-hidden">
+<div class="container mx-auto p-4 w-full">
+  <!-- Section Title -->
+  <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Announcements</h2>
 
-    <!-- Main -->
-    <div class="flex flex-col flex-auto px-6 py-10 sm:px-16 sm:pt-18 sm:pb-20">
+  <!-- Create Button -->
+  <button *ngIf="!createMode" (click)="createMode = true" 
+    class="flex items-center  text-white hover:bg-black text-white font-medium px-4 py-2 rounded-md transition duration-300 mb-4 dark:bg-white dark:text-black" style="background-color: #0f172a; ">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+    </svg>
+    Post New Announcement
+  </button>
 
-        <!-- Activity feed -->
-        <div class="w-full max-w-3xl">
+  <!-- Create Form -->
+  <div *ngIf="createMode" class="bg-white rounded-lg shadow-md p-5 mb-6 border border-gray-200">
+    <h5 class="text-lg font-semibold text-gray-700 mb-4">Create New Announcement</h5>
+    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3" 
+           placeholder="Title" [(ngModel)]="newAnnouncement.title">
+    <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" 
+              placeholder="Description" [(ngModel)]="newAnnouncement.description" rows="4"></textarea>
+    <div class="flex space-x-3">
+      <button class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md transition duration-300" 
+              (click)="createAnnouncement()">Submit</button>
+      <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-4 py-2 rounded-md transition duration-300" 
+              (click)="createMode = false">Cancel</button>
+    </div>
+  </div>
 
-            <!-- Title -->
-            <div class="text-4xl font-extrabold tracking-tight leading-none">All Activities</div>
-            <div class="mt-1.5 text-lg text-secondary">Application wide activities are listed here as individual items, starting with the most recent.</div>
-
-            <ng-container *ngIf="(activities$ | async) as activities; else loading">
-                <ng-container *ngIf="activities.length; else noActivity">
-                    <div class="mt-8">
-                        <ol>
-                            <!-- Activities -->
-                            <ng-container *ngFor="let activity of activities; let i = index; let first = first; let last = last; trackBy: trackByFn">
-
-                                <!-- Date separator -->
-                                <ng-container *ngIf="first || !isSameDay(activity.date, activities[i - 1].date)">
-                                    <li class="relative flex py-7">
-                                        <div class="relative py-2 px-8 text-md font-medium leading-5 rounded-full bg-primary text-on-primary">
-                                            {{getRelativeFormat(activity.date)}}
-                                        </div>
-                                    </li>
-                                </ng-container>
-
-                                <!-- Activity -->
-                                <li class="relative flex py-7">
-                                    <!-- Line -->
-                                    <ng-container *ngIf="!last && isSameDay(activity.date, activities[i + 1].date)">
-                                        <div class="absolute top-7 left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
-                                    </ng-container>
-
-                                    <div class="relative flex flex-auto">
-                                        <!-- Icon -->
-                                        <ng-container *ngIf="activity.icon && !activity.image">
-                                            <div class="flex flex-shrink-0 items-center justify-center w-10 h-10 mr-4 rounded-full bg-gray-400">
-                                                <mat-icon
-                                                    class="icon-size-5 text-white"
-                                                    [svgIcon]="activity.icon">
-                                                </mat-icon>
-                                            </div>
-                                        </ng-container>
-
-                                        <!-- Image -->
-                                        <ng-container *ngIf="activity.image">
-                                            <img
-                                                class="flex-shrink-0 w-10 h-10 mr-4 rounded-full overflow-hidden object-cover object-center"
-                                                [src]="activity.image"
-                                                [alt]="'Activity image'">
-                                        </ng-container>
-
-                                        <!-- Content -->
-                                        <div class="flex flex-col flex-auto items-start">
-                                            <!-- Description -->
-                                            <ng-container *ngIf="activity.description">
-                                                <div
-                                                    [innerHTML]="activity.description"></div>
-                                            </ng-container>
-                                            <div class="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1 sm:space-x-2 text-md leading-5">
-                                                <!-- Date -->
-                                                <div class="text-secondary">
-                                                    {{activity.date | date:'MMM dd, h:mm a'}}
-                                                </div>
-                                                <!-- Linked content -->
-                                                <ng-container *ngIf="activity.linkedContent">
-                                                    <div class="hidden sm:block">&bull;</div>
-                                                    <!-- Internal link -->
-                                                    <ng-container *ngIf="activity.useRouter">
-                                                        <a
-                                                            class="cursor-pointer text-primary"
-                                                            [routerLink]="activity.link">
-                                                            {{activity.linkedContent}}
-                                                        </a>
-                                                    </ng-container>
-                                                    <!-- External link -->
-                                                    <ng-container *ngIf="!activity.useRouter">
-                                                        <a
-                                                            class="cursor-pointer text-primary"
-                                                            [href]="activity.link"
-                                                            target="_blank">
-                                                            {{activity.linkedContent}}
-                                                        </a>
-                                                    </ng-container>
-                                                </ng-container>
-                                            </div>
-                                            <!-- Extra content -->
-                                            <ng-container *ngIf="activity.extraContent">
-                                                <div
-                                                    class="mt-4 py-4 px-5 rounded-lg bg-gray-200 dark:bg-gray-800"
-                                                    [innerHTML]="activity.extraContent"></div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ng-container>
-                        </ol>
-                    </div>
-                </ng-container>
-            </ng-container>
-
-            <!-- Loading template -->
-            <ng-template #loading>
-                Loading...
-            </ng-template>
-
-            <!-- No Activity template -->
-            <ng-template #noActivity>
-                There are is activity at the moment...
-            </ng-template>
-
+  <!-- Announcements List -->
+  <div *ngFor="let a of announcements; trackBy: trackByFn" class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 mb-4 hover:shadow-md transition duration-300">
+    <!-- Display Mode -->
+    <div *ngIf="editId !== a.id">
+      <h5 class="text-xl font-semibold text-gray-800 mb-2">{{ a.title }}</h5>
+      <p class="text-gray-600 mb-3">{{ a.description }}</p>
+      <div class="flex flex-wrap items-center text-sm text-gray-500 mb-3">
+        <div class="flex items-center mr-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Created: {{ getRelativeFormat(a.created_at) }}
         </div>
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Location: {{ a.location_id }}
+        </div>
+      
+      </div>
+      <div class="flex space-x-2">
+        <button class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition duration-300 flex items-center" 
+                (click)="editId = a.id; editAnnouncement = { title: a.title, description: a.description }">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+          </svg>
+          Edit
+        </button>
+        <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition duration-300 flex items-center" 
+                (click)="deleteAnnouncement(a.id)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+          Delete
+        </button>
+      </div>
     </div>
 
+    <!-- Edit Mode -->
+    <div *ngIf="editId === a.id" class="bg-gray-50 rounded-md p-4">
+      <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3" 
+             [(ngModel)]="editAnnouncement.title">
+      <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" 
+                [(ngModel)]="editAnnouncement.description" rows="3"></textarea>
+      <div class="flex space-x-3">
+        <button class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md transition duration-300" 
+                (click)="updateAnnouncement(a.id)">Save</button>
+        <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-4 py-2 rounded-md transition duration-300" 
+                (click)="editId = null">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Data Fallback -->
+  <div *ngIf="announcements.length === 0" class="bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+    </svg>
+    <p class="mt-4 text-gray-700 font-medium text-lg">No announcements found.</p>
+    <button *ngIf="!createMode" (click)="createMode = true" 
+      class="mt-3 inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md transition duration-300">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+      </svg>
+      Create an announcement
+    </button>
+  </div>
 </div>

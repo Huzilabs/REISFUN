@@ -61,7 +61,7 @@ get totalPages(): number {
 
     let url = `${environment.apiUrl}/agents`;
 
-    if (userType === 'Company') {
+    if (userType === 'Company' || userType === 'admin') {
       // Fetch all contacts for Company user type
       url = `${environment.apiUrl}/agents`; // no filter
     } else if (locationId) {

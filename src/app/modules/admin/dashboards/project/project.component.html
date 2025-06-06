@@ -1,3 +1,4 @@
+
 <div class="flex flex-col flex-auto min-w-0">
 
     <!-- Header -->
@@ -214,11 +215,13 @@
                                     <div class="text-lg font-medium tracking-tight leading-6 truncate font-bold">Team Announcement</div>
                                     
                                     <!-- Show Post Button Only for Company User Type -->
-                                    <div *ngIf="userType === 'Company'" class="mt-3 sm:mt-0 sm:ml-2">
+                                    <div *ngIf="userType === 'Company' || userType ==='admin'" class="mt-3 sm:mt-0 sm:ml-2">
                                         <button mat-raised-button class="bg-black text-white" (click)="showform = true">Post Announcement</button>
                                     </div>
                                 </div>
-                                
+                               
+    
+
                                 <!-- Show Form to Post Announcement if showform is true -->
                                 <div *ngIf="showform" class="mt-1 p-6 max-w-2xl mx-auto bg-white rounded-lg">
                                     <mat-card class="p-6 rounded-lg">
@@ -291,7 +294,8 @@
                              
                             <!-- Latest Transactions -->  
                               
-                            <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden" >
+                            <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden" style="height: 400px; 
+  overflow: auto !important; ">
                                 <div class="p-6">
                                     <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate font-bold">Leadership Board</div>
                                 </div>  

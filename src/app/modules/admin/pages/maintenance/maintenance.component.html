@@ -1,86 +1,104 @@
+
+
 <div class="flex flex-col w-full dark:bg-gray-800  ">
-    <div class="w-full">
+  <!-- Back Button -->
+<div class="flex items-center px-4 py-2 bg-white dark:bg-gray-800">
+  <button 
+    type="button" 
+    (click)="goBack()" 
+    class="flex items-center text-sm text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white transition-colors"
+  >
+    <!-- Back Arrow Icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+    Back
+  </button>  
+</div>  
+  <div class="w-full">
         <div class="w-full shadow-lg bg-white " *ngIf="!loading && !error && propertyDetails">
             <div class="flex flex-col shadow-lg bg-white dark:bg-gray-800 dark:text-white">
-                <!-- Header Section -->
-                <div class="flex flex-wrap justify-between p-4 dark:bg-[#0f172a]">
-                    <!-- Header -->
-                    <div class="w-full sm:w-auto mb-4 sm:mb-0   dark:text-white">
-                        <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-3xl font-semibold tracking-wide leading-tight text-gray-800 whitespace-nowrap dark:text-white" style="font-family: sans-serif;">
-                            <span class="w-full" *ngIf="!editMode">{{propertyDetails.address || 'Property Details'}}</span>
-                            <input *ngIf="editMode" 
-       type="text" 
-       [formControl]="propertyForm.controls['address']" 
-       class="border border-black rounded p-2 w-full whitespace-nowrap text-base">
+              <!-- Header Section -->
+<div class="flex flex-wrap flex-row justify-between items-center p-4 dark:bg-[#0f172a] gap-4">
+    
+    <!-- Header -->
+    <div class="flex-1 min-w-0">
+        <ng-container *ngIf="!editMode">
+            <h1 class="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-white leading-tight break-words">
+                {{ propertyDetails.address || 'Property Details' }}
+            </h1>
+        </ng-container>
+        
+        <ng-container *ngIf="editMode">
+            <input type="text"
+                   [value]="propertyDetails.address"
+                   (blur)="updatePropertyField('address', $event.target.value)"
+                   (keydown.enter)="updatePropertyField('address', $event.target.value)"
+                   placeholder="Enter property address"
+                   class="w-full px-2 py-2 text-xl sm:text-2xl md:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-white bg-transparent border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+        </ng-container>
+    </div>
+    
+    <!-- Action Icons and Button -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+        
+        <!-- Save/Cancel Buttons (Edit Mode) -->
+        <div class="flex items-center gap-2" *ngIf="editMode">
+            <button class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    (click)="cancelChanges()">
+                Cancel
+            </button>
+            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    (click)="saveChanges()">
+                Save Changes
+            </button>
+        </div>
+        
+        <!-- Three-dot Dropdown Menu -->
+        <div class="relative inline-block text-left">
+            <button (click)="dropdownOpen = !dropdownOpen"
+                    class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-4 h-4 text-gray-600 dark:text-gray-300">
+                    <circle cx="10" cy="4" r="2"/>
+                    <circle cx="10" cy="10" r="2"/>
+                    <circle cx="10" cy="16" r="2"/>
+                </svg>
+            </button>
 
-                        </h1>  
-                    </div>       
-                
-                    <!-- Action Icons and Button -->
-                    <div class="flex flex-wrap gap-6 mr-2 items-center w-full sm:w-auto justify-start sm:justify-end">
-                        <!-- Save/Cancel/Edit Icons -->
-                       
-                        <div class="flex-shrink-0 bg-black text-white p-2 rounded-lg text-sm" *ngIf="editMode">
-                            <button [ngClass]="{'bg-black text-white': editMode, 'bg-transparent text-black': !editMode}"
-                            (click)="cancelChanges()">Cancel</button>
-                        </div>
-                         <div class="flex-shrink-0 bg-red-600 text-white p-2 rounded-lg text-sm" *ngIf="editMode">
-                            <button [ngClass]="{' text-white': editMode, 'bg-red-600 text-white': !editMode}"
-                            (click)="saveChanges()">Save Changes</button>
-                                    
-                                       
-                                    
-                        </div>
-                        
-                        <!-- Three-dot icon to toggle dropdown -->
-<div class="relative inline-block text-left">
-  <button (click)="dropdownOpen = !dropdownOpen"
-          class="p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-    <!-- Simple SVG vertical dots -->
-    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">
-      <circle cx="10" cy="4" r="2"/>
-      <circle cx="10" cy="10" r="2"/>
-      <circle cx="10" cy="16" r="2"/>
-    </svg>
-  </button>
+            <!-- Dropdown menu -->
+            <div *ngIf="dropdownOpen"
+                 class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                <div class="py-1 flex flex-col gap-1 px-2">
+                    
+                    <!-- Edit Button -->
+                    <button type="button"
+                            class="text-left w-full px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-gray-800 dark:text-gray-200 transition-colors"
+                            (click)="toggleEditMode(); dropdownOpen = false">
+                        Edit
+                    </button>
 
-  <!-- Dropdown menu -->
-  <div *ngIf="dropdownOpen"
-       class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-  <div class="py-1 flex flex-col gap-2 px-3">
-  
-  <!-- Edit Button -->
-  <button type="button"
-          class="text-left w-full px-3 py-2 hover:bg-gray-100 rounded cursor-pointer"
-          (click)="toggleEditMode(); dropdownOpen = false">
-    Edit
-  </button>
+                    <!-- Delete Button -->
+                    <button type="button"
+                            class="text-left w-full px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer text-red-600 transition-colors"
+                            (click)="deleteProperty(); dropdownOpen = false">
+                        Delete
+                    </button>
 
-  <!-- Delete Button -->
-  <button type="button"
-          class="text-left w-full px-3 py-2 hover:bg-gray-100 rounded cursor-pointer text-red-600"
-          (click)="deleteProperty(); dropdownOpen = false">
-    Delete
-  </button>
+                    <!-- Close Deal Button -->
+                    <button type="button"
+                            class="bg-green-600 hover:bg-green-700 p-2 rounded-lg text-white w-full transition-colors"
+                            (click)="openCloseDealModal(); dropdownOpen = false">
+                        Mark as Accepted
+                    </button>
 
-  <!-- Close Deal Button -->
-  <button type="button"
-          class="bg-green-600 p-2 rounded-lg text-white w-full"
-          (click)="openCloseDealModal(); dropdownOpen = false">
-    Mark as Accepted
-  </button>
-
-</div>
-
-  </div>
-</div>
-</div>
-                <div class="border-t-2 border-[#454545] w-full"></div>
-                
-                <!-- Status Buttons Section -->
-               
+                </div>
             </div>
-            
+        </div>
+    </div>
+    
+</div>
+
+<div class="border-t-2 border-[#454545] w-full"></div>
             <!-- Main Content Form -->
             <form [formGroup]="propertyForm" *ngIf="propertyForm"  >
                 <div class="flex flex-col md:flex-row shadow-lg bg-white p-4 gap-4 rounded-lg dark:bg-gray-800">
@@ -145,33 +163,71 @@
 
         </div>
         
-<div class="bg-white p-6 rounded-lg shadow-md mb-4 max-w-full">
-  <h3 class="text-xl font-semibold text-gray-900 mb-4 border-b border-gray-300 pb-2">
-    AGENT INFORMATION
-  </h3>
-
-  <div *ngIf="!editMode" class="flex space-x-8 text-gray-700 items-center">
-    <div class="flex flex-col">
-      <span class="text-sm font-medium text-gray-500">Name</span>
-      <span class="text-base font-semibold text-gray-800">
-        {{ propertyDetails?.agent_name || 'N/A' }}
-      </span>
-    </div>
-
-    <div class="flex flex-col">
-      <span class="text-sm font-medium text-gray-500">Phone</span>
-      <span class="text-base font-semibold text-gray-800">
-        {{ propertyDetails?.agent_phone_mobile || 'N/A' }}
-      </span>
-    </div>
-
-    <div class="flex flex-col max-w-xs truncate">
-      <span class="text-sm font-medium text-gray-500">Email</span>
-      <span class="text-base font-semibold text-gray-800 truncate">
-        {{ propertyDetails?.agent_email_work || 'N/A' }}
-      </span>
-    </div>
+<div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 w-full mx-auto mb-6">
+  
+  <!-- Header -->
+  <div class="mb-8 pb-4 border-b border-gray-200">
+    <h3 class="text-2xl font-bold text-gray-800">Agent Information</h3>
   </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <!-- Agent Name -->
+    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+      <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+        Agent Name
+      </label>
+      <ng-container *ngIf="!editMode">
+        <div class="text-md font-medium text-gray-900">{{ propertyDetails?.agent_name || 'N/A' }}</div>
+      </ng-container>
+      <ng-container *ngIf="editMode">
+        <input type="text"
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+               [value]="propertyDetails.agent_name"
+               placeholder="Enter agent name"
+               (blur)="updatePropertyField('agent_name', $event.target.value)"
+               (keydown.enter)="updatePropertyField('agent_name', $event.target.value)">
+      </ng-container>
+    </div>
+
+    <!-- Agent Phone -->
+    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+      <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+        Phone Number
+      </label>
+      <ng-container *ngIf="!editMode">
+        <div class="text-md font-medium text-gray-900">{{ propertyDetails?.agent_phone_mobile || 'N/A' }}</div>
+      </ng-container>
+      <ng-container *ngIf="editMode">
+        <input type="tel"
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+               [value]="propertyDetails.agent_phone_mobile"
+               placeholder="Enter phone number"
+               (blur)="updatePropertyField('agent_phone_mobile', $event.target.value)"
+               (keydown.enter)="updatePropertyField('agent_phone_mobile', $event.target.value)">
+      </ng-container>
+    </div>
+
+    <!-- Agent Email -->
+    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+      <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+        Email Address
+      </label>
+      <ng-container *ngIf="!editMode">
+        <div class="text-md font-medium text-gray-900 break-words">{{ propertyDetails?.agent_email_work || 'N/A' }}</div>
+      </ng-container>
+      <ng-container *ngIf="editMode">
+        <input type="email"
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+               [value]="propertyDetails.agent_email_work"
+               placeholder="Enter email address"
+               (blur)="updatePropertyField('agent_email_work', $event.target.value)"
+               (keydown.enter)="updatePropertyField('agent_email_work', $event.target.value)">
+      </ng-container>
+    </div>
+
+  </div>
+
 </div>
 
 
@@ -278,30 +334,118 @@
 </div>
 
 
-<div class="flex flex-wrap justify-between items-center bg-white p-6 rounded-lg shadow-md space-x-6 max-w-full mt-2 mb-2">
-  <div class="text-gray-700 font-semibold whitespace-nowrap">
-    ARV: <span class="font-normal">{{ propertyDetails.arv || 'N/A' }}</span>
+<div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 w-full mx-auto">
+  
+  <!-- Header -->
+  <div class="mb-8 pb-4 border-b border-gray-200">
+    <h2 class="text-2xl font-bold text-gray-800">Property Investment Details</h2>
   </div>
-  <div class="text-gray-700 font-semibold whitespace-nowrap">
-    REHAB CALCULATOR: <span class="font-normal">{{ propertyDetails.rehab_calculator || 'N/A' }}</span>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    
+    <!-- ARV -->
+    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+      <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+        ARV (After Repair Value)
+      </label>
+      <ng-container *ngIf="!editMode">
+        <div class="text-md font-medium text-gray-900">{{ propertyDetails.arv || 'N/A' }}</div>
+      </ng-container>
+      <ng-container *ngIf="editMode">
+        <input type="text"
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+               [value]="propertyDetails.arv"
+               placeholder="Enter ARV amount"
+               (blur)="updatePropertyField('arv', $event.target.value)"
+               (keydown.enter)="updatePropertyField('arv', $event.target.value)">
+      </ng-container>
+    </div>
+
+    <!-- CASH OFFER -->
+    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+      <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+        Cash Offer
+      </label>
+      <ng-container *ngIf="!editMode">
+        <div class="text-md font-medium text-gray-900">{{ propertyDetails.cash_offer || 'N/A' }}</div>
+      </ng-container>
+      <ng-container *ngIf="editMode">
+        <input type="text"
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+               [value]="propertyDetails.cash_offer"
+               placeholder="Enter cash offer amount"
+               (blur)="updatePropertyField('cash_offer', $event.target.value)"
+               (keydown.enter)="updatePropertyField('cash_offer', $event.target.value)">
+      </ng-container>
+    </div>
+
+    <!-- EMD -->
+    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+      <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+        EMD (Earnest Money Deposit)
+      </label>
+      <ng-container *ngIf="!editMode">
+        <div class="text-md font-medium text-gray-900">{{ propertyDetails.emd || 'N/A' }}</div>
+      </ng-container>
+      <ng-container *ngIf="editMode">
+        <input type="text"
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+               [value]="propertyDetails.emd"
+               placeholder="Enter EMD amount"
+               (blur)="updatePropertyField('emd', $event.target.value)"
+               (keydown.enter)="updatePropertyField('emd', $event.target.value)">
+      </ng-container>
+    </div>
+
+    <!-- CONTRACT INFO -->
+    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+      <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
+        Contract Information
+      </label>
+      <ng-container *ngIf="!editMode">
+        <div class="text-md font-medium text-gray-900">{{ propertyDetails.contract_info || 'N/A' }}</div>
+      </ng-container>
+      <ng-container *ngIf="editMode">
+        <input type="text"
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+               [value]="propertyDetails.contract_info"
+               placeholder="Enter contract details"
+               (blur)="updatePropertyField('contract_info', $event.target.value)"
+               (keydown.enter)="updatePropertyField('contract_info', $event.target.value)">
+      </ng-container>
+    </div>  
+
   </div>
-  <div class="text-gray-700 font-semibold whitespace-nowrap">
-    CASH OFFER: <span class="font-normal">{{ propertyDetails.cash_offer || 'N/A' }}</span>
+
+  <!-- REHAB CALCULATOR - Full Width -->
+  <div class="mt-6 bg-gray-50 p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+    <label class="block text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+      Rehab Calculator & Cost Breakdown
+    </label>
+    <ng-container *ngIf="!editMode">
+      <div class="text-gray-900 font-medium whitespace-pre-line bg-white p-4 rounded-lg border min-h-[150px]">{{ propertyDetails.rehab_calculator || 'N/A' }}</div>
+    </ng-container>
+    <ng-container *ngIf="editMode">
+      <textarea
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+        rows="8"
+        [value]="propertyDetails.rehab_calculator"
+        placeholder="Enter detailed rehab calculations and cost breakdown..."
+        (blur)="updatePropertyField('rehab_calculator', $event.target.value)">
+      </textarea>
+    </ng-container>
   </div>
-  <div class="text-gray-700 font-semibold whitespace-nowrap">
-    EMD: <span class="font-normal">{{ propertyDetails.emd || 'N/A' }}</span>
-  </div>
-  <div class="text-gray-700 font-semibold whitespace-nowrap">
-    CONTRACT INFO: <span class="font-normal">{{ propertyDetails.contract_info || 'N/A' }}</span>
-  </div>
+
 </div>
 
 
 
-<div class="bg-white p-6 rounded-lg shadow-md">
+
+
+<div class="bg-white p-6 rounded-lg shadow-md mt-2">
   <h3 class="w-full text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">OFFER RESULTS</h3>
 
-  <div class="flex flex-wrap gap-2.5">
+  <div class="flex flex-wrap gap-2.5">  
     <button 
   *ngFor="let status of [
     { key: 'waiting-for-response', label: 'WAITING FOR RESPONSE', icon: 'clock' },
