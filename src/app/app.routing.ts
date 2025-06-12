@@ -98,7 +98,7 @@ export const appRoutes: Route[] = [
              ,   {path: 'mls', loadChildren: () => import('app/modules/admin/apps/scrumboard/scrumboard.module').then(m => m.ScrumboardModule)},
                 {path: 'chats', loadChildren: () => import('app/modules/admin/ui/datatable/datatable.module').then(m => m.DatatableModule)},
                 {path: 'addmlsdeal', loadChildren: () => import('app/modules/admin/ui/colors/colors.module').then(m => m.ColorsModule)},
-
+  
 
             ]},    
 

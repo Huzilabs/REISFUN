@@ -336,7 +336,7 @@ loadSideMapForProperty(address: string) {
             (response) => {  
               console.log("Property Deleted Successfully:", response);
 
-            this.router.navigate(['dashboards/deals'])
+            this.router.navigate(['dashboards/addmlsdeal'])
             // location.reload()
 this.toastr.success("Deal deleted successfully")              
               // Navigate back to deals after deletion
@@ -667,7 +667,7 @@ pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", 
       console.warn("No address available for property:", property);
       return;
     }
-    console.log("Using address for geocoding:", address);
+    console.log("Using address for geocoding:", address);  
 
     const apiKey = 'AIzaSyBwi9FZr8s86oj62YybfjxiOA3Qu3B87cc';
     const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;

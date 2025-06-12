@@ -126,6 +126,39 @@ export class FinanceComponent implements OnInit, OnDestroy {
    */
  
 
+// Following is the code for removing Company and LocationID Function from leads
+// loadProperties(): void {   
+//     this.isLoading = true; 
+    
+//     this.ghlIntegrationService.getUserType().pipe(takeUntil(this._unsubscribeAll)).subscribe(userType => {     
+//         console.log('User Type:', userType);
+        
+//         let url = `${environment.apiUrl}/leads?list=true&size=100`;
+        
+//         this.http.get<ApiResponse>(url)
+//             .pipe(takeUntil(this._unsubscribeAll))
+//             .subscribe({
+//                 next: (response) => {
+//                     if (response.success) {
+//                         this.properties = response.data || [];
+//                         this.applyFilters();
+//                     } else {
+//                         this.properties = [];
+//                         this.filteredProperties = [];
+//                         this.paginatedProperties = [];
+//                         this.totalProperties = 0;
+//                     }
+//                     this.isLoading = false;
+//                     this.cdr.detectChanges();
+//                 },
+//                 error: (error) => {
+//                     console.error('Error loading properties:', error);
+//                     this.isLoading = false;
+//                     this.cdr.detectChanges();
+//                 }
+//             });
+//     });
+// }
 
 // Following is the code for Enabling Filter with Location ID 
 loadProperties(): void {

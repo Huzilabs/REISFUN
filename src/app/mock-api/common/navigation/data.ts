@@ -79,14 +79,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:menu-alt-2',
                 link : '/dashboards/announcements'
             },
-            {
-                id      : 'apps.calendar',
-                title   : 'Calendar',
-                subtitle: '3 upcoming events',
-                type    : 'basic',
-                icon    : 'heroicons_outline:calendar',
-                link    : '/dashboards/calendarr'  
-            },
+            // {
+            //     id      : 'apps.calendar',
+            //     title   : 'Calendar',
+            //     subtitle: '3 upcoming events',
+            //     type    : 'basic',
+            //     icon    : 'heroicons_outline:calendar',
+            //     link    : '/dashboards/calendarr'  
+            // },
             
             // {
             //     id   : 'dashboards.adddeals',
