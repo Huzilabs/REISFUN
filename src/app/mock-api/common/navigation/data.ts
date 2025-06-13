@@ -46,7 +46,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },  
             {
                 id   : 'dashboards.closedeals',
-                title: 'Close Deals',
+                title: 'Closed Deals',
                 type : 'basic',
                 icon : 'heroicons_outline:lock-closed',
                 link : '/dashboards/closedeals'

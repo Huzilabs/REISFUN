@@ -209,152 +209,162 @@
                             <!-- Github issues summary -->
                               
                             <!-- Task distribution -->
-                            <div class=" sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden" style="height: 400px; 
-  overflow: auto !important; ">
-                                <div class="flex flex-col sm:flex-row items-start justify-between">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate font-bold">Team Announcement</div>
-                                    
-                                    <!-- Show Post Button Only for Company User Type -->
-                                    <div *ngIf="userType === 'Company' || userType ==='admin'" class="mt-3 sm:mt-0 sm:ml-2">
-                                        <button mat-raised-button class="bg-black text-white" (click)="showform = true">Post Announcement</button>
-                                    </div>
-                                </div>
-                               
-    
+                            <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden" style="height: 400px; overflow: auto !important;">
+    <div class="flex flex-col sm:flex-row items-start justify-between">
+        <div class="text-lg font-medium tracking-tight leading-6 truncate font-bold">Team Announcement</div>
 
-                                <!-- Show Form to Post Announcement if showform is true -->
-                                <div *ngIf="showform" class="mt-1 p-6 max-w-2xl mx-auto bg-white rounded-lg">
-                                    <mat-card class="p-6 rounded-lg">
-                                        <!-- <mat-card-title class="text-2xl font-semibold text-gray-800">Post New Announcement</mat-card-title> -->
-                                        <mat-card-content>
-                                            <form (ngSubmit)="postannouncements()">
-                                                <!-- Title Input -->
-                                                <mat-form-field class="w-full mb-4">
-                                                    <mat-label class="text-sm text-gray-600">Title</mat-label>
-                                                    <input matInput [(ngModel)]="newAccoucment.title" name="title" placeholder="Enter announcement title" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                </mat-form-field>
-<mat-form-field class="w-full mb-4">  
-                                                    <mat-label class="text-sm text-gray-600">Description</mat-label>
-                                                    <input matInput [(ngModel)]="newAccoucment.description" name="description" placeholder="Enter announcement description" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                </mat-form-field>                                
-                                                <!-- Description Input -->
-                                              
-                                                
-                                
-                                                <!-- Location ID Input -->
-                                                <mat-form-field class="w-full mb-6">
-                                                    <mat-label class="text-sm text-gray-600">Location ID</mat-label>
-                                                    <input matInput [(ngModel)]="newAccoucment.location_id" name="location_id" placeholder="Enter location ID" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                </mat-form-field>
-                                
-                                                <!-- Buttons -->
-                                                <div class="flex justify-between items-center mt-4">
-                                                    <button mat-button (click)="showform = false" class="text-sm text-gray-600 hover:text-gray-800">
-                                                        Cancel
-                                                    </button>
-                                                    <button mat-raised-button color="primary" type="submit" class="px-6 py-2 text-white bg-black rounded-lg hover:bg-red-700 transition-all">
-                                                        Post Announcement
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </mat-card-content>
-                                    </mat-card>
+        <!-- Show Post Button Only for Company User Type -->
+        <div *ngIf="userType === 'Company' || userType ==='admin'" class="mt-3 sm:mt-0 sm:ml-2">
+            <button mat-raised-button class="bg-black text-white" (click)="showform = true">Post Announcement</button>
+        </div>
+    </div>
+
+    <!-- Show Form to Post Announcement if showform is true -->
+    <div *ngIf="showform" class="mt-1 p-6 max-w-2xl mx-auto bg-white rounded-lg">
+        <mat-card class="p-6 rounded-lg">
+            <mat-card-content>
+                <form (ngSubmit)="postannouncements()">
+                    <!-- Title Input -->
+                    <mat-form-field class="w-full mb-4">
+                        <mat-label class="text-sm text-gray-600">Title</mat-label>
+                        <input matInput [(ngModel)]="newAccoucment.title" name="title" placeholder="Enter announcement title" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </mat-form-field>
+
+                    <mat-form-field class="w-full mb-4">  
+                        <mat-label class="text-sm text-gray-600">Description</mat-label>
+                        <input matInput [(ngModel)]="newAccoucment.description" name="description" placeholder="Enter announcement description" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </mat-form-field>                                
+
+                    <!-- Location ID Input -->
+                    <mat-form-field class="w-full mb-6">
+                        <mat-label class="text-sm text-gray-600">Location ID</mat-label>
+                        <input matInput [(ngModel)]="newAccoucment.location_id" name="location_id" placeholder="Enter location ID" required class="border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </mat-form-field>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-between items-center mt-4">
+                        <button mat-button (click)="showform = false" class="text-sm text-gray-600 hover:text-gray-800">
+                            Cancel
+                        </button>
+                        <button mat-raised-button color="primary" type="submit" class="px-6 py-2 text-white bg-black rounded-lg hover:bg-red-700 transition-all">
+                            Post Announcement
+                        </button>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Announcement List -->
+    <div class="flex flex-col mt-2 divide-y" style="height: 400px; overflow: auto !important;">
+        <!-- Check if announcement list has data -->
+        <ng-container *ngIf="annoucementlist.data && annoucementlist.data.length > 0; else noAnnouncements">
+            <ng-container *ngFor="let scheduleItem of annoucementlist.data; trackBy: trackByFn">
+                <div class="flex flex-row items-center justify-between py-4 px-0.5">
+                    <div class="flex flex-col">   
+                        <div class="font-medium font-bold">{{ scheduleItem.title }}</div>
+                        <div class="flex flex-col sm:flex-row sm:items-center -ml-0.5 mt-2 sm:mt-1 space-y-1 sm:space-y-0 sm:space-x-3">
+                            <ng-container *ngIf="scheduleItem.time">
+                                <div class="flex items-center">
+                                    <mat-icon class="icon-size-5 text-hint" [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                                    <div class="ml-1.5 text-md text-secondary">{{ scheduleItem.description }}</div>
                                 </div>
-                                
-                            
-                                <!-- Announcement List -->
-                                <div class="flex flex-col mt-2 divide-y " style="height: 400px; 
-  overflow: auto !important; ">
-                                    <ng-container *ngFor="let scheduleItem of annoucementlist.data; trackBy: trackByFn">
-                                        <div class="flex flex-row items-center justify-between py-4 px-0.5">
-                                            <div class="flex flex-col">   
-                                                <div class="font-medium font-bold">{{ scheduleItem.title }}</div>
-                                                <div class="flex flex-col sm:flex-row sm:items-center -ml-0.5 mt-2 sm:mt-1 space-y-1 sm:space-y-0 sm:space-x-3">
-                                                    <ng-container *ngIf="scheduleItem.time">
-                                                        <div class="flex items-center">
-                                                            <mat-icon class="icon-size-5 text-hint" [svgIcon]="'heroicons_solid:clock'"></mat-icon>
-                                                            <div class="ml-1.5 text-md text-secondary">{{ scheduleItem.description }}</div>
-                                                        </div>
-                                                    </ng-container>
-                                                    <ng-container *ngIf="scheduleItem.description">
-                                                        <div class="flex items-center">
-                                                            <mat-icon class="icon-size-5 text-hint" [svgIcon]="'heroicons_solid:document-magnifying-glass'"></mat-icon>
-                                                            <div class="ml-1.5 text-md text-secondary">{{ scheduleItem.description }}</div>
-                                                        </div>
-                                                    </ng-container>  
-                                                </div>
-                                            </div>
-                                            <button mat-icon-button>
-                                                <mat-icon [svgIcon]="'heroicons_solid:chevron-right'"></mat-icon>
-                                            </button>
-                                        </div>
-                                    </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="scheduleItem.description">
+                                <div class="flex items-center">
+                                    <mat-icon class="icon-size-5 text-hint" [svgIcon]="'heroicons_solid:document-magnifying-glass'"></mat-icon>
+                                    <div class="ml-1.5 text-md text-secondary">{{ scheduleItem.description }}</div>
                                 </div>
-                            </div>
+                            </ng-container>  
+                        </div>
+                    </div>
+                    <button mat-icon-button>
+                        <mat-icon [svgIcon]="'heroicons_solid:chevron-right'"></mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </ng-container>
+        
+        <!-- Display No Announcements Found Message -->
+        <ng-template #noAnnouncements>
+            <div class="text-center text-gray-500">No announcements found</div>
+        </ng-template>
+    </div>
+</div>
+
                              
                             <!-- Latest Transactions -->  
                               
-                            <div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden" style="height: 400px; 
-  overflow: auto !important; ">
-                                <div class="p-6">
-                                    <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate font-bold">Leadership Board</div>
-                                </div>  
-                                <div class="overflow-x-auto mx-6">
-                                    <table class="w-full bg-transparent" mat-table [dataSource]="leadersDataSource" matSort #leadersTable>
-                                        
-                                        <!-- Image Column -->
-                                        <ng-container matColumnDef="image">
-                                            <th mat-header-cell *matHeaderCellDef class="p-4"> Image </th>
-                                            <td mat-cell *matCellDef="let leader" class="p-4 w-2" >
-                                                <img src="https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png" alt="Leader Image" width="20" height="20" class="rounded-full"/>
-                                            </td>
-                                        </ng-container>
-                            
-                                        <!-- Leader Name -->
-                                        <ng-container matColumnDef="name">
-                                            <th mat-header-cell mat-sort-header *matHeaderCellDef class="p-4"> Leader Name </th>
-                                            <td mat-cell *matCellDef="let leader" class="p-4">
-                                                <span class="font-medium text-sm text-secondary whitespace-nowrap">
-                                                    {{ leader.name }}
-                                                </span>
-                                            </td>
-                                        </ng-container>
-                            
-                                        <!-- Closed Count -->
-                                        <ng-container matColumnDef="closed_count">
-                                            <th mat-header-cell mat-sort-header *matHeaderCellDef class="p-4"> Closed Count </th>
-                                            <td mat-cell *matCellDef="let leader" class="p-4">
-                                                <span class="font-medium text-sm text-secondary whitespace-nowrap">
-                                                    {{ leader.closed_count }}
-                                                </span>
-                                            </td>
-                                        </ng-container>
-                            
-                                        <!-- Total Profit -->
-                                        <ng-container matColumnDef="total_profit">
-                                            <th mat-header-cell mat-sort-header *matHeaderCellDef class="p-4"> Total Profit </th>
-                                            <td mat-cell *matCellDef="let leader" class="p-4">
-                                                <span class="font-medium text-sm text-secondary whitespace-nowrap">
-                                                    {{ leader.total_profit | currency: 'USD' }}
-                                                </span>
-                                            </td>
-                                        </ng-container>
-                            
-                                        <!-- Footer -->
-                                        <ng-container matColumnDef="leadersTableFooter">
-                                            <td class="py-6 px-0 border-0" mat-footer-cell *matFooterCellDef colspan="6">
-                                                <button mat-stroked-button>See all leaders</button>
-                                            </td>
-                                        </ng-container>
-                            
-                                        <!-- Header and Rows -->
-                                        <tr mat-header-row *matHeaderRowDef="leadersTableColumns"></tr>
-                                        <tr class="order-row h-16" mat-row *matRowDef="let row; columns: leadersTableColumns;"></tr>
-                                        <tr class="h-16 border-0" mat-footer-row *matFooterRowDef="['leadersTableFooter']"></tr>
-                            
-                                    </table>
-                                </div>
-                            </div>
+                            <!-- Leadership Board -->
+<div class="sm:col-span-2 md:col-span-4 lg:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden" style="height: 400px; overflow: auto !important;">
+    <div class="p-6">
+        <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate font-bold">Leadership Board</div>
+    </div>
+    <div class="overflow-x-auto mx-6">
+        <!-- Check if leadersDataSource has data -->
+        <ng-container *ngIf="leadersDataSource.data && leadersDataSource.data.length > 0; else noLeaders">
+            <table class="w-full bg-transparent" mat-table [dataSource]="leadersDataSource" matSort #leadersTable>
+                
+                <!-- Image Column -->
+                <ng-container matColumnDef="image">
+                    <th mat-header-cell *matHeaderCellDef class="p-4"> Image </th>
+                    <td mat-cell *matCellDef="let leader" class="p-4 w-2">
+                        <img src="https://static.vecteezy.com/system/resources/thumbnails/027/951/137/small_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png" alt="Leader Image" width="20" height="20" class="rounded-full"/>
+                    </td>
+                </ng-container>
+
+                <!-- Leader Name -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef class="p-4"> Leader Name </th>
+                    <td mat-cell *matCellDef="let leader" class="p-4">
+                        <span class="font-medium text-sm text-secondary whitespace-nowrap">
+                            {{ leader.name }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <!-- Closed Count -->
+                <ng-container matColumnDef="closed_count">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef class="p-4"> Closed Count </th>
+                    <td mat-cell *matCellDef="let leader" class="p-4">
+                        <span class="font-medium text-sm text-secondary whitespace-nowrap">
+                            {{ leader.closed_count }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <!-- Total Profit -->
+                <ng-container matColumnDef="total_profit">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef class="p-4"> Total Profit </th>
+                    <td mat-cell *matCellDef="let leader" class="p-4">
+                        <span class="font-medium text-sm text-secondary whitespace-nowrap">
+                            {{ leader.total_profit | currency: 'USD' }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <!-- Footer -->
+                <ng-container matColumnDef="leadersTableFooter">
+                    <td class="py-6 px-0 border-0" mat-footer-cell *matFooterCellDef colspan="6">
+                        <button mat-stroked-button>See all leaders</button>
+                    </td>
+                </ng-container>
+
+                <!-- Header and Rows -->
+                <tr mat-header-row *matHeaderRowDef="leadersTableColumns"></tr>
+                <tr class="order-row h-16" mat-row *matRowDef="let row; columns: leadersTableColumns;"></tr>
+                <tr class="h-16 border-0" mat-footer-row *matFooterRowDef="['leadersTableFooter']"></tr>
+            </table>
+        </ng-container>
+
+        <!-- Show No Leaders Message if no data exists -->
+        <ng-template #noLeaders>
+            <div class="text-center text-gray-500">No leaders found</div>
+        </ng-template>
+    </div>
+</div>
+  
+
                             
                             
 
