@@ -72,10 +72,19 @@
                     </div>
                   </div>
                   
-                  <div class="mt-2">
+                  <div class="mt-2 flex justify-between ">
+                    <div >
+                    <span class="text-sm text-gray-600">Agent Name:</span>
+                    <span class="text-green-600 font-semibold"> {{ getFormattedPrice(property.agent_name) }}</span>
+                  </div>
+<div>
                     <span class="text-sm text-gray-600">Est. Price:</span>
                     <span class="text-green-600 font-semibold"> {{ getFormattedPrice(property.price) }}</span>
                   </div>
+                  <div >
+                    <span class="text-sm text-gray-600">Profit:</span>
+                    <span class="text-green-600 font-semibold"> {{ getFormattedPrice(property.profit) }}</span>
+     </div>             </div>
                 </div>
               </div>
             </div>

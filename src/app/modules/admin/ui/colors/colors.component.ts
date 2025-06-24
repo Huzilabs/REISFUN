@@ -61,7 +61,7 @@ export class ColorsComponent implements AfterViewInit {
     this.propertyForm = this.fb.group({
       title: ['', Validators.required],
       address: [''],
-      agent_name: ['', Validators.required],
+      agent_name: [''],
       zillow_link: [''],
       agent_id: [''],
       created_by:['me'],
@@ -340,7 +340,7 @@ submitForm(event?: Event): void {
 
   console.log('Final request body:', JSON.stringify(requestBody, null, 2));
 
-  this.http.post(`${environment.apiUrl}/mls_leads`, requestBody).subscribe({
+  this.http.post(`${environment.apiUrl}mls_leads`, requestBody).subscribe({
     next: () => {
       this.toastr.success('Lead Created Successfully');
       location.reload();

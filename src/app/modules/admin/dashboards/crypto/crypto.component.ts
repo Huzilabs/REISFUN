@@ -319,7 +319,7 @@ this.toastr.success("Deal deleted successfully")
 
                 }
             );
-    }
+    }  
 
     openCloseDealModal(): void {
         this.showCloseDealModal = true;
@@ -340,8 +340,8 @@ this.toastr.success("Deal deleted successfully")
       const updateData = {
           id: this.propertyDetails.id,
           status: "closed",
-          update_status: true,
-          profit: this.profit.toFixed(2),
+          update_status: true,  
+profit: Number(this.profit).toFixed(2),
       };
   
       this.loading = true;

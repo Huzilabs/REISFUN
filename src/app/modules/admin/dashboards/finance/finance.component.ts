@@ -158,7 +158,7 @@ export class FinanceComponent implements OnInit, OnDestroy {
 //                 }
 //             });
 //     });
-// }
+// }    
 
 // Following is the code for Enabling Filter with Location ID 
 loadProperties(): void {

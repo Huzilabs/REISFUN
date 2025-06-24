@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -7,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GoogleCalendarService } from 'app/shared/googlecalendar.service';
-
+ 
 interface EventInput {
     id: string;
     title: string;
@@ -210,12 +211,21 @@ export class TasksComponent implements OnInit {
       end = adjusted.toISOString().split('T')[0];
     }
 
-    // Capture the "created" timestamp from the Google Calendar event metadata
-    const createdTime = event.created;  // The "created" time of the event in Google Calendar
+    // Format start time for non-all-day events (e.g., "12:00")
+    let formattedTime = '';
+    if (!isAllDay && event.start?.dateTime) {
+      formattedTime = new Date(event.start.dateTime).toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: event.start.timeZone || 'UTC'
+      });
+    }
+
+    const createdTime = event.created;
 
     return {
       id: event.id,
-      title: event.summary || '(No Title)',
+      title: formattedTime ? `${formattedTime} - ${event.summary || '(No Title)'}` : (event.summary || '(No Title)'),
       start,
       end,
       allDay: isAllDay,
@@ -228,11 +238,12 @@ export class TasksComponent implements OnInit {
         visibility: event.visibility,
         status: event.status,
         eventType: event.eventType,
-        createdTime: createdTime  // Store the created time in extendedProps
+        createdTime: createdTime
       }
     };
   });
 }
+
 
 
     refreshCalendar(): void {
@@ -325,55 +336,58 @@ export class TasksComponent implements OnInit {
             return [];
         }
         
-        return apiData.map(lead => {
-            // Use created_at date as the event date
-            const eventDate = lead.created_at ? new Date(lead.created_at) : new Date();
-            
-            // Set end time to be 2 hours after start time to ensure events have more height
-            const endDate = new Date(eventDate);
-            endDate.setHours(endDate.getHours() + 2); // Increased from 1 to 2 hours
-            
-            // Determine color based on status
-            const status = (lead.status || '').toLowerCase();
-            const backgroundColor = this.statusColors[status] || this.statusColors.default;
-            
-            // Format property details (no MLS number)
-            const propertyDetails = [
-                lead.bedrooms ? `${lead.bedrooms} bed` : '',
-                lead.bathrooms ? `${lead.bathrooms} bath` : '',
-                lead.sqft ? `${Number(lead.sqft).toLocaleString()} sqft` : ''
-            ].filter(detail => detail).join(' · ');
-            
-            // Create event title with price if available
-            const title = `${lead.title || 'Property'}`;
-    const createdTime = (event as any).created;  // Casting to 'any' to access the 'created' property
+       return apiData.map(lead => {
+    // Parse start date and time
+    const start = lead.start?.dateTime ? new Date(lead.start.dateTime) : (lead.created_at ? new Date(lead.created_at) : new Date());
 
-            // Returning the event object for FullCalendar
-            return {
-                id: lead.id,
-                title: title,
-                start: eventDate, // Start date for the event (time not included in title)
-                end: endDate, // Ensure end date is set correctly for duration
-                backgroundColor: backgroundColor,
-                borderColor: backgroundColor,
-                textColor: '#ffffff',
-                extendedProps: {
-                    leadId: lead.id,
-                    description: lead.description,
-                    propertyType: lead.property_type,
-                    status: lead.status,
-                    location: lead.coordinates,
-                    agent: lead.agent_name,
-                    propertyDetails: propertyDetails,
-                    thumbnail: lead.attachments && lead.attachments[0]?.file_url,
-                    mlsNumber: lead.mls_number,
-                    price: lead.price,  
-                            createdTime: createdTime  // Store the created time in extendedProps
+    // Create end date 2 hours later
+    const endDate = new Date(start);
+    endDate.setHours(endDate.getHours() + 2);
 
-                }
-            };
-        });
-    }
+    const status = (lead.status || '').toLowerCase();
+    const backgroundColor = this.statusColors[status] || this.statusColors.default;
+
+    const propertyDetails = [  
+        lead.bedrooms ? `${lead.bedrooms} bed` : '',
+        lead.bathrooms ? `${lead.bathrooms} bath` : '',
+        lead.sqft ? `${Number(lead.sqft).toLocaleString()} sqft` : ''
+    ].filter(Boolean).join(' · ');
+
+    // Extract just the time (e.g., "12:00")
+    const formattedTime = start.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false, // Use true if you want AM/PM
+        timeZone: 'UTC' // Match the timeZone from your API
+    });
+
+    const title = `${formattedTime} - ${lead.title || '(No Address)'}`;
+
+    return {
+        id: lead.id,
+        title: title,
+        start: start,
+        end: endDate,
+        backgroundColor: backgroundColor,
+        borderColor: backgroundColor,
+        textColor: '#ffffff',
+        extendedProps: {
+            leadId: lead.id,
+            description: lead.description,
+            propertyType: lead.property_type,
+            status: lead.status,
+            location: lead.coordinates,
+            agent: lead.agent_name,
+            propertyDetails: propertyDetails,
+            thumbnail: lead.attachments?.[0]?.file_url,
+            mlsNumber: lead.mls_number,
+            price: lead.price,
+            createdTime: lead.created_at
+        }
+    };
+});
+
+    }  
 
     /**
      * Handle event click to show details

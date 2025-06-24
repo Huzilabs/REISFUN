@@ -47,14 +47,14 @@
 
                             
                         </mat-select>
-                        <mat-error *ngIf="propertyForm.get('status')?.hasError('required')">Status is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('status')?.hasError('required')">Status is required</mat-error> -->
                     </mat-form-field>
                     
                     <mat-form-field class="w-full md:w-1/3 md:pl-2">
                         <mat-label>Price</mat-label>
                         <input matInput formControlName="price">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:currency-dollar'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('price')?.hasError('required')">Price is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('price')?.hasError('required')">Price is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('price')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                 </div>
@@ -64,24 +64,29 @@
                   
                 <!-- Property details -->
                 <div class="flex flex-col sm:flex-row flex-wrap w-full">
-                    <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pr-2 md:pr-2 mb-2 sm:mb-0">
-                        <mat-label>Property Type</mat-label>
-                        <input matInput formControlName="propertyType">
-                        <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:home'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('propertyType')?.hasError('required')">Property type is required</mat-error>
-                    </mat-form-field>
+                   <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pr-2 md:pr-2 mb-2 sm:mb-0">
+  <mat-label>Property Type</mat-label>
+  <mat-select formControlName="propertyType">
+    <mat-option *ngFor="let type of propertyTypes" [value]="type">
+      {{ type }}
+    </mat-option>
+  </mat-select>
+  <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:home'"></mat-icon>
+  <!-- <mat-error *ngIf="propertyForm.get('propertyType')?.hasError('required')">Property type is required</mat-error> -->
+</mat-form-field>
+
                     
                     <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
                         <mat-label>Bedrooms</mat-label>
                         <input matInput formControlName="beds">
-                        <mat-error *ngIf="propertyForm.get('beds')?.hasError('required')">Bedrooms is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('beds')?.hasError('required')">Bedrooms is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('beds')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                     
                     <mat-form-field class="w-full md:w-1/3 md:pl-2">
                         <mat-label>Bathrooms</mat-label>
                         <input matInput formControlName="bathsfull">
-                        <mat-error *ngIf="propertyForm.get('bathsfull')?.hasError('required')">Bathrooms is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('bathsfull')?.hasError('required')">Bathrooms is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('bathsfull')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                 </div>
@@ -91,14 +96,14 @@
                     <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pr-2 md:pr-2 mb-2 sm:mb-0">
                         <mat-label>Square Feet</mat-label>
                         <input matInput formControlName="sqft">
-                        <mat-error *ngIf="propertyForm.get('sqft')?.hasError('required')">Square feet is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('sqft')?.hasError('required')">Square feet is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('sqft')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                     
                     <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
                         <mat-label>Lot Size</mat-label>
                         <input matInput formControlName="lotsize2">
-                        <mat-error *ngIf="propertyForm.get('lotsize2')?.hasError('required')">Lot size is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('lotsize2')?.hasError('required')">Lot size is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('lotsize2')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                     
@@ -106,7 +111,7 @@
                         <mat-label>Year Built</mat-label>
                         <input matInput formControlName="yearbuilt">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('yearbuilt')?.hasError('required')">Year built is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('yearbuilt')?.hasError('required')">Year built is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('yearbuilt')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                 </div>
@@ -117,7 +122,7 @@
                         <mat-label>Profit</mat-label>
                         <input matInput formControlName="profit">
                         <mat-icon class="icon-size-5" matSuffix ></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('profit')?.hasError('required')">Profit is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('profit')?.hasError('required')">Profit is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('profit')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                     
@@ -151,7 +156,7 @@
                         <mat-label>Agent Email</mat-label>
                         <input matInput formControlName="agent_email">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:mail'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('agent_email')?.hasError('required')">Agent email is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('agent_email')?.hasError('required')">Agent email is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('agent_email')?.hasError('email')">Enter a valid email</mat-error>
                     </mat-form-field>
                     
@@ -165,7 +170,7 @@
                         <mat-label>Agent Phone Number</mat-label>
                         <input matInput formControlName="agent_phone_number">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:phone'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('agent_phone_number')?.hasError('required')">Agent phone number is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('agent_phone_number')?.hasError('required')">Agent phone number is required</mat-error> -->
                     </mat-form-field>
    
 
@@ -185,7 +190,7 @@
       <mat-option value="mario">Mario</mat-option>
       <mat-option value="sammy">Sammy</mat-option>
     </mat-select>
-    <mat-error *ngIf="propertyForm.get('rep_deal_id')?.hasError('required')">Rep_deal_id is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('rep_deal_id')?.hasError('required')">Rep_deal_id is required</mat-error> -->
   </mat-form-field>
 
   <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
@@ -197,14 +202,14 @@
       <mat-option value="on market">On Market</mat-option>
       <mat-option value="koin venture">Joint Venture</mat-option>
     </mat-select>
-    <mat-error *ngIf="propertyForm.get('lead_gen')?.hasError('required')">Lead_Gen is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('lead_gen')?.hasError('required')">Lead_Gen is required</mat-error> -->
   </mat-form-field>
 
   <mat-form-field class="w-full md:w-1/3 md:pl-2 mb-2 sm:mb-0">
     <mat-label>Close Date</mat-label>
     <input matInput formControlName="close_date" />
     <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-    <mat-error *ngIf="propertyForm.get('close_date')?.hasError('required')">Close Date is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('close_date')?.hasError('required')">Close Date is required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('close_date')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 </div>
@@ -214,22 +219,22 @@
     <mat-label>Joint Partner Info</mat-label>
     <input matInput formControlName="joint_partner_info" />
     <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-    <mat-error *ngIf="propertyForm.get('joint_partner_info')?.hasError('required')">Joint Partner Info is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('joint_partner_info')?.hasError('required')">Joint Partner Info is required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('joint_partner_info')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 
   <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
     <mat-label>Buyer Inspection Appointments </mat-label>
-    <input matInput [matDatepicker]="picker" formControlName="buyer_walkin_appointments">
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+ <input matInput [matDatepicker]="buyerWalkinPicker" formControlName="buyer_walkin_appointments">
+<mat-datepicker-toggle matSuffix [for]="buyerWalkinPicker"></mat-datepicker-toggle>
+<mat-datepicker #buyerWalkinPicker></mat-datepicker>
+ </mat-form-field>
 
   <mat-form-field class="w-full md:w-1/3 md:pl-2 mb-2 sm:mb-0">
     <mat-label>Deal Text</mat-label>
     <input matInput formControlName="deal_text" />
     <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-    <mat-error *ngIf="propertyForm.get('deal_text')?.hasError('required')">Deal Text is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('deal_text')?.hasError('required')">Deal Text is required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('deal_text')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 </div>

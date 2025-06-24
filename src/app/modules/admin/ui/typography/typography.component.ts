@@ -80,7 +80,7 @@ export class TypographyComponent
       pegmanImage.id = "pegmanImage";
       pegmanImage.src = "assets/images/logo/logo.svg";
       pegmanImage.classList.add("pegman-image");
-      pegmanImage.classList.add("w-40", "h-82", "border-2", "mb-5", "ml-2");
+      pegmanImage.classList.add("w-40", "h-82", "mb-5", "ml-2");
 
   
       // Create Fullscreen Image.
@@ -410,6 +410,7 @@ interface Property {
     description: string | null;
     status: string;
     price: string;
+
     property_type: string;
     created_at: string;
     created_by: string;

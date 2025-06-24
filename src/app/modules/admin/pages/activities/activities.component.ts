@@ -3,9 +3,7 @@ import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'environments/environment';
-// import { GhlIntegrationService } from './path-to-your-ghl-service'; // Update the path
 import { GhlIntegrationService } from 'app/shared/GHLintegration.service';
-
 import { Subject, combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -26,14 +24,15 @@ interface Announcement {
 })
 export class ActivitiesComponent implements OnInit, OnDestroy {
     announcements: Announcement[] = [];
-    allAnnouncements: Announcement[] = []; // Store all announcements
+    allAnnouncements: Announcement[] = [];
     private readonly apiUrl = `${environment.apiUrl}/announcements`;
     private destroy$ = new Subject<void>();
 
     createMode = false;
     editId: string | null = null;
+    showConfirmDialog = false;
+    deleteCandidateId: string | null = null;
 
-    // User data from GHL Integration Service
     userType: string | null = null;
     userLocationId: string | null = null;
     isCompanyOrAdmin = false;
@@ -51,16 +50,14 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
     editAnnouncement: Partial<Announcement> = {};
 
     constructor(
-        private http: HttpClient, 
+        private http: HttpClient,
         private toastr: ToastrService,
         private ghlIntegrationService: GhlIntegrationService
     ) {}
 
     ngOnInit(): void {
-        // Initialize GHL Integration Service
         this.ghlIntegrationService.initialize();
-        
-        // Subscribe to user data changes
+
         combineLatest([
             this.ghlIntegrationService.getUserType(),
             this.ghlIntegrationService.getUserDetails()
@@ -68,22 +65,15 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
         .subscribe(([userType, userDetails]) => {
             this.userType = userType;
             this.userLocationId = userDetails?.location_id || this.ghlIntegrationService.getLocationId();
-            
-            // Check if user is company or admin
-            this.isCompanyOrAdmin = userType === 'Company' || 
-                                   (userDetails?.role === 'admin') || 
-                                   (userType && userType.toLowerCase().includes('admin'));
-            
-            console.log('[Announcements] User Type:', this.userType);
-            console.log('[Announcements] User Location ID:', this.userLocationId);
-            console.log('[Announcements] Is Company/Admin:', this.isCompanyOrAdmin);
-            
-            // Set location_id for new announcements if not company/admin
+
+            this.isCompanyOrAdmin = userType === 'Company' ||
+                (userDetails?.role === 'admin') ||
+                (userType && userType.toLowerCase().includes('admin'));
+
             if (!this.isCompanyOrAdmin && this.userLocationId) {
                 this.newAnnouncement.location_id = this.userLocationId;
             }
-            
-            // Load announcements after user data is available
+
             this.getAnnouncements();
         });
     }
@@ -105,32 +95,16 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
             });
     }
 
-    private filterAnnouncements(): void {
-        if (this.isCompanyOrAdmin) {
-            // Company/Admin users see all announcements
-            this.announcements = this.allAnnouncements;
-            console.log('[Announcements] Showing all announcements for Company/Admin user');
-        } else if (this.userLocationId) {
-            // Regular users see only announcements for their location
-            this.announcements = this.allAnnouncements.filter(
-                announcement => announcement.location_id === this.userLocationId
-            );
-            console.log(`[Announcements] Filtered ${this.announcements.length} announcements for location: ${this.userLocationId}`);
-        } else {
-            // No location ID available, show no announcements
-            this.announcements = [];
-            console.log('[Announcements] No location ID available, showing no announcements');
-        }
-    }
+   private filterAnnouncements(): void {
+    this.announcements = this.allAnnouncements;
+}
 
     createAnnouncement(): void {
-        // Set the location_id based on user type
         if (!this.isCompanyOrAdmin && this.userLocationId) {
             this.newAnnouncement.location_id = this.userLocationId;
         }
-        
         this.newAnnouncement.created_at = new Date().toISOString();
-        
+
         this.http.post<Announcement>(this.apiUrl, this.newAnnouncement)
             .subscribe(() => {
                 this.getAnnouncements();
@@ -144,10 +118,7 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
     }
 
     updateAnnouncement(id: string): void {
-        const payload = {
-            id: id,
-            ...this.editAnnouncement
-        };
+        const payload = { id, ...this.editAnnouncement };
 
         this.http.put(`${this.apiUrl}`, payload)
             .subscribe(() => {
@@ -160,18 +131,30 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
             });
     }
 
-    deleteAnnouncement(id: string): void {
-        const options = {
-            body: { id }
-        };
-      
+    confirmDeleteAnnouncement(id: string): void {
+        this.showConfirmDialog = true;
+        this.deleteCandidateId = id;
+    }
+
+    cancelDelete(): void {
+        this.showConfirmDialog = false;
+        this.deleteCandidateId = null;
+    }
+
+    proceedDelete(): void {
+        if (!this.deleteCandidateId) return;
+
+        const options = { body: { id: this.deleteCandidateId } };
         this.http.delete(`${this.apiUrl}`, options)
             .subscribe(() => {
                 this.getAnnouncements();
                 this.toastr.success("Announcement Deleted Successfully");
+                this.showConfirmDialog = false;
+                this.deleteCandidateId = null;
             }, error => {
                 console.error('Error deleting announcement:', error);
                 this.toastr.error("Failed to delete announcement");
+                this.showConfirmDialog = false;
             });
     }
 
@@ -183,12 +166,8 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
         const today = moment().startOf('day');
         const yesterday = moment().subtract(1, 'day').startOf('day');
 
-        if (moment(date, moment.ISO_8601).isSame(today, 'day')) {
-            return 'Today';
-        }
-        if (moment(date, moment.ISO_8601).isSame(yesterday, 'day')) {
-            return 'Yesterday';
-        }
+        if (moment(date, moment.ISO_8601).isSame(today, 'day')) return 'Today';
+        if (moment(date, moment.ISO_8601).isSame(yesterday, 'day')) return 'Yesterday';
 
         return moment(date, moment.ISO_8601).fromNow();
     }
@@ -209,12 +188,10 @@ export class ActivitiesComponent implements OnInit, OnDestroy {
         };
     }
 
-    // Helper method to check if user can see create button
     canCreateAnnouncement(): boolean {
-        return this.userType !== null; // User is authenticated
+        return this.userType !== null;
     }
 
-    // Helper method for debugging
     getUserInfo(): string {
         return `Type: ${this.userType}, Location: ${this.userLocationId}, IsCompanyAdmin: ${this.isCompanyOrAdmin}`;
     }

@@ -188,52 +188,47 @@ export class ProjectComponent implements OnInit, OnDestroy
     leadersTableColumns: string[] = ['image', 'name', 'closed_count', 'total_profit'];
 
    leadersData() {
-    // Get locationId and userType from the GhlIntegrationService
+  this.ghlIntegrationService.getUserType().subscribe((userType: string | null) => {
+    console.log("User Type fetched for leaderboard:", userType);
+
     const locationId = this.ghlIntegrationService.getLocationId();
-  
-    this.ghlIntegrationService.getUserType().subscribe((userType: string | null) => {
-        console.log("User Type fetched for leaderboard:", userType);
 
-        // Determine the correct API endpoint based on userType and locationId
-        let url = `${environment.apiUrl}/dashboard?leaderboard=true`;
+    let url = `${environment.apiUrl}/dashboard?leaderboard=true`;
 
-        // If the user is not Company or Admin, add locationId to filter the leaderboard data
-        if (userType !== 'Company' && locationId) {
-            url += `&location_id=${locationId}`;
-            console.log("Fetching leaderboard data for locationId:", locationId);
-        } else if (userType === 'Company' || userType === 'admin') {
-            // For Company or Admin, fetch all leaderboard data (no filter)
-            console.log("User is a Company or Admin, fetching all leaderboard data...");
+    if (userType !== 'Company' && userType !== 'admin') {
+      if (locationId) {
+        url += `&location_id=${locationId}`;
+        console.log("Fetching leaderboard data for locationId:", locationId);
+      } else {
+        console.warn("Location ID not available. Skipping leaderboard fetch.");
+        this.getleadersData = [];
+        this.leadersDataSource.data = [];
+        return;
+      }
+    } else {
+      console.log("User is a Company or Admin, fetching all leaderboard data...");
+    }
+
+    this.http.get(url).subscribe(
+      (result: any) => {
+        if (result?.data?.length) {
+          this.getleadersData = result.data;
+          this.leadersDataSource.data = this.getleadersData;
         } else {
-            // If no locationId is available and userType is not Company/Admin, clear the data
-            console.log("No locationId available and userType is not Company. No leaderboard data to display.");
-            this.getleadersData = [];
-            this.leadersDataSource.data = [];
-            return;
+          console.warn('No leaders data found or invalid response.');
+          this.getleadersData = [];
+          this.leadersDataSource.data = [];
         }
-
-        // Perform the HTTP GET request to fetch leaderboard data
-        this.http.get(url).subscribe(
-            (result: any) => {
-                if (result && result.data && Array.isArray(result.data)) {
-                    this.getleadersData = result.data;
-                    this.leadersDataSource.data = this.getleadersData;
-                    console.log('Fetched Leaders Data:', result);
-                } else {
-                    console.error('Invalid data format received:', result);
-                    this.getleadersData = [];
-                    this.leadersDataSource.data = [];
-                }
-            },
-            error => {
-                console.error('Error fetching leaderboard data:', error);
-                this.getleadersData = [];
-                this.leadersDataSource.data = [];
-            }
-        );
-    });
+      },
+      error => {
+        console.error('Error fetching leaderboard data:', error);
+        this.getleadersData = [];
+        this.leadersDataSource.data = [];
+      }
+    );
+  });
 }
-
+  
 
 
     annoucementlist:any = {};
@@ -247,46 +242,18 @@ export class ProjectComponent implements OnInit, OnDestroy
     }
 
 getallannoucements() {
-    // Get the locationId from the GhlIntegrationService
-    const locationId = this.ghlIntegrationService.getLocationId();
-
-    // Get the userType from the GhlIntegrationService
-    this.ghlIntegrationService.getUserType().subscribe((userType: string | null) => {
-        console.log("User Type fetched:", userType);  
-
-        // If userType is 'Company', fetch all announcements without location filter
-        if (userType === 'Company' || userType === 'admin') {
-            console.log("User is a Company, fetching all announcements...");
-            this.http.get(`${environment.apiUrl}/announcements?list=true`).subscribe(
-                (result: any) => {
-                    console.log("Announcement Data for Company:", result);
-                    this.annoucementlist = result;
-                    this.cdr.detectChanges();
-                },
-                (err) => {
-                    console.log("Error fetching announcements:", err);
-                }
-            );
-        } else if (locationId) {
-            // If locationId is available, fetch announcements for the specific locationId
-            console.log("Location ID fetched:", locationId);
-            this.http.get(`${environment.apiUrl}/announcements?list=true&location_id=${locationId}`).subscribe(
-                (result: any) => {
-                    console.log("Announcement Data for locationId:", result);
-                    this.annoucementlist = result;
-                    this.cdr.detectChanges();
-                },
-                (err) => {
-                    console.log("Error fetching announcements:", err);
-                }
-            );
-        } else {
-            // If neither userType is 'Company' nor locationId is available, show nothing
-            this.annoucementlist = {};  // Clear announcement data
-            console.log("No locationId available and userType is not Company. No announcements to display.");
+    this.http.get(`${environment.apiUrl}/announcements?list=true`).subscribe(
+        (result: any) => {
+            console.log("Announcement Data:", result);
+            this.annoucementlist = result;
+            this.cdr.detectChanges();
+        },  
+        (err) => {
+            console.log("Error fetching announcements:", err);
         }
-    });
+    );
 }
+
 
 
     

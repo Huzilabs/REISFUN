@@ -49,23 +49,23 @@ export class FormsFieldsComponent implements AfterViewInit {
     private toastr: ToastrService,
     private ngZone: NgZone,
     private ghlIntegrationService: GhlIntegrationService
-  ) {
+  ) {   
     this.ghlIntegrationService.initialize();
 
     this.propertyForm = this.fb.group({
       title: ['', Validators.required],
       address: [''],
-      status: ['', Validators.required],
-      price: ['', [Validators.required, Validators.pattern('^[0-9]{1,}$')]],
-      propertyType: ['', Validators.required],
-      beds: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      bathsfull: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      sqft: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      lotsize2: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      yearbuilt: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      agent_name: ['', Validators.required],
-      agent_email: ['', [Validators.required, Validators.email]],
-      agent_phone_number: ['', [Validators.required]],
+      status: [''],
+      price: ['', Validators.pattern('^[0-9]{1,}$')],
+      propertyType: [''],
+      beds: ['',  Validators.pattern('^[0-9]*$')],
+      bathsfull: ['', Validators.pattern('^[0-9]*$')],
+      sqft: ['', Validators.pattern('^[0-9]*$')],
+      lotsize2: ['',  Validators.pattern('^[0-9]*$')],
+      yearbuilt: ['',  Validators.pattern('^[0-9]*$')],
+      agent_name: [''],
+      agent_email: ['',  Validators.email],
+      agent_phone_number: ['' ],
       zillow_link: [''],
       hoa: [''],
       agent_remark: [''],
@@ -73,7 +73,7 @@ export class FormsFieldsComponent implements AfterViewInit {
       coordinates: [''],
       location_id: [this.ghlIntegrationService.getLocationId()],
       agent_id: [''],
-      profit: ['', [Validators.required, Validators.pattern('^[0-9]{1,}$')]],
+      profit: ['',  Validators.pattern('^[0-9]{1,}$')],
       inspection_period_end_date: [''],
       close_date:[''],
       rep_deal_id:[''],
@@ -95,6 +95,41 @@ export class FormsFieldsComponent implements AfterViewInit {
 
     this.fetchAgents();  
   }
+  propertyTypes: string[] = [
+  'Single Family Home',
+  'Multi-Family Home',
+  'Condominium',
+  'Townhouse',
+  'Apartment',
+  'Duplex',
+  'Triplex / Fourplex',
+  'Manufactured Home',
+  'Mobile Home',
+  'Modular Home',
+  'Office Space',
+  'Retail Space',
+  'Warehouse',
+  'Industrial Building',
+  'Mixed-Use Property',
+  'Medical Office',
+  'Residential Lot',
+  'Commercial Lot',
+  'Agricultural Land',
+  'Vacant Land',
+  'Farm / Ranch',
+  'Hotel / Motel',
+  'Senior Living Facility',
+  'Student Housing',
+  'Storage Facility',
+  'Church / Religious Facility',
+  'Recreational Property',
+  'Hospitality',
+  'Investment Property',
+  'Auction Property',
+  'REO / Bank-Owned',
+  'Short Sale'
+];
+
 
   ngAfterViewInit() {
     if (typeof google === 'undefined' || !google.maps) {

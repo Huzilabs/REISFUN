@@ -8,7 +8,7 @@
                 <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
                     Add New MLS
                 </h2>
-            </div>
+            </div>  
         </div>
     </div>
 
@@ -46,14 +46,14 @@
                             <mat-option value="listing-removed">Listing Removed</mat-option>
       
                           </mat-select>
-                        <mat-error *ngIf="propertyForm.get('deal_status')?.hasError('required')">Status is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('deal_status')?.hasError('required')">Status is required</mat-error> -->
                     </mat-form-field>
                     
                     <mat-form-field class="w-full md:w-1/3 md:pl-2">
                         <mat-label>Asking Price</mat-label>
                         <input matInput formControlName="asking_price">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:currency-dollar'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('asking_price')?.hasError('required')">Price is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('asking_price')?.hasError('required')">Price is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('asking_price')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                 </div>
@@ -71,13 +71,13 @@
       <mat-option value="med">Med</mat-option>
       <mat-option value="low">Low</mat-option>
     </mat-select>
-    <mat-error *ngIf="propertyForm.get('priority')?.hasError('required')">Priority is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('priority')?.hasError('required')">Priority is required</mat-error> -->
   </mat-form-field>
 
   <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
     <mat-label>Property Condition Notes</mat-label>
     <input matInput formControlName="property_condition_notes" />
-    <mat-error *ngIf="propertyForm.get('property_condition_notes')?.hasError('required')">Property condition notes are required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('property_condition_notes')?.hasError('required')">Property condition notes are required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('property_condition_notes')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 
@@ -91,7 +91,7 @@
       <mat-option value="A7">A7</mat-option>
       <mat-option value="SC">SC</mat-option>
     </mat-select>
-    <mat-error *ngIf="propertyForm.get('which_contract')?.hasError('required')">Contract is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('which_contract')?.hasError('required')">Contract is required</mat-error> -->
   </mat-form-field>
 </div>
 
@@ -101,14 +101,14 @@
                     <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pr-2 md:pr-2 mb-2 sm:mb-0">
                         <mat-label>Arv</mat-label>
                         <input matInput formControlName="arv">
-                        <mat-error *ngIf="propertyForm.get('arv')?.hasError('required')">arv is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('arv')?.hasError('required')">arv is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('arv')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                     
                     <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
                         <mat-label>Rehab Calculator</mat-label>
                         <input matInput formControlName="rehab_calculator">
-                        <mat-error *ngIf="propertyForm.get('rehab_calculator')?.hasError('required')">rehab_calculator is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('rehab_calculator')?.hasError('required')">rehab_calculator is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('rehab_calculator')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                     
@@ -116,7 +116,7 @@
                         <mat-label>Cash Offer</mat-label>
                         <input matInput formControlName="cash_offer">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('cash_offer')?.hasError('required')">cash_offer is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('cash_offer')?.hasError('required')">cash_offer is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('cash_offer')?.hasError('pattern')">Must be a valid number</mat-error>
                     </mat-form-field>
                 </div>
@@ -127,7 +127,7 @@
     <mat-label>EMD</mat-label>
     <input matInput formControlName="emd" />
     <mat-icon class="icon-size-5" matSuffix></mat-icon>
-    <mat-error *ngIf="propertyForm.get('emd')?.hasError('required')">EMD is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('emd')?.hasError('required')">EMD is required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('emd')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 
@@ -135,7 +135,7 @@
     <mat-label>Contract Info</mat-label>
     <input matInput formControlName="contract_info" />
     <mat-icon class="icon-size-5" matSuffix></mat-icon>
-    <mat-error *ngIf="propertyForm.get('contract_info')?.hasError('required')">Contract info is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('contract_info')?.hasError('required')">Contract info is required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('contract_info')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 
@@ -172,7 +172,7 @@
                         <mat-label>Agent Email Work</mat-label>
                         <input matInput formControlName="agent_email_work">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:mail'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('agent_email_work')?.hasError('required')">Agent email is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('agent_email_work')?.hasError('required')">Agent email is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('agent_email_work')?.hasError('email')">Enter a valid email</mat-error>
                     </mat-form-field>
                     
@@ -186,7 +186,7 @@
                         <mat-label>Agent Phone Number</mat-label>
                         <input matInput formControlName="agent_phone_mobile">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:phone'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('agent_phone_mobile')?.hasError('required')">Agent phone number is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('agent_phone_mobile')?.hasError('required')">Agent phone number is required</mat-error> -->
                     </mat-form-field>
    
 
@@ -201,7 +201,7 @@
                         <mat-label>Agent Email Other</mat-label>
                         <input matInput formControlName="agent_email_other">
                         <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:mail'"></mat-icon>
-                        <mat-error *ngIf="propertyForm.get('agent_email_other')?.hasError('required')">Agent email is required</mat-error>
+                        <!-- <mat-error *ngIf="propertyForm.get('agent_email_other')?.hasError('required')">Agent email is required</mat-error> -->
                         <mat-error *ngIf="propertyForm.get('agent_email_other')?.hasError('email')">Enter a valid email</mat-error>
                     </mat-form-field>
                     
@@ -224,7 +224,7 @@
       <mat-option value="yes">Yes </mat-option>
       <mat-option value="no">No</mat-option>
           </mat-select>
-    <mat-error *ngIf="propertyForm.get('did_agent_answer_call')?.hasError('required')">did_agent_answer_call is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('did_agent_answer_call')?.hasError('required')">did_agent_answer_call is required</mat-error> -->
   </mat-form-field>
 
   <mat-form-field class="w-full sm:w-1/2 md:w-1/3 sm:pl-2 md:px-2 mb-2 sm:mb-0">
@@ -234,14 +234,14 @@
       <mat-option value="yes">Yes </mat-option>
       <mat-option value="no">No </mat-option>
           </mat-select>
-    <mat-error *ngIf="propertyForm.get('are_we_far_off')?.hasError('required')">are_we_far_off is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('are_we_far_off')?.hasError('required')">are_we_far_off is required/</mat-error> -->
   </mat-form-field>
 
   <mat-form-field class="w-full md:w-1/3 md:pl-2 mb-2 sm:mb-0">
     <mat-label>Special Offer Notes</mat-label>
     <input matInput formControlName="special_offer_notes" />
     <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-    <mat-error *ngIf="propertyForm.get('special_offer_notes')?.hasError('required')">special_offer_notes is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('special_offer_notes')?.hasError('required')">special_offer_notes is required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('special_offer_notes')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 </div>
@@ -261,7 +261,7 @@
       <mat-option value="waiting-for-response-mark-spain">Waiting for Response Mark Spain </mat-option>
       <mat-option value="canceled">Cancelled</mat-option>
           </mat-select>
-    <mat-error *ngIf="propertyForm.get('offer_results')?.hasError('required')">offer_results Info is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('offer_results')?.hasError('required')">offer_results Info is required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('offer_results')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 
@@ -279,15 +279,17 @@
       <mat-option value="8">8 </mat-option>
       <mat-option value="9">9</mat-option>
       <mat-option value="10">10</mat-option>
-          </mat-select>    <mat-error *ngIf="propertyForm.get('offer')?.hasError('required')">offer is required</mat-error>
-    <mat-error *ngIf="propertyForm.get('offer')?.hasError('pattern')">Must be a valid number</mat-error>
-  </mat-form-field>
+                </mat-select>    <mat-error *ngIf="propertyForm.get('offer')?.hasError('required')">offer is required</mat-error> 
+<mat-error *ngIf="propertyForm.get('offer')?.hasError('pattern')">Must be a valid number</mat-error>
+
+        </mat-form-field>
+
 
   <mat-form-field class="w-full md:w-1/3 md:pl-2 mb-2 sm:mb-0">
     <mat-label>Tags</mat-label>
     <input matInput formControlName="tags" />
     <mat-icon class="icon-size-5" matSuffix [svgIcon]="'heroicons_solid:calendar'"></mat-icon>
-    <mat-error *ngIf="propertyForm.get('tags')?.hasError('required')">tags Text is required</mat-error>
+    <!-- <mat-error *ngIf="propertyForm.get('tags')?.hasError('required')">tags Text is required</mat-error> -->
     <mat-error *ngIf="propertyForm.get('tags')?.hasError('pattern')">Must be a valid number</mat-error>
   </mat-form-field>
 </div>
