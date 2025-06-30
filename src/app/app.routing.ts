@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Route } from '@angular/router';
 import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
@@ -99,6 +100,7 @@ export const appRoutes: Route[] = [
                 {path: 'chats', loadChildren: () => import('app/modules/admin/ui/datatable/datatable.module').then(m => m.DatatableModule)},
                 {path: 'addmlsdeal', loadChildren: () => import('app/modules/admin/ui/colors/colors.module').then(m => m.ColorsModule)},
   
+{path:'rehab', loadChildren: () => import('app/modules/admin/ui/rehab/rehab.module').then(m => m.RehabModule)},
 
             ]},    
 

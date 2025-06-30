@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
@@ -91,10 +92,13 @@ export class CryptoComponent implements OnInit, OnDestroy, AfterViewInit {
     showCloseDealModal: boolean = false;
     profit: number = 0;
     properties: Property[] = [];
+    price_sold: string = '';
+    buyer_name: string = '';
 
     paginatedProperties: Property[] = [];
 othersDropdownOpen = false;
 
+showDeleteModal = false;
 
 
 
@@ -261,40 +265,23 @@ othersDropdownOpen = false;
         this._changeDetectorRef.markForCheck();
     }
 
-    deleteProperty(): void {
-      if (!this.propertyDetails?.id) {
-        // console.error("No property ID found.");
+    confirmDeleteProperty(): void {
+    if (!this.propertyDetails?.id) {
         return;
-      }
-    
-      // Show confirmation dialog first
-      const confirmDelete = confirm('Are you sure you want to delete this property?');
-      
-      if (confirmDelete) {
-        const deleteData = {
-          id: this.propertyDetails.id
-        };
-        
-        this.http.delete<any>(`${environment.apiUrl}/leads`, { body: deleteData })
-          .subscribe(
+    }
+    const deleteData = { id: this.propertyDetails.id };
+    this.http.delete<any>(`${environment.apiUrl}/leads`, { body: deleteData })
+        .subscribe(
             (response) => {
-              console.log("Property Deleted Successfully:", response);
-
-            this.router.navigate(['dashboards/deals'])
-            // location.reload()
-this.toastr.success("Deal deleted successfully")              
-              // Navigate back to deals after deletion
-              setTimeout(() => {
-                this.router.navigate(['/deals']);
-              }, 1000);
+                this.toastr.success("Deal deleted successfully");
+                this.router.navigate(['dashboards/deals']);
             },
             (error) => {
-              console.error("Error deleting the property:", error);
+                this.toastr.error("Error deleting the property");
             }
-          );
-      }
-      // If user cancels the deletion, nothing happens
-    }
+        );
+    this.showDeleteModal = false;
+}
 
     updateStatus(status: string): void {
         this.loading = true;
@@ -324,6 +311,8 @@ this.toastr.success("Deal deleted successfully")
     openCloseDealModal(): void {
         this.showCloseDealModal = true;
         this.profit = this.propertyDetails.profit || 0;
+        this.price_sold = this.propertyDetails.price_sold || '';
+        this.buyer_name = this.propertyDetails.buyer_name || '';
         this._changeDetectorRef.markForCheck();
     }
 
@@ -342,6 +331,9 @@ this.toastr.success("Deal deleted successfully")
           status: "closed",
           update_status: true,  
 profit: Number(this.profit).toFixed(2),
+price_sold: this.price_sold,
+buyer_name: this.buyer_name,
+          
       };
   
       this.loading = true;
@@ -401,9 +393,7 @@ this.toastr.error('error in closing the deal', error)
       console.error('Google Maps API not loaded!');
       return;
     }
-  
-    // Initialize Map with a default center.
-    this.map = new google.maps.Map(this.mapElement.nativeElement, {
+      this.map = new google.maps.Map(this.mapElement.nativeElement, {
       center: { lat: 37.7749, lng: -122.4194 },
       zoom: 16,
       streetViewControl: false

@@ -1,9 +1,12 @@
+/* eslint-disable*/
+
 import { Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 // import { HttpClient } from '@azure/core-http';
 import { environment } from 'environments/environment';
 /// <reference types="google.maps" />
 import { HttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector     : 'typography',
@@ -15,7 +18,7 @@ export class TypographyComponent
     propertydetails: any[] = [];
     markers: google.maps.Marker[] = [];  // Store property markers
   
-    constructor(private http: HttpClient, private router: Router) {
+    constructor(private http: HttpClient, private router: Router, private toastr: ToastrService) {
       this.getalldetails();
     }
   
@@ -243,10 +246,10 @@ export class TypographyComponent
      * on marker hover.
      */
     addHoverInfoWindow(marker: google.maps.Marker, property: any): void {
-      const infoContent = `
+    const infoContent = `
   <div style="width:300px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1); padding:10px; font-family:'Arial', sans-serif; background-color:#fff;">
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-      <a href="${property.zillow || '#'}" target="_blank" style="display:flex; align-items:center; text-decoration:none; color:#0077e6; font-weight:500; font-size:15px; transition:color 0.2s; padding:4px 10px; border-radius:4px; background-color:#f0f7ff;">
+      <a href="${property.zillow_link || '#'}" target="_blank" style="display:flex; align-items:center; text-decoration:none; color:#0077e6; font-weight:500; font-size:15px; transition:color 0.2s; padding:4px 10px; border-radius:4px; background-color:#f0f7ff;">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
           <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V9L14 3H6z"></path>
           <path d="M14 3v6h6"></path>
@@ -266,63 +269,68 @@ export class TypographyComponent
       ${property.title || 'Property Address'}
     </div>
     
-    <div style="display:flex; align-items:center; font-size:15px; color:#444; background-color:#f8f9fa; padding:10px; border-radius:8px;">
-      <div style="display:flex; align-items:center;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
-          <path d="M3 22v-7"></path>
-          <path d="M21 22v-7"></path>
-          <path d="M3 8v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8"></path>
-          <path d="M5 2h14a2 2 0 0 1 2 2v4H3V4a2 2 0 0 1 2-2z"></path>
-        </svg>
-        <span style="font-weight:500">${property.bedrooms || '0'} beds</span>
-      </div>
-      <span style="margin:0 8px; color:#ddd">|</span>
-      <div style="display:flex; align-items:center;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
-          <path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path>
-          <path d="M21 13v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"></path>
-        </svg>
-        <span style="font-weight:500">${property.bathrooms || '0'} baths</span>
-      </div>
-      <span style="margin:0 8px; color:#ddd">|</span>
-      <div style="display:flex; align-items:center;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
-          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
-          <path d="M3 9h18"></path>
-          <path d="M9 21V9"></path>
-        </svg>
-        <span style="font-weight:500">${property.sqft || '0'} sqft</span>
-      </div>
-    </div>
+   <div style="
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  color: #2c3e50;
+  background-color: #ffffff;
+  padding: 20px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e4e8;
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.6;
+">
+  <div style="flex: 0 0 50%; padding: 8px 0; font-weight: 500;">
+    <strong>Agent:</strong> ${property.agent_name || 'N/A'}
+  </div>
+  <div style="flex: 0 0 50%; padding: 8px 0; font-weight: 500;">
+    <strong>Profit:</strong> ${property.profit ? '$' + property.profit : 'N/A'}
+  </div>
+  <div style="flex: 0 0 50%; padding: 8px 0; font-weight: 500;">
+    <strong>Price:</strong> ${property.price ? this.getFormattedPrice(property.price) : 'N/A'}
+  </div>
+  <div style="flex: 0 0 50%; padding: 8px 0; font-weight: 500;">
+    <strong>Buyer Name:</strong> ${property.buyer_name || 'N/A'}
+  </div>
+  <div style="flex: 0 0 50%; padding: 8px 0; font-weight: 500;">
+    <strong>Price Sold:</strong> ${property.price_sold ? '$' + property.price_sold : 'N/A'}
+  </div>
+</div>
+
   </div>
 `;
-      const infoWindow = new google.maps.InfoWindow({
+    const infoWindow = new google.maps.InfoWindow({
         content: infoContent
-      });
-      
-      infoWindow.addListener("domready", () => {
-        // Use a small timeout to ensure the DOM is fully rendered.
+    });
+
+    infoWindow.addListener("domready", () => {
         setTimeout(() => {
-          // Try to select the close button using both title and aria-label selectors.
-          const closeBtn = document.querySelector('button[title="Close window"]') ||
-                           document.querySelector('button[aria-label="Close"]');
-          if (closeBtn) {
-            closeBtn.setAttribute("style", "display: none !important;");
-          }
+            const closeBtn = document.querySelector('button[title="Close window"]') ||
+                             document.querySelector('button[aria-label="Close"]');
+            if (closeBtn) {
+                closeBtn.setAttribute("style", "display: none !important;");
+            }
         }, 100);
-      });
-    
-      marker.addListener("mouseover", () => {
+    });
+
+    // Open InfoWindow on marker click (not hover)
+    marker.addListener("mouseover", () => {
         infoWindow.open({
-          anchor: marker,
-          map: this.map,
-          shouldFocus: false,
+            anchor: marker,
+            map: this.map,
+            shouldFocus: false,
         });
-      });
-      marker.addListener("mouseout", () => {
+    });
+
+    // Optional: Close InfoWindow when clicking elsewhere on the map
+    this.map.addListener("click", (event: google.maps.MapMouseEvent) => {
+        // Only close if the click is not on the marker itself
+if (event && 'placeId' in event && (event as any).placeId) return;
         infoWindow.close();
-      });
-    }
+    });
+}
     getFormattedPrice(price: string): string {
         if (!price) return '$0';
         return new Intl.NumberFormat('en-US', { 
@@ -365,6 +373,41 @@ export class TypographyComponent
         }
       );
     }
+    showDeleteModal = false;
+propertyToDelete: any = null;
+editDeal(property: any): void {
+    this.router.navigate(['dashboards/propertydetails', property.id]);
+}
+openDeleteModal(property: any): void {
+    this.propertyToDelete = property;
+    this.showDeleteModal = true;
+}
+
+confirmDelete(): void {
+    if (!this.propertyToDelete) return;
+
+    const options = {
+        body: { id: this.propertyToDelete.id }
+    };
+
+    this.http.request('delete', `${environment.apiUrl}/leads`, options).subscribe({
+        next: () => {
+            this.propertydetails = this.propertydetails.filter(p => p.id !== this.propertyToDelete.id);
+            this.showDeleteModal = false;
+            this.propertyToDelete = null;
+                                this.toastr.success('Closed Deal deleted successfully', 'Success');  
+
+        },
+        error: err => {
+            this.showDeleteModal = false;
+            this.propertyToDelete = null;
+            console.error(err);
+                                            this.toastr.success('Error in deleting Closed Deal', err);  
+
+        }
+    });
+}
+
     onclickaddDeal(){
         this.router.navigate(['dashboards/adddeals'])
       }

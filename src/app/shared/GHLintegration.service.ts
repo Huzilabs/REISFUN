@@ -197,7 +197,7 @@ const userType = data.role === 'admin' ? 'Company' : (data.role || 'sso');
 
   getUserType(): Observable<string | null> {
     return this.userTypeSubject.asObservable();
-  }
+  }    
 
   getUserDetails(): Observable<any | null> {
     return this.userDetailsSubject.asObservable();

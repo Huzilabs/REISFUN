@@ -1,7 +1,5 @@
+
 import { fuseAnimations } from '@fuse/animations';
-
-
-
 import {
   Component,
   ViewEncapsulation,

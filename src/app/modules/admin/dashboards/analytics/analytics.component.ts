@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -105,7 +106,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy
         // Determine the API URL based on userType and locationId
         let url = `${environment.apiUrl}/dashboard?profit=true&type=monthly`;
 
-        if (userType !== 'Company'  && locationId) {
+        if (userType !== 'Company'  && locationId) {  
             url += `&location_id=${locationId}`;
             console.log("Fetching monthly profit data for locationId:", locationId);
         } else if (userType === 'Company' || userType === 'admin') {

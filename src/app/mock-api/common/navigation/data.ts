@@ -24,12 +24,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : '/dashboards/reporting'
             },
             {
-              id   : 'apps.scrumboard',
-                 title: 'MLS ',
-                 type : 'basic',
-                 icon : 'heroicons_outline:view-boards',
-                 link : '/dashboards/mls'
-             },
+                id   : 'pages.activities',
+                title: 'Announcements',
+                type : 'basic',
+                icon : 'heroicons_outline:menu-alt-2',
+                link : '/dashboards/announcements'
+            },
+              {
+                id   : 'apps.contacts',
+                title: 'Contacts',
+                type : 'basic',
+                icon : 'heroicons_outline:user-group',
+                link : '/dashboards/contacts'
+            },  
+            
              {
                 id   : 'user-interface.datatable',
                 title: 'Slack Chats',
@@ -37,19 +45,42 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon : 'heroicons_outline:chat-alt',
                 link : '/dashboards/chats'
             },
+             {
+                id   : 'apps.tasks',
+                title: 'Calendar',
+                type : 'basic',
+                icon : 'heroicons_outline:check-circle',
+                link : '/dashboards/calendar'
+            },
+             
             {    
                 id   : 'dashboards.deals',
                 title: 'Inventory',
                 type : 'basic',
                 icon : 'heroicons_outline:cash',
                 link : '/dashboards/deals'
-            },  
+            },    
+            {
+              id   : 'apps.scrumboard',
+                 title: 'MLS ',
+                 type : 'basic',
+                 icon : 'heroicons_outline:view-boards',
+                 link : '/dashboards/mls'
+             },
+          
             {
                 id   : 'dashboards.closedeals',
                 title: 'Closed Deals',
                 type : 'basic',
                 icon : 'heroicons_outline:lock-closed',
                 link : '/dashboards/closedeals'
+            },
+            {
+                id   : 'dashboards.rehab',
+                title: 'Rehab',   
+                type : 'basic',
+                icon : 'heroicons_outline:clipboard-check',
+                link : '/dashboards/rehab'  
             },
             // {
             //     id   : 'apps.chat',
@@ -58,27 +89,8 @@ export const defaultNavigation: FuseNavigationItem[] = [
             //     icon : 'heroicons_outline:chat-alt',
             //     link : '/dashboards/chat'
             // },
-            {
-                id   : 'apps.contacts',
-                title: 'Contacts',
-                type : 'basic',
-                icon : 'heroicons_outline:user-group',
-                link : '/dashboards/contacts'
-            },  
-            {
-                id   : 'apps.tasks',
-                title: 'Calendar',
-                type : 'basic',
-                icon : 'heroicons_outline:check-circle',
-                link : '/dashboards/calendar'
-            },
-              {
-                id   : 'pages.activities',
-                title: 'Announcements',
-                type : 'basic',
-                icon : 'heroicons_outline:menu-alt-2',
-                link : '/dashboards/announcements'
-            },
+          
+              
             // {
             //     id      : 'apps.calendar',
             //     title   : 'Calendar',

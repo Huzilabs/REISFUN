@@ -4,7 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 import { fuseAnimations } from '@fuse/animations/public-api';
-
+import algoliasearch from 'algoliasearch';
+import { Router } from '@angular/router';
 @Component({
     selector     : 'search',
     templateUrl  : './search.component.html',
@@ -18,11 +19,14 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy
     @Input() debounce: number = 300;
     @Input() minLength: number = 2;
     @Output() search: EventEmitter<any> = new EventEmitter<any>();
-
+leadsResults: any[] = [];
+mlsResults: any[] = [];
     opened: boolean = false;
     resultSets: any[];
     searchControl: FormControl = new FormControl();
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private algoliaClient = algoliasearch('VOY1Y6ZTXU', '5e4eb606608dc522245eb397022496e8');
+    private algoliaIndex = this.algoliaClient.initIndex('leads_202506251429');
 
     /**
      * Constructor
@@ -30,7 +34,9 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy
     constructor(
         private _elementRef: ElementRef,
         private _httpClient: HttpClient,
-        private _renderer2: Renderer2
+        private _renderer2: Renderer2,
+            private router: Router // Add Router
+
     )
     {
     }
@@ -50,6 +56,36 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy
             'search-opened'          : this.opened
         };
     }
+onResultClick(item: any): void {
+    if (!item || !item.objectID || !item.sourceIndex) return;
+
+    let url = '';
+    if (item.sourceIndex === 'leads') {
+        url = `/dashboards/propertydetails/${item.objectID}`;
+    } else if (item.sourceIndex === 'mls') {
+        url = `/dashboards/mlsdetails/${item.objectID}`;
+    }
+
+    if (url) {
+        this.router.navigateByUrl(url);
+    }
+
+    this.close();
+}
+getDisplayUrl(result: any): string {
+    if (result.link || result.url) {
+        return result.link || result.url;
+    }
+
+    if (result.sourceIndex === 'leads') {
+        return `/dashboards/propertydetails/${result.objectID}`;
+    } else if (result.sourceIndex === 'mls') {
+        return `/dashboards/mlsdetails/${result.objectID}`;
+    }
+
+    return '';
+}
+
 
     /**
      * Setter for bar search input
@@ -95,42 +131,32 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
-        // Subscribe to the search field value changes
-        this.searchControl.valueChanges
-            .pipe(
-                debounceTime(this.debounce),
-                takeUntil(this._unsubscribeAll),
-                map((value) => {
-
-                    // Set the resultSets to null if there is no value or
-                    // the length of the value is smaller than the minLength
-                    // so the autocomplete panel can be closed
-                    if ( !value || value.length < this.minLength )
-                    {
-                        this.resultSets = null;
-                    }
-
-                    // Continue
-                    return value;
-                }),
-                // Filter out undefined/null/false statements and also
-                // filter out the values that are smaller than minLength
-                filter(value => value && value.length >= this.minLength)
-            )
-            .subscribe((value) => {
-                this._httpClient.post('api/common/search', {query: value})
-                    .subscribe((resultSets: any) => {
-
-                        // Store the result sets
-                        this.resultSets = resultSets;
-
-                        // Execute the event
-                        this.search.next(resultSets);
-                    });
+ ngOnInit(): void
+{
+    this.searchControl.valueChanges
+        .pipe(
+            debounceTime(this.debounce),
+            takeUntil(this._unsubscribeAll),
+            map((value) => {
+                if (!value || value.length < this.minLength) {
+                    this.leadsResults = [];
+                    this.mlsResults = [];
+                }
+                return value;
+            }),
+            filter(value => value && value.length >= this.minLength)
+        )
+        .subscribe((value) => {
+            Promise.all([
+                this.algoliaIndex.search(value),
+                this.algoliaClient.initIndex('mls_leads').search(value)
+            ]).then(([leadsResult, mlsResult]) => {
+                this.leadsResults = leadsResult.hits.map(hit => ({ ...hit, sourceIndex: 'leads' }));
+                this.mlsResults = mlsResult.hits.map(hit => ({ ...hit, sourceIndex: 'mls' }));
+                this.search.next([...this.leadsResults, ...this.mlsResults]);
             });
-    }
+        });
+}
 
     /**
      * On destroy

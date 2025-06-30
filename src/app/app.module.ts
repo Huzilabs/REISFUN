@@ -21,6 +21,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { RehabComponent } from './modules/admin/ui/rehab/rehab.component';
 // import { GhlCallbackComponent } from './ghl-callback/ghl-callback.component';
 // import { GoogleMapsModule } from '@angular/google-maps';
 // import { PropertydetailspageComponent } from './modules/admin/apps/dashboard/propertydetailspage/propertydetailspage.component';
@@ -31,7 +32,8 @@ const routerConfig: ExtraOptions = {
   
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        
 
     ],
     imports     : [

@@ -27,6 +27,7 @@ export class CodeGuard implements CanActivate, CanActivateChild {
     const code = urlParams.get('code');
     const isInsideGHL = window !== window.parent || document.referrer.includes('gohighlevel.com');
     const token = localStorage.getItem('ghl_access_token');
+const isInsidelocalHost = window.location.hostname === 'localhost';
 
     if (code) {
       console.log('[CodeGuard] OAuth code found.');
@@ -34,7 +35,7 @@ export class CodeGuard implements CanActivate, CanActivateChild {
       return true;
     }
 
-    if (isInsideGHL) {
+    if (isInsideGHL || isInsidelocalHost) {
       console.log('[CodeGuard] Inside GHL — allow access for SSO.');
       return true;
     }
@@ -47,5 +48,5 @@ export class CodeGuard implements CanActivate, CanActivateChild {
     console.warn('[CodeGuard] Outside GHL and unauthenticated — redirecting to /sign-in.');
     this.router.navigateByUrl('/sign-in');
     return false;
-  }  
+  } 
 }

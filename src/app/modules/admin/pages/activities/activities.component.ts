@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';

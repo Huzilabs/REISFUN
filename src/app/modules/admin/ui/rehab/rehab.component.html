@@ -1,0 +1,120 @@
+<div class="w-full max-w-7xl mx-auto p-4 md:p-10 bg-gray-50 rounded-xl shadow-lg">
+  <!-- Header -->
+  <div class="text-center mb-10">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-800">
+      Rehab & Acquisition Calculator
+    </h1>
+    <p class="text-gray-600 mt-2 text-sm md:text-base">
+      Fill in the fields below to calculate your investment estimates.
+    </p>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="rehabForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- INPUT FIELD -->
+    <ng-container *ngFor="let field of [
+      { label: 'FULL RETAIL ARV', name: 'arv' },
+      { label: 'TOTAL HEATED SQ FT', name: 'squareFeet' },
+      { label: 'REHAB COSTS', name: 'rehabCost' },
+      { label: 'Sale Commission\'s Quick Sale Discount to Market (%)', name: 'quickSaleDiscount' },
+      { label: 'Closing Cost\'s Quick Sale Discount to Market (%)', name: 'closingquickSaleDiscount' },
+      { label: 'Derivative Quick Sale Discount for Insurance', name: 'derivative' },
+      { label: 'Quick Sale Discount Per Month (Property Tax)', name: 'taxdiscount' },
+      { label: 'Quick Sale Discount Per Month (Utility Cost)', name: 'utilitydiscount' },
+      { label: 'Expected Hold Period (months)', name: 'holdMonths' },
+      { label: 'Expected Rehab Costs', name: 'expectedrehabCosts' },
+      { label: 'Mowing Costs', name: 'mowingCosts' },
+      { label: 'Estimated Monthly HOA Cost', name: 'monthlyHoaCost' },
+      { label: 'Other Expenses (county payoff)', name: 'otherexpenses' },
+      { label: 'Desired Gross Profit', name: 'grossProfit' },
+      { label: 'Points', name: 'points' },
+      { label: 'Interest Rate', name: 'interestRate' },
+      { label: 'Recording Fees (%)', name: 'recordingFeeRate' },
+      { label: 'Back Taxes (%)', name: 'backTaxes' },
+            { label: 'Insurance', name: 'insurance' },
+           
+                  { label: 'Taxes', name: 'taxes' },
+
+                        { label: 'Utility Cost ', name: 'utility' }
+
+    ]">
+      <label class="block text-sm font-medium text-gray-700">
+        {{ field.label }}
+        <input
+          type="number"
+          [formControlName]="field.name"
+          class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+        />
+      </label>
+    </ng-container>
+  </form>
+
+  <!-- Hard Money Costs Section -->
+  <div class="mt-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Cost of Hard Money</h2>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800">
+        <li>Base Loan Amount: <span class="font-semibold">{{ values.baseLoanAmount | number:'1.2-2' }}</span></li>
+        <li>Points: <span class="font-semibold">{{ values.hardcostpoints | number:'1.2-2' }}</span></li>
+        <li>Holding Costs at 1%/Month: <span class="font-semibold">{{ values.holdingcostspermonth | number:'1.2-2' }}</span></li>
+        <li>Holding Subtotal: <span class="font-semibold">{{ values.holdingSubtotal | number:'1.2-2' }}</span></li>
+        <li>Total Cost of Hard Money: <span class="font-semibold text-red-600">{{ values.totalhardmoneyCost | number:'1.2-2' }}</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Output Section -->
+<div class="mt-12">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Calculated Output</h2>
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <ul class="divide-y divide-gray-100 text-sm text-gray-800">
+      <!-- Main Values -->
+      <li class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50">
+        <div>RETAIL ARV PER SQ FT: <span class="font-semibold">{{ values.retailARVPerSqFt | number:'1.2-2' }}</span></div>
+        <div>REHAB COSTS PSF: <span class="font-semibold">{{ values.rehabCostPerSqFt | number:'1.2-2' }}</span></div>
+      </li>
+      <li class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <div>Sales Commissions: <span class="font-semibold">{{ values.salesCommissions | currency }}</span></div>
+        <div>Closing Costs: <span class="font-semibold">{{ values.closingCosts | currency }}</span></div>
+      </li>
+
+      <!-- Convenience Section -->
+      <li class="p-4 bg-gray-100 font-medium text-gray-700 col-span-2">Convenience Costs</li>
+      <li class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <div>Sales Commission: <span class="font-semibold">{{ values.convenienceSalesComission | currency }}</span></div>
+        <div>Rehab Costs: <span class="font-semibold">{{ values.convenienceRehabCosts | currency }}</span></div>
+        <div>Closing Costs: <span class="font-semibold">{{ values.convenienceClosingCosts | currency }}</span></div>
+        <div>Insurance: <span class="font-semibold">{{ values.convenienceInsurance | currency }}</span></div>
+        <div>Back Taxes: <span class="font-semibold">{{ values.convenienceBackTaxes | currency }}</span></div>
+        <div>Property Tax: <span class="font-semibold">{{ values.conveniencePropertyTax | currency }}</span></div>
+        <div>Mowing Cost: <span class="font-semibold">{{ values.convenienceMowingCost | currency }}</span></div>
+        <div>Utility Costs: <span class="font-semibold">{{ values.convenienceUtilityCost | currency }}</span></div>
+        <div>Estimated HOA Cost: <span class="font-semibold">{{ values.convenienceHoaCost | currency }}</span></div>
+        <div>Other Expenses: <span class="font-semibold">{{ values.convenienceOtherExpenses | currency }}</span></div>
+      </li>
+
+      <!-- Standard Expenses -->
+      <li class="p-4 bg-gray-100 font-medium text-gray-700 col-span-2">Standard Expenses</li>
+      <li class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <div>Insurance: <span class="font-semibold">{{ values.insuranceprice | currency }}</span></div>
+        <div>Property Tax: <span class="font-semibold">{{ values.propertytax | currency }}</span></div>
+        <div>Utility Cost: <span class="font-semibold">{{ values.utilitycost | currency }}</span></div>
+      </li>
+
+      <!-- Acquisition and Financing -->
+      <li class="p-4 bg-gray-100 font-medium text-gray-700 col-span-2">Acquisition & Financing</li>
+      <li class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+        <div>ACQUISITION PRICE: <span class="font-semibold text-green-600">{{ values.acquisitionPrice | currency }}</span></div>
+        <div>ACQUISITION PRICE After Hard Money: <span class="font-semibold text-green-600">{{ values.acquisitionAfterHM | currency }}</span></div>
+        <div>Total Cost of Hard Money: <span class="font-semibold text-red-600">{{ values.totalHardMoneyCost | currency }}</span></div>
+        <div>Buy Price Before Hard Money: <span class="font-semibold">{{ values.buyPriceBeforeHardMoney | currency }}</span></div>
+        <div>Buy Price After Hard Money: <span class="font-semibold">{{ values.buyPriceAfterHM | currency }}</span></div>
+                <div>Check: <span class="font-semibold">{{ values.check | currency }}</span></div>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+</div>
