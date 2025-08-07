@@ -551,4 +551,13 @@ export class DatatableComponent implements OnInit, OnDestroy {
       this.sendMessage();
     }
   }
+  openHuddle(channelId: string): void {
+    // Use the teamId from the component state
+    if (!this.teamId || !channelId) {
+        console.warn('Missing teamId or channelId for huddle.');
+        return;
+    }
+    const url = `https://app.slack.com/huddle/${this.teamId}/${channelId}`;
+    window.open(url, '_blank');
+}
 }  

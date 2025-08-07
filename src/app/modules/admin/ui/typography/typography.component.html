@@ -17,7 +17,7 @@
     <div class="w-full flex flex-col md:flex-row overflow-hidden mb-6 mt-6 p-4 bg-white dark:bg-gray-800">
      
         <!-- Map Section (70% width on desktop, full width on mobile) -->
-        <div class="w-full md:w-8/12 h-120 md:h-[600px] mb-4 md:mb-0">
+        <div class="w-full md:w-8/12 h-140 md:h-[650px] mb-4 md:mb-0">
           <div class="p-2">
             <input #searchBox type="text" placeholder="Enter an address..." class="w-full p-2 border border-gray-300 rounded">
           </div>
@@ -38,20 +38,31 @@
           </div>
       
           <!-- Scrollable property listings -->
-          <div class="overflow-y-auto max-h-120 md:h-[600px] ">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4 p-2 " >
-              <div 
-                *ngFor="let property of propertydetails; trackBy: trackByFn" 
-                class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white dark:bg-black hover:shadow-xl transition-shadow duration-200 cursor-pointer border"
-                (click)="searchProperty(property.title)" >
+          <div class="overflow-y-auto max-h-140 md:h-[650px] ">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4 p-2 "     >
+             <div 
+  *ngFor="let property of propertydetails; trackBy: trackByFn" 
+  class="flex flex-col overflow-hidden rounded-lg shadow-lg bg-white dark:bg-black hover:shadow-xl transition-shadow duration-200 cursor-pointer border"
+  [ngClass]="{'border-red-800 border-4': selectedPropertyId === property.id}"
+>
                 <!-- Property image -->
-                <div class="h-40 overflow-hidden relative bg-gray-200">
+                <div class="h-40 overflow-hidden relative bg-gray-200" (click)="searchProperty(property.title)">
   <ng-container *ngIf="getPropertyThumbnail(property); else showTitle">
-    <img 
-      [src]="getPropertyThumbnail(property)" 
-      [alt]="property.title"
-      class="w-full h-full object-cover"
-    >
+   <div class="w-full h-48 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center relative">
+  <img 
+    *ngIf="!imageLoadError[property.id]" 
+    [src]="getPropertyThumbnail(property)" 
+    [alt]="property.title" 
+    class="w-full h-full object-cover" 
+    (error)="onImageError(property.id)"
+  >
+
+  <div *ngIf="imageLoadError[property.id]" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 text-gray-500">
+    <img src="assets/images/logo/logo.svg" alt="Placeholder Logo" class="w-20 h-20 mb-3 opacity-80">
+    <span class="text-base">Image not found</span>
+  </div>
+</div>
+
   </ng-container>
 
   <ng-template #showTitle>

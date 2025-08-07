@@ -73,7 +73,12 @@ export class TypographyComponent
       // Add custom street view button.
       this.addCustomStreetViewButton();
     }
-    
+   imageLoadError: { [id: string]: boolean } = {};
+
+onImageError(id: string) {
+  this.imageLoadError[id] = true;
+}
+
     addCustomStreetViewButton() {
       const streetViewControlDiv = document.createElement("div");
       streetViewControlDiv.classList.add("street-view-container");
@@ -340,43 +345,59 @@ if (event && 'placeId' in event && (event as any).placeId) return;
         }).format(parseFloat(price));
       }
     
-    
-    searchProperty(title: string) {
-      if (!this.searchBoxElement || !this.placesService) {
+    selectedPropertyId: string | null = null;
+
+   searchProperty(title: string) {
+    if (!this.searchBoxElement || !this.placesService) {
         console.error("SearchBox element or PlacesService is not available.");
         return;
-      }
-      const inputElement = this.searchBoxElement.nativeElement as HTMLInputElement;
-      inputElement.value = title;
-      
-      const selectedProperty = this.propertydetails.find((property) => property.title === title);
-      if (selectedProperty) {
+    }
+    const inputElement = this.searchBoxElement.nativeElement as HTMLInputElement;
+    inputElement.value = title;
+
+    const selectedProperty = this.propertydetails.find((property) => property.title === title);
+    if (selectedProperty) {
+        this.selectedPropertyId = selectedProperty.id; // Set selected property for red border
+
         const pegmanImage = document.querySelector("#pegmanImage") as HTMLImageElement;
         if (pegmanImage) {
-          pegmanImage.src = selectedProperty.imageUrl;
+            if (
+                selectedProperty.attachments &&
+                selectedProperty.attachments.length > 0 &&
+                selectedProperty.attachments[0].file_url
+            ) {
+                pegmanImage.src = selectedProperty.attachments[0].file_url;
+            } else {
+                pegmanImage.src = "assets/images/logo/logo.svg"; // fallback to default
+            }
         }
-      }
-      
-      this.placesService.findPlaceFromQuery(
+    }
+
+    this.placesService.findPlaceFromQuery(
         { query: title, fields: ["geometry", "name"] },
         (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
-            const place = results[0];
-            if (place.geometry && place.geometry.location) {
-              this.map.setCenter(place.geometry.location);
-              this.map.setZoom(18.5);
-              this.marker.setPosition(place.geometry.location);
+            if (
+                status === google.maps.places.PlacesServiceStatus.OK &&
+                results &&
+                results.length > 0
+            ) {
+                const place = results[0];
+                if (place.geometry && place.geometry.location) {
+                    this.map.setCenter(place.geometry.location);
+                    this.map.setZoom(18.5);
+                    this.marker.setPosition(place.geometry.location);
+                }
+            } else {
+                console.error("No place found for:", title);
             }
-          } else {
-            console.error("No place found for:", title);
-          }
         }
-      );
-    }
+    );
+}
     showDeleteModal = false;
 propertyToDelete: any = null;
 editDeal(property: any): void {
     this.router.navigate(['dashboards/propertydetails', property.id]);
+
 }
 openDeleteModal(property: any): void {
     this.propertyToDelete = property;

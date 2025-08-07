@@ -17,6 +17,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ElementRef, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {  debounceTime } from 'rxjs/operators';
+import { Azureblobservice } from 'app/shared/azureblobservice.service';
 
 declare var google: any;  // Declare google object for TypeScript to recognize it
 /// <reference types="google.maps" />
@@ -112,7 +113,9 @@ showDeleteModal = false;
         private http: HttpClient,
       private dialog: MatDialog,
       private cdr: ChangeDetectorRef,
-      private router: Router
+      private router: Router,
+          private azureBlobService: Azureblobservice // Add this line
+
 
     ) {
         this.getalldetails();
@@ -245,7 +248,7 @@ showDeleteModal = false;
     .pipe(takeUntil(this._unsubscribeAll))
     .subscribe(
         (response: any) => {
-            this.fetchPropertyDetails(this.propertyId!); // Force re-fetch to get fresh values
+            this.fetchPropertyDetails(this.propertyId!); 
             this.editMode = false;
             this.toastr.success("Details Updated Successfully")
         },
@@ -267,20 +270,22 @@ showDeleteModal = false;
 
     confirmDeleteProperty(): void {
     if (!this.propertyDetails?.id) {
+        this.showDeleteModal = false;
         return;
     }
     const deleteData = { id: this.propertyDetails.id };
     this.http.delete<any>(`${environment.apiUrl}/leads`, { body: deleteData })
-        .subscribe(
-            (response) => {
+        .subscribe({
+            next: (response) => {
                 this.toastr.success("Deal deleted successfully");
                 this.router.navigate(['dashboards/deals']);
+                this.showDeleteModal = false;
             },
-            (error) => {
+            error: (error) => {
                 this.toastr.error("Error deleting the property");
+                this.showDeleteModal = false;
             }
-        );
-    this.showDeleteModal = false;
+        });
 }
 
     updateStatus(status: string): void {
@@ -442,7 +447,7 @@ this.toastr.error('error in closing the deal', error)
     const pegmanImage = document.createElement("img");
     pegmanImage.id = "pegmanImage";
     pegmanImage.src = "assets/images/logo/logo.svg";
-pegmanImage.classList.add("w-40", "h-82", "border-2", "border-red-600", "mb-5", "ml-2");
+pegmanImage.classList.add("w-40", "h-82",  "mb-2", "ml-2");
 
   
     // Create Fullscreen Image.
@@ -963,6 +968,9 @@ repDealButtonClicked(name: string): void {
   });
 }
 
+goBack(): void {
+window.history.back()
+}
 
 leadGenButtonClicked(status: string): void {
   if (!this.propertyDetails || !this.propertyId) {
@@ -1029,5 +1037,184 @@ extractFileName(url: string): string {
   }
 }
 
+// Add these properties to your CryptoComponent class
+selectedFiles: File[] = [];
+isUploading: boolean = false;
+uploadProgress: number = 0;
 
+// Add this import to your constructor
+
+
+// Add these methods to your CryptoComponent class
+
+/**
+ * Handle file selection from input
+ */
+onFileSelected(event: any): void {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+        this.selectedFiles = Array.from(files);
+        this.uploadImages(); // Immediately upload on selection
+    }
+}
+
+/**
+ * Upload selected files to Azure Blob Storage and update property attachments
+ */
+async uploadImages(): Promise<void> {
+    if (!this.selectedFiles.length || !this.propertyId) {
+        this.toastr.error('Please select files and ensure property ID is available');
+        return;
+    }
+
+    this.isUploading = true;
+    this.uploadProgress = 0;
+    this._changeDetectorRef.markForCheck();
+
+    try {
+        // Create container if it doesn't exist
+        await this.azureBlobService.createContainerIfNotExists('attachments');
+        
+        // Upload files to Azure Blob Storage
+        this.uploadProgress = 30;
+        this._changeDetectorRef.markForCheck();
+        
+        const uploadedUrls = await this.azureBlobService.uploadFilesToAttachments(this.selectedFiles);
+        
+        this.uploadProgress = 70;
+        this._changeDetectorRef.markForCheck();
+
+        // Prepare attachments array for API
+        const attachments: attachments[] = uploadedUrls.map((url, index) => ({
+            lead_id: this.propertyId!,
+            file_url: url,
+            file_type: this.getFileType(this.selectedFiles[index]),
+            uploaded_by: '52404d37-380a-b4bd-3da1-5fab7cd8cf7d' // Replace with actual user identifier
+        }));
+
+        // Prepare API payload
+        const addAttachmentsPayload: add_attachments = {
+            lead_id: this.propertyId!,
+            attachment: attachments,
+            add_attachments: true
+        };
+
+        // Send to backend API
+        const response = await this.http.post(`${environment.apiUrl}/leads`, addAttachmentsPayload).toPromise();
+        
+        this.uploadProgress = 100;
+        this._changeDetectorRef.markForCheck();
+
+        // Success handling
+        this.toastr.success('File uploaded successfully');   
+        
+        // Refresh property details to show new attachments
+        this.fetchPropertyDetails(this.propertyId!);
+        
+        // Clear selected files
+        this.selectedFiles = [];
+        
+        // Clear file input
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+
+    } catch (error) {
+        console.error('Error uploading images:', error);
+        this.toastr.error('Failed to upload images');
+    } finally {
+        this.isUploading = false;
+        this.uploadProgress = 0;
+        this._changeDetectorRef.markForCheck();
+    }
+}
+
+/**
+ * Get file type from file object
+ */
+private getFileType(file: File): string {
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    
+    if (!extension) return 'unknown';
+    
+    const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+    const documentTypes = ['pdf', 'doc', 'docx'];
+    
+    if (imageTypes.includes(extension)) {
+        return extension;
+    } else if (documentTypes.includes(extension)) {
+        return extension;
+    } else {
+        return 'unknown';
+    }
+}
+
+/**
+ * Remove file from selected files array
+ */
+removeSelectedFile(index: number): void {
+    this.selectedFiles.splice(index, 1);
+    this._changeDetectorRef.markForCheck();
+}
+
+/**
+ * Format file size for display
+ */
+formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+/**
+ * Check if file is an image
+ */
+isImageFile(file: File): boolean {
+    const imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+    return imageTypes.includes(file.type);
+}
+
+/**
+ * Delete attachment from property
+ */
+async deleteAttachment(attachmentId: string): Promise<void> {
+    if (!confirm('Are you sure you want to delete this attachment?')) {
+        return;
+    }
+
+    try {
+        // You might need to implement a DELETE endpoint for attachments
+        // For now, we'll refresh the property details
+        await this.http.delete(`${environment.apiUrl}/leads/attachments/${attachmentId}`).toPromise();
+        
+        this.toastr.success('Attachment deleted successfully');
+        this.fetchPropertyDetails(this.propertyId!);
+        
+    } catch (error) {
+        console.error('Error deleting attachment:', error);
+        this.toastr.error('Failed to delete attachment');
+    }
+}
+
+// Add these interfaces to your component file if not already present
+get imageAttachments() {
+  return this.propertyDetails?.attachments?.filter(att => this.isImage(att.file_type)) || [];
+}
+
+
+}
+export interface add_attachments {
+    lead_id: string;
+    attachment: attachments[];
+    add_attachments: boolean;
+}
+
+export interface attachments {
+    lead_id: string;
+    file_url: string;
+    file_type: string;
+    uploaded_by: string;
 }

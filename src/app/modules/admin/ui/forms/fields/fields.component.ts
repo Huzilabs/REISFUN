@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   Component,
   ViewEncapsulation,
@@ -13,6 +14,7 @@ import { Location } from '@angular/common';
 import { Azureblobservice } from 'app/shared/azureblobservice.service';
 import { environment } from 'environments/environment';
 import { GhlIntegrationService } from 'app/shared/GHLintegration.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'forms-fields',
@@ -48,7 +50,8 @@ export class FormsFieldsComponent implements AfterViewInit {
     private location: Location,
     private toastr: ToastrService,
     private ngZone: NgZone,
-    private ghlIntegrationService: GhlIntegrationService
+    private ghlIntegrationService: GhlIntegrationService,
+    private router: Router
   ) {   
     this.ghlIntegrationService.initialize();
 
@@ -377,7 +380,7 @@ submitForm(event?: Event): void {
   this.http.post(`${environment.apiUrl}/leads`, requestBody).subscribe({
     next: () => {
       this.toastr.success('Lead Created Successfully');
-      location.reload();
+      this.router.navigate(['/dashboards/deals']);
     },
     error: (error) => {
       console.error('API Error:', error);
